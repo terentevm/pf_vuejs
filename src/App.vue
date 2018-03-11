@@ -103,12 +103,13 @@
       <v-btn icon large>
         <v-avatar size="32px" tile>
           <img
-            src="https://vuetifyjs.com/static/doc-images/logo.svg"
+            src="../src/assets/logo_var2.svg"
             alt="Vuetify"
           >
         </v-avatar>
       </v-btn>
     </v-toolbar>
+    <div class="container-fluid">
     <v-content>
       <v-container justify-center>
        
@@ -116,7 +117,7 @@
         
       </v-container>
     </v-content>
-    
+    </div>
   </v-app>
 </template>
 
@@ -135,9 +136,9 @@
           model: true,
           children: [
             { icon: 'euro_symbol', text: 'Currencies', link:'/currencies' },
-            { icon: 'account_balance_wallet', text: 'Wallets' },
+            { icon: 'account_balance_wallet', text: 'Wallets' , link:'/wallets'},
             { icon: 'add', text: 'Income items' },
-            { icon: 'add', text: 'Expenditure items' },
+            { icon: 'add', text: 'Expenditure items' , link: '/itemsexpenditure'},
           ]
         },
 
@@ -147,7 +148,7 @@
           text: 'Transactions',
           model: true,
           children: [
-            { icon: 'add', text: 'Expenditures' },
+            { icon: 'add', text: 'Expenditures', link: '/expends' },
             { icon: 'add', text: 'Incomes' },
             { icon: 'add', text: 'Transfers' },
             
@@ -156,7 +157,7 @@
 
     
         { icon: 'settings', text: 'Settings' },
-        { icon: 'chat_bubble', text: 'Log out' },
+        { icon: 'exit_to_app', text: 'Log out' },
         
       ]
     }),

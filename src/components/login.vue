@@ -5,14 +5,14 @@
   <v-layout justify-center>
     <v-flex xs12 sm10 md8 lg6>
       <v-card ref="form">
-         <v-toolbar color="green darken-3" dark>
+        <v-toolbar color="green darken-3" dark>
         
-        <v-toolbar-title>Login</v-toolbar-title>
-        <v-spacer></v-spacer>
-        <v-btn icon>
-          <v-icon>account_box</v-icon>
-        </v-btn>
-      </v-toolbar>
+            <v-toolbar-title>Login</v-toolbar-title>
+            <v-spacer></v-spacer>
+            <v-btn icon>
+            <v-icon>account_box</v-icon>
+            </v-btn>
+        </v-toolbar>
     <v-divider class="mt-5"></v-divider>
         <v-card-text>
           <v-text-field

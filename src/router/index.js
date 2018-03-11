@@ -1,25 +1,23 @@
 import Vue from 'vue'
 import Router from 'vue-router'
-import HelloWorld from '@/components/HelloWorld'
 import Wallets from '@/components/Wallets'
 import Signup from '@/components/Signup'
 import Login from '@/components/Login'
 import Index from '@/components/Index'
 import CurrenciesList from '@/components/CurrenciesList'
-
+import ItemsExpenditure from '@/components/ItemsExpenditure'
+import DocExpends from '@/components/DocExpends'
+import ExpendElement from '@/components/ExpendElement'
 Vue.use(Router)
 
 export default new Router({
   routes: [
-    {
-      path: '/hello',
-      name: 'HelloWorld',
-      component: HelloWorld
-    },
+
     {
       path: '/wallets',
       name: 'Wallets',
-      component: Wallets
+      component: Wallets,
+      meta: { requiresAuth: true }
     }
     ,
     {
@@ -45,7 +43,29 @@ export default new Router({
       path: '/currencies',
       name: 'Currencies',
       component: CurrenciesList,
-      meta: { requiresAuth: false }
+      meta: { requiresAuth: true }
+    }
+    ,
+    {
+      path: '/itemsexpenditure',
+      name: 'ItemsExpenditure',
+      component: ItemsExpenditure,
+      meta: { requiresAuth: true }
+    }
+    
+    ,
+    {
+      path: '/expends',
+      name: 'DocExpends',
+      component: DocExpends,
+      meta: { requiresAuth: true }
+    }
+    ,
+    {
+      path: '/expend',
+      name: 'ExpendElement',
+      component: ExpendElement,
+      meta: { requiresAuth: true }
     }
   ]
   
