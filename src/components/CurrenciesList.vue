@@ -16,7 +16,7 @@
       >
     <v-flex xs12 sm12 md12 lg12>
     <v-dialog v-model="dialog" max-width="500px">
-      <v-btn color="primary" dark slot="activator" class="mb-2">New currency<v-icon dark right>add</v-icon></v-btn>
+  
       <v-card>
 
         <v-toolbar color="green darken-3" dark>
@@ -55,38 +55,78 @@
       </v-card>
     </v-dialog>
 
-    <v-btn color="warning" dark :disabled="updating" class="mb-2" @click="update()">Update<v-icon dark right>cached</v-icon></v-btn>
-
     <v-data-table
       :headers="headers"
       :items="items"
+      :loading="updating"
       hide-actions
       class="elevation-1"
       
     >
       <template slot="items" slot-scope="props" >
         <td class='d-none'>{{ props.item.id }}</td>
-        <td >{{ props.item.code }}</td>
-        <td >{{ props.item.name }}</td>
-        <td class= 'hidden-md-and-down'>{{ props.item.short_name }}</td>
+        <td @click="editItem(props.item)">{{ props.item.code }}</td>
+        <td @click="editItem(props.item)">{{ props.item.name }}</td>
+        <td @click="editItem(props.item)" class= 'hidden-md-and-down'>{{ props.item.short_name }}</td>
 
-        <td class="justify-center layout px-0 ">
+        <!-- <td class="justify-center layout px-0 ">
           <v-btn icon class="mx-0" @click="editItem(props.item)">
             <v-icon color="teal">edit</v-icon>
           </v-btn>
           <v-btn icon class="mx-0" @click="deleteItem(props.item)">
             <v-icon color="pink">delete</v-icon>
           </v-btn>
-        </td>
+        </td> -->
       </template>
       <template slot="no-data" >
-        <div class="progress">
-          <v-progress-circular indeterminate :size="70" :width="2" color="green"></v-progress-circular>
-        </div>
         
       </template>
+
+         
     </v-data-table>
+    
     </v-flex>
+        <v-speed-dial
+      
+      fixed
+      bottom
+     right
+
+     :direction='top'
+      
+      :transition='slide-y-reverse-transition'
+    >
+      <v-btn
+        slot="activator"
+        color="green darken-2"
+        dark
+        fab
+        hover
+        v-model="fab"
+      >
+        <v-icon>touch_app</v-icon>
+        <v-icon>close</v-icon>
+      </v-btn>
+           
+      <v-btn
+        fab
+        dark
+        @click="add()"
+        color="primary"
+      >
+        <v-icon>add</v-icon>
+      </v-btn>
+      <v-btn
+        fab
+        dark
+        small
+        color="warning"
+        @click="update()"
+      >
+       <v-icon dark>cached</v-icon>
+ </v-btn>
+
+    </v-speed-dial> 
     <v-snackbar
       :timeout="msgSettings.timeout"
       :color="msgSettings.color"
@@ -228,7 +268,9 @@ const Model = new ModelClass();
         this.dialog = true,
         this.formTitle = item.short_name;
       },
-
+      add(){
+        this.dialog = true;
+      },
       deleteItem (item) {
         const index = this.items.indexOf(item)
         confirm('Are you sure you want to delete this item?') && this.items.splice(index, 1)
@@ -286,6 +328,12 @@ const Model = new ModelClass();
     margin: 1rem;
   }
     
-    
+    #create .speed-dial {
+    position: absolute;
+  }
+
+  #create .btn--floating {
+    position: relative;
+  }  
 
 </style>

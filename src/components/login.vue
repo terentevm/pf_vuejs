@@ -2,8 +2,8 @@
 <template>
 
 <div>
-  <v-layout justify-center>
-    <v-flex xs12 sm10 md8 lg6>
+  <v-layout >
+    <v-flex xs12 sm12 md12 lg6>
         <v-form>
       <v-card ref="form">
         <v-toolbar color="green darken-3" dark>
@@ -42,14 +42,18 @@
         </v-card-text>
         
          <v-card-actions>
-       
-        <v-flex xs12 sm12 md12 lg12>
-            <v-btn outline  color="success" block :loading="sending" :disabled="sending" @click="sendData">Login</v-btn>
-        </v-flex>
-        <v-spacer></v-spacer>
-        <v-flex xs12 sm12 md12 lg12>
-            <v-btn outline  color="indigo " block to="/signup">Create new account</v-btn>
-        </v-flex>
+           <v-container fluid grid-list-md>
+             <v-layout row wrap>
+               <v-flex d-flex xs12 sm6 md6>
+                 <v-btn outline  color="success" block :loading="sending" :disabled="sending" @click="sendData">Login</v-btn>
+               </v-flex>
+               <v-flex d-flex xs12 sm6 md6>
+                 <v-btn outline  color="indigo " block to="/signup">Create new account</v-btn>
+               </v-flex>
+             </v-layout>
+           </v-container>
+    
+        
         </v-card-actions>
           
 

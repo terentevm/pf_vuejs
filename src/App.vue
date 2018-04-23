@@ -90,12 +90,7 @@
    
       <v-spacer></v-spacer>
       
-      <v-btn icon>
-        <v-icon>apps</v-icon>
-      </v-btn>
-      <v-btn icon>
-        <v-icon>notifications</v-icon>
-      </v-btn>
+ 
       <v-btn icon large>
         <v-avatar size="32px" tile>
           <img
@@ -105,15 +100,18 @@
         </v-avatar>
       </v-btn>
     </v-toolbar>
-    <div class="container-fluid">
-    <v-content>
-      <v-container justify-center>
-       
-        <router-view></router-view>
+    <!-- <div class="container"> -->
+    <div class ="row">
+      <v-content>
+        <v-container fluid >
         
-      </v-container>
-    </v-content>
+          <router-view></router-view>
+          
+        </v-container>
+      </v-content>
     </div>
+    
+    <!-- </div> -->
   </v-app>
 </template>
 

@@ -139,7 +139,7 @@ methods: {
                 'Accept': 'text/json'
                 },
            
-            url: 'http://pf/app/user/signup',
+            url: '/app/user/signup',
             data: params,
             responseType: 'json',
         }).then(response => {

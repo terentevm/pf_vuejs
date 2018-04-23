@@ -12,7 +12,7 @@ class Model {
     });
 
     //this.host = "http://pf/app";
-    this.host = "/app"; //PRODACTION
+   this.host = "/app"; //PRODACTION
   }
   getToken() {
     return sessionStorage.getItem('jwt');
