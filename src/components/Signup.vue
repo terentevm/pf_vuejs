@@ -15,10 +15,13 @@
         <v-card-text>
           <v-text-field
             label="Name"
-            placeholder="example@mail.com"
+            placeholder="Ivan Ivanov"
             v-model="name"
             prepend-icon="face"
             required
+            :error-messages="errors.collect('name')"
+            v-validate="'required|min:2'"
+            data-vv-name="name"
           ></v-text-field>
           <v-text-field
             label="E-mail"
@@ -26,6 +29,9 @@
             v-model="email"
             prepend-icon="email"
             required
+            :error-messages="errors.collect('email')"
+             v-validate="'required|email'"
+            data-vv-name="email"
           ></v-text-field>
           <v-text-field
             label="password"
@@ -36,18 +42,31 @@
            
             :type="e3 ? 'password' : 'text'"
             required
+            :error-messages="errors.collect('password')"
+            v-validate="'required|min:3'"
+            data-vv-name="password"
           ></v-text-field>
           
         </v-card-text>
-        <v-divider class="mt-3"></v-divider>
+        
         <v-card-actions>
-          <v-spacer></v-spacer>
+          
 
-          <v-btn color="green darken-3" flat @click="sendData">Signup</v-btn>
+          <v-btn :disabled="sending" outline  color="success" block flat @click="sendData">Signup</v-btn>
         </v-card-actions>
       </v-card>
     </v-flex>
   </v-layout>
+  <v-snackbar
+      :timeout="msgSettings.timeout"
+      :color="msgSettings.color"
+      :multi-line="msgSettings.mode === 'multi-line'"
+      :vertical="msgSettings.mode === 'vertical'"
+      v-model="msgSettings.show"
+    >
+      {{ msgSettings.msg }}
+      <v-btn dark flat @click.native="msgSettings.show = false">Close</v-btn>
+    </v-snackbar>
 </div>
 </template>
 
@@ -56,19 +75,47 @@ import axios from "axios";
 
 export default {
 name: 'Signup',
+$_veeValidate: {
+      validator: 'new'
+    },
 data(){
     return {
         name : '',
         email : '',
         password : '',
         success : false,
-        errors:[],
+        
         sending: false,
         showSnack: false,
         resultMessage: '',
-        e3 : true
+        e3 : true,
+        msgSettings: {
+          show: false,
+          color: "light-green darken-3",
+          mode: 'vertical',
+          timeout: 6000,
+          msg: ''
+        },
+        dictionary: {
+        attributes: {
+          email: 'E-mail Address'
+          // custom attributes
+        },
+        custom: {
+          name: {
+            required: () => 'Name can not be empty',
+            max: 'The name field may not be greater than 10 characters'
+            // custom messages
+          }
+        }
+      }
+    
     }
 },
+mounted () {
+      this.$validator.localize('en', this.dictionary)
+    },
+
 methods: {
         sendData() {
         this.sending = true; //block the sending button;
@@ -92,18 +139,17 @@ methods: {
                 'Accept': 'text/json'
                 },
            
-            url: 'http://pf/user/signup',
+            url: 'http://pf/app/user/signup',
             data: params,
             responseType: 'json',
         }).then(response => {
-           this.resultMessage = "User has been created successfully!";
-           this.showSnack = true; 
-           this.sending = false;
+           this.$router.push({ path: 'login' });
         })
         .catch(e=>{
-            this.resultMessage = "Error. Inputed data are invalid!"
-            this.showSnack = true;
-            this.sending = false;
+           this.sending = false;
+           this.msgSettings.color =  "orange darken-4";
+            this.msgSettings.msg = `User with e-mail ${this.email} is exists!` ;
+            this.msgSettings.show = true; 
         });
 
     }

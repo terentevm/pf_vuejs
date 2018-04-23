@@ -8,6 +8,7 @@ import CurrenciesList from '@/components/CurrenciesList'
 import ItemsExpenditure from '@/components/ItemsExpenditure'
 import DocExpends from '@/components/DocExpends'
 import ExpendElement from '@/components/ExpendElement'
+import NewSettings from '@/components/NewSettings'
 Vue.use(Router)
 
 export default new Router({
@@ -33,7 +34,7 @@ export default new Router({
     }
     ,
     {
-      path: '/index',
+      path: '/',
       name: 'Index',
       component: Index,
       meta: { requiresAuth: true }
@@ -62,10 +63,27 @@ export default new Router({
     }
     ,
     {
+      path: '/expend/:docId',
+      name: 'ExpendElement',
+      component: ExpendElement,
+      props: true ,
+      meta: { requiresAuth: true }
+    }
+    ,
+    {
       path: '/expend',
       name: 'ExpendElement',
       component: ExpendElement,
+      props: true ,
       meta: { requiresAuth: true }
+    }
+    ,
+    {
+      path: '/newsettings',
+      name: 'NewSettings',
+      component: NewSettings,
+      props: true ,
+      meta: { requiresAuth: false }
     }
   ]
   

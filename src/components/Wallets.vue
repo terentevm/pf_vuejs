@@ -104,9 +104,12 @@
           </v-btn>
         </td>
       </template>
-      <template slot="no-data">
-        <v-btn color="primary" @click="initialize">Reset</v-btn>
-      </template>
+      <template slot="no-data" >
+        <div class="progress">
+          <v-progress-circular indeterminate :size="70" :width="2" color="green"></v-progress-circular>
+        </div>
+                            
+        </template>
     </v-data-table>
     </v-flex>
 
@@ -218,7 +221,7 @@ import axios from "axios";
                   'Accept': 'text/json'
                   },
             
-              url: 'http://pf/wallets/index?offset=' + this.offset
+              url: 'http://pf/app/wallets/index?offset=' + this.offset
           }).then(response => {
     
             for (let elem of response.data){
@@ -253,7 +256,7 @@ import axios from "axios";
                 'Accept': 'text/json'
                 },
            
-            url: 'http://pf/currency/index'
+            url: 'http://pf/app/currency/index'
         }).then(response => {
           this.currencies = response.data;  
            
@@ -270,9 +273,9 @@ import axios from "axios";
         let AUTH_TOKEN = " Bearer " + jwt;
         let url = '';
         if (item.id == null) {
-          url = "http://pf/wallets/create";
+          url = "http://pf/app/wallets/create";
         } else {
-          url = "http://pf/wallets/update"; 
+          url = "http://pf/app/wallets/update"; 
         }
 
         axios({
@@ -360,5 +363,9 @@ import axios from "axios";
 <style scoped>
   .td_hidden {
     display: none;
+  }
+  .progress {
+    text-align: center;
+    margin: 1rem;
   }
 </style>

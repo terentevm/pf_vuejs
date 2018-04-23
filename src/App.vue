@@ -5,6 +5,7 @@
       :clipped="$vuetify.breakpoint.lgAndUp"
       app
       v-model="drawer"
+      v-if="this.$store.state.auth"
     >
       <v-list dense>
         <template v-for="item in items">
@@ -83,17 +84,12 @@
       fixed
     >
       <v-toolbar-title style="width: 300px" class="ml-0 pl-3">
-        <v-toolbar-side-icon @click.stop="drawer = !drawer"></v-toolbar-side-icon>
+        <v-toolbar-side-icon @click.stop="drawer = !drawer" ></v-toolbar-side-icon>
         <span class="hidden-sm-and-down">Personal finances</span>
       </v-toolbar-title>
-      <v-text-field
-        flat
-        solo-inverted
-        prepend-icon="search"
-        label="Search"
-        class="hidden-sm-and-down"
-      ></v-text-field>
+   
       <v-spacer></v-spacer>
+      
       <v-btn icon>
         <v-icon>apps</v-icon>
       </v-btn>
@@ -123,9 +119,11 @@
 
 <script>
   export default {
+    
     data: () => ({
       dialog: false,
       drawer: true,
+      showMenu: false,
       items: [
         { icon: 'home', text: "Home", link: '/index'},
 
@@ -156,13 +154,25 @@
         },
 
     
-        { icon: 'settings', text: 'Settings' },
-        { icon: 'exit_to_app', text: 'Log out' },
+        { icon: 'settings', text: 'Settings' ,link: "/newsettings"},
+        { icon: 'exit_to_app', text: 'Log out', link: '/login'},
         
       ]
     }),
+
+    mounted: function(){
+      
+      this.$store.state.auth = (sessionStorage.getItem("jwt") === null) ? false : true;
+     console.log (this.$store.state.auth);
+    }
+  ,
     props: {
       source: String
+    },
+    methods:{
+      logout(){
+        console.log("Log out...");
+      }
     }
   }
 </script>

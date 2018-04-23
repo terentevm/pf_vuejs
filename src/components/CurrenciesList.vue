@@ -79,8 +79,11 @@
           </v-btn>
         </td>
       </template>
-      <template slot="no-data">
-        <v-btn color="primary" @click="initialize">Reset</v-btn>
+      <template slot="no-data" >
+        <div class="progress">
+          <v-progress-circular indeterminate :size="70" :width="2" color="green"></v-progress-circular>
+        </div>
+        
       </template>
     </v-data-table>
     </v-flex>
@@ -100,7 +103,9 @@
 </template>
 
 <script>
-import axios from "axios";
+
+import ModelClass from "./Model";
+const Model = new ModelClass();
 
   export default {
     data: () => ({
@@ -176,20 +181,10 @@ import axios from "axios";
          return false;
        }
 
-       let jwt = sessionStorage.getItem('jwt');
-       let AUTH_TOKEN = " Bearer " + jwt;
-       axios({
-            method: 'GET',
-            headers: { 
-                "Authorization": AUTH_TOKEN,
-                'Content-Type': 'application/x-www-form-urlencoded',
-                'Accept': 'text/json'
-                },
-           
-            url: 'http://pf/currency/index?offset=' + this.offset
-        }).then(response => {
+
+       Model.getCurrencies(offset).then(response => {
   
-           for (let elem of response.data){
+           for (let elem of response){
                 this.items.push(elem);
            }
            
@@ -198,42 +193,26 @@ import axios from "axios";
            
         })
         .catch(e=>{
-            console.log(e);
+            
             this.updating = false;
         });
 
       },
       sendData(item) {
-       let jwt = sessionStorage.getItem('jwt');
-       let AUTH_TOKEN = " Bearer " + jwt;
 
-       let url = '';
-        if (item.id == null) {
-          url = "http://pf/currency/create";
-        } else {
-          url = "http://pf/currency/update"; 
+        let isUpdate = false;
+        
+        if (item.id !== null) {
+          isUpdate = true;
         }
 
-        axios({
-            method: 'POST',
-            headers: { 
-                'Content-Type': 'application/json',
-                "Authorization": AUTH_TOKEN,
-                'Accept': 'text/json'
-                },
-           
-            url: url,
-            data: item
-        }).then(response => {
+       Model.saveCurrency(item, isUpdate).then(response => {
            this.showMsg(true);
            
           this.items= [];
            this.getItems(this.offset);
            this.close();
-           return true;
-           
-           
-           
+           return true; 
            
         })
         .catch(e=>{
@@ -301,4 +280,12 @@ import axios from "axios";
   .td_hidden {
     display: none;
   }
+ 
+  .progress {
+    text-align: center;
+    margin: 1rem;
+  }
+    
+    
+
 </style>

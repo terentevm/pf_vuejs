@@ -206,7 +206,7 @@ export default {
                         'Accept': 'text/json'
                         },
                 
-                    url: 'http://pf/expenditureitems/index'
+                    url: 'http://pf/app/expenditureitems/index'
                 }).then(response => {
         
                 for (let elem of response.data){

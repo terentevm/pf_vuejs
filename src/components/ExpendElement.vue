@@ -28,6 +28,7 @@
                     <v-date-picker v-model="date" scrollable color="green darken-3">
                     <v-spacer></v-spacer>
                     <v-btn flat color="primary" @click="modal = false">Cancel</v-btn>
+                     
                     <v-btn flat color="primary" @click="$refs.dialog.save(date)">OK</v-btn>
                     </v-date-picker>
                 </v-dialog>
@@ -163,9 +164,11 @@
         </v-card-text>
         <v-card-actions>
           
-          <v-btn color="blue darken-1" flat @click.native="close">Cancel</v-btn>
+          <v-btn :disabled="sending" color="blue darken-1" flat @click.native="close">Cancel</v-btn>
           <v-spacer></v-spacer>
-          <v-btn color="green darken-3" flat @click.native="save">Save</v-btn>
+          <v-progress-circular v-show="sending" indeterminate :width="3" color="green"></v-progress-circular>
+          <v-spacer></v-spacer>
+          <v-btn :disabled="sending" color="green darken-3" flat @click="save">Save</v-btn>
         </v-card-actions>
         </v-card>
 
@@ -207,7 +210,7 @@
             <v-card-actions>
             <v-spacer></v-spacer>
             <v-btn color="blue darken-1" flat @click.native="close">Cancel</v-btn>
-            
+             <v-progress-circular indeterminate :width="3" color="green"></v-progress-circular>
             </v-card-actions>
         </v-card>
         </v-dialog>
@@ -219,9 +222,11 @@
 </template>
 
 <script>
-import axios from "axios";
+import ModelClass from "./Model";
+const Model = new ModelClass();
 
 export default {
+   props: ['docId'],
     data: () => ({
         id: null,
         date: null,
@@ -247,9 +252,12 @@ export default {
         modal: false,
         active: null,
         dialog: false,
+        sending: false
     })
     ,
     beforeMount() {
+        
+        this.id = this.docId;
         if (this.id == null) {
             let moment = require("moment");
             let day = moment();
@@ -265,6 +273,9 @@ export default {
             this.editRow =  this.rows[this.rows.length - 1]; 
             this.currentRow = 0;    
         }
+        else {
+            this.getData(this.id);
+        }
     }
     ,
     created () {
@@ -279,10 +290,8 @@ export default {
     },
      methods: {
         initialize () {      
-            
-            
-
-            this.getItems(); 
+            this.getItems();
+            this.getWallets() ; 
         },
         
         addRow() {
@@ -368,6 +377,35 @@ export default {
           
             }, 300)
         },
+
+        getData(id) {
+            
+            Model.getExpend(this.id)
+            .then(data => {
+               
+                let moment = require("moment");
+                let day = moment(data.date);
+                this.date = day.format("YYYY-MM-DD");
+               
+                this.wallet = data.wallet_id;
+               // this.items = response.data;
+               let temp_rows = [];
+               for (let line of data.rows.storage)  {
+                   let lineObj ={
+                       item: this.getItem(line.item_id),
+                       sum: line.sum
+                   }
+
+                   temp_rows.push(lineObj);
+               }
+                console.log(data.rows.storage);
+                this.rows = temp_rows;
+               })
+            .catch(e=>{
+            console.log(e);
+            });
+        }
+        ,
         getItems() {
             
             if (this.items.length > 0) {
@@ -379,25 +417,64 @@ export default {
                 return false;
             }
 
-            let jwt = sessionStorage.getItem('jwt');
-            let AUTH_TOKEN = " Bearer " + jwt;
-            axios({
-                    method: 'GET',
-                    headers: { 
-                        "Authorization": AUTH_TOKEN,
-                        'Content-Type': 'application/x-www-form-urlencoded',
-                        'Accept': 'text/json'
-                        },
+           Model.getExpenditureItems().then(data => {
                 
-                    url: 'http://pf/expenditureitems/index?list=1'
-                }).then(response => {
-                
-                this.items = response.data; 
+                this.items = data;
                
         })
         .catch(e=>{
             console.log(e);
         });
+        },
+
+        getItem(id) {
+            for (let item of this.items) {
+                if(item.id == id) {
+                    return item;
+                }
+            }
+        },
+
+        getWallets() {
+            Model.getWallets(0).then(data=>{
+                this.wallets = data;
+            })
+        },
+
+        save() {
+            this.sending = true;
+            
+            let rows = this.getRowsUpload();
+            let doc = {
+                id: this.id,
+                date: this.date,
+                wallet_id: this.wallet.id,
+                rows: rows 
+            };
+
+           
+            Model.saveExpend(doc).then(res=>{
+               this.$router.push({ path: '/expends' });
+             })
+             .catch(e=>{
+                this.sending = false;
+            });
+        },
+
+        getRowsUpload() {
+            let arr_rows = [];
+            for (let row of this.rows) {
+               if (row.item === null) {
+                   continue;
+               }
+               arr_rows.push({
+                   item_id: row.item.id,
+                   sum: row.sum,
+                   comment: row.comment
+               }); 
+            }
+
+            return arr_rows;
         }
     }
 }
