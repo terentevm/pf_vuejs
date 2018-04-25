@@ -83,7 +83,7 @@
       :clipped-left="$vuetify.breakpoint.lgAndUp"
       fixed
     >
-      <v-toolbar-title style="width: 300px" class="ml-0 pl-3">
+      <v-toolbar-title fixed style="width: 300px" class="ml-0 pl-3">
         <v-toolbar-side-icon @click.stop="drawer = !drawer" ></v-toolbar-side-icon>
         <span class="hidden-sm-and-down">Personal finances</span>
       </v-toolbar-title>
@@ -103,7 +103,7 @@
     <!-- <div class="container"> -->
     <div class ="row">
       <v-content>
-        <v-container fluid >
+        <v-container  align-center>
         
           <router-view></router-view>
           

@@ -88,13 +88,11 @@
     </v-flex>
         <v-speed-dial
       
-      fixed
-      bottom
-     right
-
-     :direction='top'
-      
-      :transition='slide-y-reverse-transition'
+        fixed
+        bottom
+        right
+        :direction='top'
+        :transition='slide-y-reverse-transition'
     >
       <v-btn
         slot="activator"

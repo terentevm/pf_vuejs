@@ -3,7 +3,7 @@
 
 <div>
   <v-layout >
-    <v-flex xs12 sm12 md12 lg6>
+    <v-flex xs12 sm12 md12 lg6 offset-lg-3>
         <v-form>
       <v-card ref="form">
         <v-toolbar color="green darken-3" dark>

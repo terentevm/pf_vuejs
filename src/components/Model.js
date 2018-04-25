@@ -11,8 +11,8 @@ class Model {
       data: {}
     });
 
-    //this.host = "http://pf/app";
-   this.host = "/app"; //PRODACTION
+    this.host = "http://pf/app";
+   //this.host = "/app"; //PRODACTION
   }
   getToken() {
     return sessionStorage.getItem('jwt');
@@ -71,6 +71,12 @@ class Model {
     });
 
   }
+
+  signUp(userData) {
+    const url= this.host + "/user/signup";
+    return this.post(url, userData);  
+  }
+
   login(loginData) {
     
     return new Promise((resolve, reject) => {
@@ -233,7 +239,7 @@ class Model {
         url: url
       
       }).then(response => {
-        resolve(response);
+        resolve(response.data);
 
       })
         .catch(e => {

@@ -71,7 +71,8 @@
 </template>
 
 <script>
-import axios from "axios";
+import ModelClass from "./Model";
+const Model = new ModelClass();
 
 export default {
 name: 'Signup',
@@ -117,32 +118,24 @@ mounted () {
     },
 
 methods: {
-        sendData() {
+    sendData() {
         this.sending = true; //block the sending button;
         
-        let obj = 
+        this.$validator.validateAll().then((result)=>{
+        if (!result) {
+          return;
+        }
+
+        let userData = 
         {
             'name': this.name,
             'login': this.email,
             'password': this.password
         };
 
-        let qs = require("qs");
-
-        let params = qs.stringify(obj);
         this.showSnack = false;
 
-        axios({
-            method: 'POST',
-            headers: { 
-                'Content-Type': 'application/x-www-form-urlencoded',
-                'Accept': 'text/json'
-                },
-           
-            url: '/app/user/signup',
-            data: params,
-            responseType: 'json',
-        }).then(response => {
+        Model.signUp(userData).then(response => {
            this.$router.push({ path: 'login' });
         })
         .catch(e=>{
@@ -152,8 +145,9 @@ methods: {
             this.msgSettings.show = true; 
         });
 
-    }
-}  
+    }); 
+  }
+}
 }
 </script>
 
