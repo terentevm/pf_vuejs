@@ -246,6 +246,7 @@ const Model = new ModelClass();
         }
       },
       getItems(offset) {
+        this.updating = true;
         Model.getWallets(0).then(data => {
     
             for (let elem of data){

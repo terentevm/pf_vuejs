@@ -52,7 +52,7 @@
         <v-card-actions>
           
 
-          <v-btn :disabled="sending" outline  color="success" block flat @click="sendData">Signup</v-btn>
+          <v-btn :loading="sending" :disabled="sending" outline  color="success" block flat @click="sendData">Signup</v-btn>
         </v-card-actions>
       </v-card>
     </v-flex>
@@ -123,6 +123,7 @@ methods: {
         
         this.$validator.validateAll().then((result)=>{
         if (!result) {
+          this.sending = false;
           return;
         }
 
@@ -139,13 +140,28 @@ methods: {
            this.$router.push({ path: 'login' });
         })
         .catch(e=>{
+           let msg = this.getErrorMsg(e);
            this.sending = false;
            this.msgSettings.color =  "orange darken-4";
-            this.msgSettings.msg = `User with e-mail ${this.email} is exists!` ;
+            this.msgSettings.msg = msg;
             this.msgSettings.show = true; 
         });
 
     }); 
+  },
+
+  getErrorMsg(e) {
+    let res = e.response.data;
+
+    if (res.code == -1) {
+      return "Server error. Please try again";
+    }
+    else if (res.code == 2) {
+      return "Inputed data is invalid!";
+    }
+    else if (res.code == 3) {
+      return `User with e-mail ${this.email} is exists!`;
+    }
   }
 }
 }
@@ -159,6 +175,43 @@ methods: {
     .formheader {
         text-align: center;
     }
+
+    .custom-loader {
+    animation: loader 1s infinite;
+    display: flex;
+  }
+  @-moz-keyframes loader {
+    from {
+      transform: rotate(0);
+    }
+    to {
+      transform: rotate(360deg);
+    }
+  }
+  @-webkit-keyframes loader {
+    from {
+      transform: rotate(0);
+    }
+    to {
+      transform: rotate(360deg);
+    }
+  }
+  @-o-keyframes loader {
+    from {
+      transform: rotate(0);
+    }
+    to {
+      transform: rotate(360deg);
+    }
+  }
+  @keyframes loader {
+    from {
+      transform: rotate(0);
+    }
+    to {
+      transform: rotate(360deg);
+    }
+  }
 </style>
 
 

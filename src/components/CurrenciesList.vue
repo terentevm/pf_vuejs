@@ -219,6 +219,7 @@ const Model = new ModelClass();
          return false;
        }
 
+      this.updating = true;
 
        Model.getCurrencies(offset).then(response => {
   

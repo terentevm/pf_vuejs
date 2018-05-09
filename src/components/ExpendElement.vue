@@ -1,64 +1,72 @@
 <template>
+    
     <v-flex xs12 sm12 md12 lg12>
-        <v-card>
-
+    
         <v-card-text>
-          <v-container grid-list-md>
-            <v-layout wrap>
-              <v-flex xs12 sm12 md12 d-none>
-              </v-flex>
-              <v-layout row wrap>
-              <v-flex xs8 sm68 md8 >
-               <v-dialog
-                    ref="dialog"
-                    persistent
-                    v-model="modal"
-                    lazy
-                    full-width
-                    width="290px"
-                    :return-value.sync="date"
-                >
-                    <v-text-field
-                    slot="activator"
-                    label="Date"
-                    v-model="date"
-                    prepend-icon="event"
-                    readonly
-                    ></v-text-field>
-                    <v-date-picker v-model="date" scrollable color="green darken-3">
-                    <v-spacer></v-spacer>
-                    <v-btn flat color="primary" @click="modal = false">Cancel</v-btn>
-                     
-                    <v-btn flat color="primary" @click="$refs.dialog.save(date)">OK</v-btn>
-                    </v-date-picker>
-                </v-dialog>
-                </v-flex>
-                <v-flex xs2 sm2 md2>
+           
+            <v-flex xs12 sm12 md12 d-none>
+            </v-flex>
+            
+            <div class="row">
+             
+                <div class="col-8 col-sm-8 col-md-8 col-lg-8">
+
+                
+                    <v-dialog
+                        ref="dialog"
+                        persistent
+                        v-model="modal"
+                        lazy
+                        full-width
+                        width="290px"
+                        :return-value.sync="date"
+                    >
+                        <v-text-field
+                        slot="activator"
+                        label="Date"
+                        v-model="date"
+                        prepend-icon="event"
+                        readonly
+                        ></v-text-field>
+                        <v-date-picker v-model="date" scrollable color="green darken-3">
+                        <v-spacer></v-spacer>
+                        <v-btn flat color="primary" @click="modal = false">Cancel</v-btn>
+                        
+                        <v-btn flat color="primary" @click="$refs.dialog.save(date)">OK</v-btn>
+                        </v-date-picker>
+                    </v-dialog>
+               
+                </div>
+                
+                <div class="col-4 col-sm-4 col-md-4 col-lg-4">
                     <v-btn icon class="mx-0" @click="subDay()">
                         <v-icon color="green darken-3">remove_circle_outline</v-icon>
-                    </v-btn>    
-                </v-flex>
-                <v-flex xs2 sm2 md2>
-                <v-btn icon class="mx-0" @click="addDay()">
-                    <v-icon color="green darken-3">add_circle_outline</v-icon>
-                </v-btn>   
-                </v-flex>
+                    </v-btn>  
+                    <v-btn icon class="mx-0" @click="addDay()">
+                        <v-icon color="green darken-3">add_circle_outline</v-icon>
+                    </v-btn> 
+                </div>
+
+            </div>  
               
-          
-              </v-layout>
-              <v-flex xs12 sm12 md12>
-              <v-select
-                :items="wallets"
-                v-model="wallet"
-                auto
-                label="Wallet"
-                single-line
-                item-text="name"
-                item-value="id"
-                return-object
-                ></v-select>  
-                </v-flex>
-                <v-flex xs12 sm12 md12>
+            <div class=row>
+                <div class="col-12 col-sm-12 col-md-12 col-lg-12">
+                    <v-select
+                        :items="wallets"
+                        v-model="wallet"
+                        auto
+                        label="Wallet"
+                        single-line
+                        item-text="name"
+                        item-value="id"
+                        return-object
+                    ></v-select>
+                </div>  
+            </div>    
+
+            <div class="row">   
+                <div class="col-12 col-sm-12 col-md-12 col-lg-12">
+                
                 <v-tabs v-model="active"
                     color="green darken-3"
                     dark
@@ -71,50 +79,54 @@
                     <v-card flat>
                     <v-card-text>
                     
-                    <v-flex  xs12 sm12 md12>
-                        <v-text-field 
-                            label="Sum" 
-                            v-model="editRow.sum"
-                            class="text-right"
-                            clearable
-                         
-                            placeholder="0.00"
-                            prepend-icon="functions"
-                        ></v-text-field>
-                        <v-layout row wrap>
-                        <v-flex xs11 sm11 md11>
-                            <v-select
-                                label="Item"
-                                prepend-icon="add_shopping_cart"
-                                :items="items"
-                                v-model="editRow.item"
-                                autocomplete
-                                cache-items
+                    <div class="col-12 col-sm-12 col-md-12 col-lg-12">
+                        <div class="row">
+                            <v-text-field 
+                                label="Sum" 
+                                v-model="editRow.sum"
+                                class="text-right"
                                 clearable
-                                auto
-                                single-line
-                                item-text="name"
-                                item-value="id"
-                                return-object
-                            >
-                            </v-select>
-                        </v-flex>
-                        <v-flex xs1 sm1 md1>
-                            <v-btn icon class="mx-2" @click="openFormItems()">
-                                <v-icon large  color="teal">play_circle_outline</v-icon>
-                            </v-btn>    
-                        </v-flex>
-                        </v-layout>
-                        <v-text-field 
-                            label="Comment" 
-                            v-model="editRow.comment"
-                            class="text-right"
-                            clearable
-                            type="text" 
-                            prepend-icon="insert_comment"
-                        ></v-text-field>
+                                placeholder="0.00"
+                                prepend-icon="functions"
+                            ></v-text-field>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-10 col-sm-11 col-md-11 col-lg-11">
+                                <v-select
+                                    label="Item"
+                                    prepend-icon="add_shopping_cart"
+                                    :items="items"
+                                    v-model="editRow.item"
+                                    autocomplete
+                                    cache-items
+                                    clearable
+                                    auto
+                                    single-line
+                                    item-text="name"
+                                    item-value="id"
+                                    return-object
+                                >
+                                </v-select>
+                            </div>
 
-                    </v-flex>
+                            <div class="col-1 col-sm-1 col-md-1 col-lg-1">
+                                <v-btn icon class="mx-2" @click="openFormItems()">
+                                    <v-icon large  color="teal">play_circle_outline</v-icon>
+                                </v-btn> 
+                            </div> 
+                        </div>   
+                        <div class="row">
+                            <v-text-field 
+                                label="Comment" 
+                                v-model="editRow.comment"
+                                class="text-right"
+                                clearable
+                                type="text" 
+                                prepend-icon="insert_comment"
+                            ></v-text-field>
+                        </div> 
+                    </div>
                         
                     </v-card-text>
                     <v-toolbar dense>
@@ -158,10 +170,11 @@
                 </v-tab-item>
 
                 </v-tabs>
-                </v-flex>
-            </v-layout>
-          </v-container>
+                </div>
+            </div>
+        
         </v-card-text>
+        
         <v-card-actions>
           
           <v-btn :disabled="sending" color="blue darken-1" flat @click.native="close">Cancel</v-btn>
@@ -170,7 +183,7 @@
           <v-spacer></v-spacer>
           <v-btn :disabled="sending" color="green darken-3" flat @click="save">Save</v-btn>
         </v-card-actions>
-        </v-card>
+   
 
         <v-dialog v-model="dialog" max-width="500px">
         <v-card>
@@ -231,7 +244,7 @@ export default {
         id: null,
         date: null,
         wallet: null,
-
+toggle_multiple: [0, 1],
         headers: [
         
         { text: 'item', value: 'item'},
@@ -479,3 +492,9 @@ export default {
     }
 }
 </script>
+
+<style scoped>
+    .line {
+        margin: 0px;
+    }
+</style>
