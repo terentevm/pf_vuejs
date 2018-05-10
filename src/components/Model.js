@@ -11,8 +11,8 @@ class Model {
       data: {}
     });
 
-    this.host = "http://pf/app";
-   //this.host = "/app"; //PRODACTION
+    //this.host = "http://pf/app";
+    this.host = "/app"; //PRODACTION
   }
   getToken() {
     return sessionStorage.getItem('jwt');
