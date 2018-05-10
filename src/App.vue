@@ -82,6 +82,7 @@
       app
       :clipped-left="$vuetify.breakpoint.lgAndUp"
       fixed
+      height=40
     >
       <v-toolbar-title fixed style="width: 300px" class="ml-0 pl-3">
         <v-toolbar-side-icon @click.stop="drawer = !drawer" ></v-toolbar-side-icon>

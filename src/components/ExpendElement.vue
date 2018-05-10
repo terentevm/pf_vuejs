@@ -1,13 +1,9 @@
 <template>
     
-    <v-flex xs12 sm12 md12 lg12>
-    
-        <v-card-text>
-           
-            <v-flex xs12 sm12 md12 d-none>
-            </v-flex>
-            
-            <div class="row">
+    <v-flex xs12 sm12 md12 lg12>  
+            <v-card flat>
+            <v-card-text> 
+            <div class="row myinputRow">
              
                 <div class="col-8 col-sm-8 col-md-8 col-lg-8">
 
@@ -25,6 +21,7 @@
                         slot="activator"
                         label="Date"
                         v-model="date"
+                       
                         prepend-icon="event"
                         readonly
                         ></v-text-field>
@@ -49,21 +46,27 @@
 
             </div>  
               
-            <div class=row>
-                <div class="col-12 col-sm-12 col-md-12 col-lg-12">
-                    <v-select
-                        :items="wallets"
-                        v-model="wallet"
-                        auto
-                        label="Wallet"
-                        single-line
-                        item-text="name"
-                        item-value="id"
-                        return-object
-                    ></v-select>
-                </div>  
-            </div>    
-
+            <div class="row myinputRow">
+                
+                    <div class="col-12 col-sm-12 col-md-12 col-lg-12">
+                        <v-select
+                            :items="wallets"
+                            v-model="wallet"
+                            auto
+                        
+                            label="Wallet"
+                            single-line
+                            item-text="name"
+                            item-value="id"
+                            return-object
+                        ></v-select>
+                    </div>
+                  
+            </div>
+            </v-card-text> 
+            </v-card>   
+            
+            
             <div class="row">   
                 <div class="col-12 col-sm-12 col-md-12 col-lg-12">
                 
@@ -77,22 +80,27 @@
                 
                 <v-tab-item :key="1">
                     <v-card flat>
-                    <v-card-text>
+                   
                     
                     <div class="col-12 col-sm-12 col-md-12 col-lg-12">
-                        <div class="row">
+                        
+                        <div class="row myinputRow">
+                        <div class="col-12 col-sm-12 col-md-12 col-lg-12"> 
                             <v-text-field 
                                 label="Sum" 
                                 v-model="editRow.sum"
                                 class="text-right"
                                 clearable
-                                placeholder="0.00"
+                                type="number"
                                 prepend-icon="functions"
+
                             ></v-text-field>
                         </div>
+                        </div>
                         
-                        <div class="row">
-                            <div class="col-10 col-sm-11 col-md-11 col-lg-11">
+                        <div class="row myinputRow">
+                            
+                            <div class="col-12 col-sm-12 col-md-12 col-lg-12">
                                 <v-select
                                     label="Item"
                                     prepend-icon="add_shopping_cart"
@@ -101,6 +109,7 @@
                                     autocomplete
                                     cache-items
                                     clearable
+                                    
                                     auto
                                     single-line
                                     item-text="name"
@@ -108,28 +117,33 @@
                                     return-object
                                 >
                                 </v-select>
-                            </div>
-
-                            <div class="col-1 col-sm-1 col-md-1 col-lg-1">
-                                <v-btn icon class="mx-2" @click="openFormItems()">
-                                    <v-icon large  color="teal">play_circle_outline</v-icon>
-                                </v-btn> 
-                            </div> 
-                        </div>   
-                        <div class="row">
-                            <v-text-field 
-                                label="Comment" 
-                                v-model="editRow.comment"
-                                class="text-right"
-                                clearable
-                                type="text" 
-                                prepend-icon="insert_comment"
-                            ></v-text-field>
-                        </div> 
-                    </div>
+                            </div>    
                         
-                    </v-card-text>
-                    <v-toolbar dense>
+                        </div>
+                        <div class="row mySmallRow">
+                            <div class="col-12 col-sm-12 col-md-12 col-lg-12">
+                                <v-btn block outline small  @click="openFormItems()">Show all items</v-btn>
+                            </div> 
+                        </div>
+
+                        <div class="row myinputRow">
+                            <div class="col-12 col-sm-12 col-md-12 col-lg-12"> 
+                                <v-text-field 
+                                    label="Comment" 
+                                    v-model="editRow.comment"
+                                    class="text-right"
+                                    clearable
+                                    type="text" 
+                                    prepend-icon="insert_comment"
+                                ></v-text-field>
+                            </div> 
+                        </div> 
+
+                    </div>
+                    
+                    <div class="row myDevider"></div>    
+                  
+                    <v-toolbar dense height=40>
                         <v-btn icon class="mx-2" @click="addRow()">
                             <v-icon large  color="green darken-3">add</v-icon>
                         </v-btn> 
@@ -171,6 +185,7 @@
 
                 </v-tabs>
                 </div>
+                
             </div>
         
         </v-card-text>
@@ -496,5 +511,22 @@ toggle_multiple: [0, 1],
 <style scoped>
     .line {
         margin: 0px;
+    }
+
+    .myinput {
+        height: 40px;
+        margin: 0 auto;
+    }
+
+    .myinputRow {
+        height: 8%;
+    }
+    
+    .mySmallRow {
+        height: 6%;
+    }
+
+    .myDevider {
+        height: 10px;
     }
 </style>
