@@ -8,11 +8,14 @@ class Model {
         'Content-Type': 'application/json',
 
       },
+      proxy: false,
       data: {}
     });
 
-    //this.host = "http://pf/app";
-    this.host = "/app"; //PRODACTION
+    this.host = "http://pf/app";
+    //this.host = "/app"; //PRODACTION
+    //this.host = "http://localhost:9000"; //PRODACTION
+                
   }
   getToken() {
     return sessionStorage.getItem('jwt');
