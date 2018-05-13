@@ -9,8 +9,7 @@
      >
     <v-flex xs12 sm12 md12 lg12>
 
-        <v-dialog v-model="dialog" max-width="500px">
-      <v-btn color="primary" dark slot="activator" class="mb-2">New item<v-icon dark right>add</v-icon></v-btn>
+      <v-dialog v-model="dialog" max-width="500px">
       <v-card>
 
         <v-toolbar color="green darken-3" dark>
@@ -53,39 +52,40 @@
           <v-spacer></v-spacer>
           <v-btn color="green darken-3" flat @click.native="save">Save</v-btn>
         </v-card-actions>
+        <v-progress-linear :indeterminate="true" v-show="processing"></v-progress-linear>
       </v-card>
     </v-dialog>
 
-        <v-card>
 
+    <v-card class ="pt-3">
+        <v-progress-linear :indeterminate="true" v-show="updating"></v-progress-linear>
         <v-list>
           <v-list-group
             v-model="item.active"
             v-for="item in items"
             v-if ="item.hasChild === true"
             :key="item.id"
-            
             no-action
           >
-            <v-list-tile slot="activator" >
+          <v-list-tile slot="activator" >
 
             <v-list-tile-avatar>
                 <v-btn icon class="mx-0" @click="editItem(item)">
-            <v-icon color="teal">edit</v-icon>
-          </v-btn>
-              </v-list-tile-avatar>
+                  <v-icon color="teal">edit</v-icon>
+                </v-btn>
+            </v-list-tile-avatar>
             <v-list-tile-content>
                 <v-list-tile-title>{{ item.name }}</v-list-tile-title>
               </v-list-tile-content>
             </v-list-tile>
            
-            <v-list-tile v-for="subItem in item.items" :key="subItem.name" @click="">
+            <v-list-tile v-for="subItem in item.items" :key="subItem.name" @click="editItem(subItem)">
               <v-list-tile-avatar>
-                <v-btn icon class="mx-0" @click="editItem(subItem)">
-                <v-icon color="teal">edit</v-icon>
+                 <v-btn icon class="mx-1" @click="editItem(subItem)">
+                  <v-icon color="teal">edit</v-icon>
                 </v-btn>
               </v-list-tile-avatar>
-              <v-list-tile-content>
+               <v-list-tile-content>
                 <v-list-tile-title>{{ subItem.name }}</v-list-tile-title>
               </v-list-tile-content>
               <v-list-tile-action>
@@ -98,7 +98,7 @@
           <v-list-tile 
             v-model="item.active"
             :key="item.id"
-            @click=""
+            @click="editItem(item)"
             >
             
             
@@ -118,6 +118,45 @@
       </v-card>
 
     </v-flex>
+    <v-speed-dial
+      
+        fixed
+        bottom
+        right
+        :direction='top'
+        :transition='slide-y-reverse-transition'
+    >
+      <v-btn
+        slot="activator"
+        color="green darken-2"
+        dark
+        fab
+        hover
+        v-model="fab"
+      >
+        <v-icon>touch_app</v-icon>
+        <v-icon>close</v-icon>
+      </v-btn>
+           
+      <v-btn
+        fab
+        dark
+        @click="add()"
+        color="primary"
+      >
+        <v-icon>add</v-icon>
+      </v-btn>
+      <v-btn
+        fab
+        dark
+        small
+        color="warning"
+        @click="update()"
+      >
+       <v-icon dark>cached</v-icon>
+    </v-btn>
+
+    </v-speed-dial>
     <v-snackbar
       :timeout="msgSettings.timeout"
       :color="msgSettings.color"
@@ -134,25 +173,30 @@
 </template>
 
 <script>
-import axios from "axios";
+import ModelClass from "./Model";
+
+const Model = new ModelClass();
 
 export default {
     data: () =>({
+        headers: [{ text: 'Name', value: 'name'}],
         items: [],
         dialog: false,
         formTitle:'New',
         editedIndex: -1,
+        updating: false,
+        processing: false,
         editedItem: {
             id: null,
             name: '',
-            parent_id: null,
+            parentid: null,
             parent:null,
             notActive: ''
         },
         defaultItem: {
             id: null,
             name: '',
-            parent_id: null,
+            parentid: null,
             parent:null,
             notActive: ''
         },
@@ -164,14 +208,12 @@ export default {
         msg: ''
       }
     }),
-
-    computed: {
-    
+    beforeMount: function(){
+      this.$store.state.title = "Expenditure items";
     },
-    
     created () {
-            this.initialize()
-        },
+      this.initialize()
+    },
     
     watch: {
       dialog (val) {
@@ -188,7 +230,14 @@ export default {
         
         },
         
+        add(){
+          this.dialog = true;
+        },
         
+        update() {
+          this.getItems(0);
+        },
+
         getItems(offset) {
             
             if (!sessionStorage.getItem('jwt')) {
@@ -196,35 +245,24 @@ export default {
                 return false;
             }
 
-            let jwt = sessionStorage.getItem('jwt');
-            let AUTH_TOKEN = " Bearer " + jwt;
-            axios({
-                    method: 'GET',
-                    headers: { 
-                        "Authorization": AUTH_TOKEN,
-                        'Content-Type': 'application/x-www-form-urlencoded',
-                        'Accept': 'text/json'
-                        },
-                
-                    url: 'http://pf/app/expenditureitems/index'
-                }).then(response => {
-        
-                for (let elem of response.data){
-                        this.items.push(elem);
-                }
-                
-                this.updating = false;
-           
-           
-        })
-        .catch(e=>{
-            console.log(e);
-            this.updating = false;
-        });
+            if (offset == 0) {
+              this.items = [];
+            }
+            this.updating = true;
+            Model.getExpenditureItemsTree().then((data)=>{
+            
+              for (let elem of data){
+                this.items.push(elem);
+              }
+              this.updating = false;
+            }).catch(e=>{
+            
+              this.updating = false;
+            });
 
       },
     
-    editItem (item) {
+      editItem (item) {
        
         this.editedIndex = this.items.indexOf(item)
         this.editedItem = Object.assign({}, item)
@@ -244,15 +282,30 @@ export default {
 
       save () {
 
-       
-        let ok = this.sendData(this.editedItem);
-        if (ok) {
+        let isUpdate = false;
+        
+        if (this.editedItem.id !== null) {
+          isUpdate = true;
+        }
+
+        if (this.editedItem.parent !== null) {
+          this.editedItem.parentid = this.editedItem.parent 
+        }
+
+        this.processing = true;
+        Model.saveExpenditureItems(this.editedItem, isUpdate).then((resp)=>{
+          this.showMsg(true);
+          this.processing =  false;
           this.close();
           this.items= [];
           this.getItems(this.offset);
-        }
+        }).catch((e)=>{
+          this.processing = false;
+          this.showMsg(false);
+        });
         
       },
+
       showMsg(success) {
        
         this.msgSettings.color = success ? "light-green darken-3" : "orange darken-4";

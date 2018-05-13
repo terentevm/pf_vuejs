@@ -12,8 +12,8 @@ class Model {
       data: {}
     });
 
-    this.host = "http://pf/app";
-    //this.host = "/app"; //PRODACTION
+    //this.host = "http://pf/app";
+    this.host = "/app"; //PRODACTION
     //this.host = "http://localhost:9000"; //PRODACTION
                 
   }
@@ -289,6 +289,22 @@ class Model {
     const url= this.host + "/expenditureitems/index?list=1";
     return this.get(url);
 
+  }
+
+  getExpenditureItemsTree() {
+    const url= this.host + "/expenditureitems/index";
+    return this.get(url);
+
+  }
+
+  saveExpenditureItems(data , isUpdate) {
+
+    let url = this.host + "/expenditureitems/create";
+    if (isUpdate === true) {
+      url= this.host + "/expenditureitems/update";  
+    } 
+    
+    return this.post(url, data);
   }
 
   getExpends(offset) {

@@ -6,14 +6,14 @@
     <v-flex xs12 sm12 md12 lg6 offset-lg-3>
         <v-form>
       <v-card ref="form">
-        <v-toolbar color="green darken-3" dark>
+        <!-- <v-toolbar color="green darken-3" dark>
         
             <v-toolbar-title>Login</v-toolbar-title>
             <v-spacer></v-spacer>
             <v-btn icon>
             <v-icon>account_box</v-icon>
             </v-btn>
-        </v-toolbar>
+        </v-toolbar> -->
     <v-divider class="mt-5"></v-divider>
         <v-card-text>
           <v-text-field
@@ -108,6 +108,7 @@ data(){
     }
 },
 beforeMount: function(){
+    this.$store.state.title = "Login";
     sessionStorage.removeItem("jwt");
     this.$store.state.auth = false;
 },

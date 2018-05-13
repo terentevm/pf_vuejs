@@ -86,9 +86,9 @@
     >
       <v-toolbar-title fixed style="width: 300px" class="ml-0 pl-3">
         <v-toolbar-side-icon @click.stop="drawer = !drawer" ></v-toolbar-side-icon>
-        <span class="hidden-sm-and-down">Personal finances</span>
+        <span>{{ title }}</span>
       </v-toolbar-title>
-   
+
       <v-spacer></v-spacer>
       
  
@@ -162,7 +162,13 @@
     mounted: function(){
       
       this.$store.state.auth = (sessionStorage.getItem("jwt") === null) ? false : true;
-     console.log (this.$store.state.auth);
+      
+    },
+    computed: {
+      title() {
+        console.log(this.$store.state.title);
+        return this.$store.state.title == undefined ? "Personal finanses" : this.$store.state.title;
+      }
     }
   ,
     props: {
