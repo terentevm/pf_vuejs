@@ -175,3 +175,14 @@
     }
   }
 </script>
+
+<style>
+  .container {
+    width: 100%;
+    padding-right: 10px;
+    padding-left: 10px;
+    margin-right: auto;
+    margin-left: auto;
+  }
+  
+</style>
