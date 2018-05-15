@@ -1,45 +1,43 @@
 <template>
-    <!-- <div v-scroll:#scroll-target="onScroll">
-        <v-container class="scroll-y" id="scroll-target">
-            <v-layout
-                wrap
-                v-scroll:#scroll-target="onScroll"
-                style="height: 786px"           
-            > -->
-                <v-flex xs12 sm12 md12 lg12>
-        
-                    <v-data-table
-                    :headers="headers"
-                    :items="items"
-                    :loading="updating"
-                    hide-actions
-                    class="elevation-1"
-                    >
 
-                    <template slot="items" slot-scope="props" >
-                        <td class='d-none'>{{ props.item.id }}</td>
+  <v-flex xs12 sm12 md12 lg12>
+        
+    <v-data-table
+      :headers="headers"
+      :items="items"
+      :loading="updating"
+      hide-actions
+      class="elevation-1"
+    >
+
+      <template slot="items" slot-scope="props" >
+        <td class='d-none'>{{ props.item.id }}</td>
                         
-                        <td ><v-icon color="red">remove</v-icon> {{ props.item.date }}</td>
+        <td ><v-icon color="red">remove</v-icon> {{ props.item.date }}</td>
                         
-                        <td >{{ props.item.walletName }}</td>
-                        <td >{{ props.item.sum }}</td>
-                        <td class="justify-center layout px-0 ">
-                        <v-btn icon class="mx-0" @click="editItem(props.item)">
-                            <v-icon color="teal">edit</v-icon>
-                        </v-btn>
-                        <v-btn icon class="mx-0" @click="deleteItem(props.item)">
-                            <v-icon color="pink">delete</v-icon>
-                        </v-btn>
-                        </td>
-                    </template>
-                    <template slot="no-data">
+        <td >{{ props.item.walletName }}</td>
+        <td >{{ props.item.sum }}</td>
+        <td class="justify-center layout px-0 ">
+          <v-btn icon class="mx-0" @click="editItem(props.item)">
+            <v-icon color="teal">edit</v-icon>
+          </v-btn>
+          <v-btn icon class="mx-0" @click="deleteItem(props.item)">
+            <v-icon color="pink">delete</v-icon>
+          </v-btn>
+        </td>
+      </template>
+    
+      <template slot="no-data">
                         
-                    </template>
-                    </v-data-table>
-                    <div class="text-xs-center pt-2">
-                      <v-btn outline  color="success" :loading="updating" :disabled="updating" @click="addDocs">load</v-btn>
-                    </div>
-                    <v-speed-dial
+      </template>
+    
+    </v-data-table>
+    
+    <div class="text-xs-center pt-2">
+      <v-btn outline  color="success" :loading="updating" :disabled="updating" @click="addDocs">load</v-btn>
+    </div>
+    
+    <v-speed-dial
       
         fixed
         bottom
@@ -78,10 +76,8 @@
  </v-btn>
 
     </v-speed-dial>
-                </v-flex>
-            <!-- </v-layout>
-        </v-container>
-</div>     -->
+</v-flex>
+
 </template>
 
 <script>

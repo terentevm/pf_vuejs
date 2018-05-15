@@ -1,18 +1,14 @@
 <template>
 
-  <div v-scroll:#scroll-target="onScroll">
+
 
     <v-container
-      class="scroll-y"
+      
       id="scroll-target"
     >
 
     <v-layout
-        wrap
-        
-        v-scroll:#scroll-target="onScroll"
-        style="height: 1000px"
-     
+        wrap   
       >
     <v-flex xs12 sm12 md12 lg12>
     <v-dialog v-model="dialog" max-width="500px">
@@ -31,44 +27,54 @@
 
         <v-card-text>
           <v-container grid-list-md>
-            <v-layout wrap>
+            
               <v-flex xs12 sm12 md12 d-none>
                 <v-text-field label="id" v-model="editedItem.id"></v-text-field>
               </v-flex>
-              <v-flex xs12 sm12 md12>
-                <v-text-field label="Name" v-model="editedItem.name"></v-text-field>
-              </v-flex>
+
+              <div class="row">
+                <div class="col-12 col-sm-12 col-md-12 col-lg-12">
+                  <v-text-field label="Name" v-model="editedItem.name" row-height=15></v-text-field>
+                </div>
+              </div>
+
+              <div class="row">
+                <div class="col-12 col-sm-12 col-md-12 col-lg-12">
+                  <v-select
+                    :items="currencies"
+                    v-model="editedItem.Currency"
+                    auto                    
+                    label="Currency"
+                    single-line
+                    item-text="name"
+                    item-value="id"
+                    return-object
+                  ></v-select>  
+                </div>
+              </div>
               
-              <v-flex xs12 sm12 md12>
-              <v-select
-                :items="currencies"
-                v-model="editedItem.Currency"
-                auto
-                label="Currency"
-                single-line
-                item-text="name"
-                item-value="id"
-                return-object
-            ></v-select>  
-              </v-flex>
-               <v-flex xs12 sm4 md4>
-              <v-checkbox
-                :label="`Is credit card`"
-                v-model="editedItem.is_creditcard"
-               
-                true-value=1
-                false-value=0
-              ></v-checkbox>
-              </v-flex>
+              <div class="row">
+                <div class="col-12 col-sm-12 col-md-12 col-lg-12">
+                  <v-checkbox
+                    :label="`Is credit card`"
+                    v-model="editedItem.is_creditcard"         
+                    true-value=1
+                    false-value=0
+                  ></v-checkbox>
+                </div>
+              </div>
 
-              <v-flex xs12 sm4 md4>
-                <v-text-field label="Credit limit"  v-model="editedItem.credit_limit"></v-text-field>
-              </v-flex>
+              <div class="row">
+                <div class="col-12 col-sm-12 col-md-6 col-lg-6">
+                  <v-text-field label="Credit limit"  v-model="editedItem.credit_limit" row-height=15></v-text-field>
+                </div>
 
-              <v-flex xs12 sm4 md4>
-                <v-text-field label="Grace period" v-model="editedItem.grace_period"></v-text-field>
-              </v-flex>
-            </v-layout>
+                <div class="col-12 col-sm-12 col-md-6 col-lg-6">
+                  <v-text-field label="Grace period" v-model="editedItem.grace_period" row-height=15></v-text-field>
+                </div>
+
+              </div>
+            
           </v-container>
         </v-card-text>
         <v-card-actions>
@@ -162,7 +168,7 @@
 
     </v-layout>
     </v-container>
-  </div>
+
 </template>
 
 <script>

@@ -147,7 +147,7 @@
           children: [
             { icon: 'add', text: 'Expenditures', link: '/expends' },
             { icon: 'add', text: 'Incomes' },
-            { icon: 'add', text: 'Transfers' },
+            { icon: 'add', text: 'Transfers', link: '/transfers'},
             
           ]
         },
@@ -182,9 +182,10 @@
   }
 </script>
 
-<style>
+<style scoped>
   .container {
     width: 100%;
+    padding: 10px;
     padding-right: 10px;
     padding-left: 10px;
     margin-right: auto;

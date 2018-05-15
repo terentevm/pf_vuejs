@@ -1,17 +1,14 @@
 <template>
 
-  <div v-scroll:#scroll-target="onScroll">
+ 
 
     <v-container
-      class="scroll-y"
+     
       id="scroll-target"
     >
 
     <v-layout
         wrap
-        
-        v-scroll:#scroll-target="onScroll"
-        style="height: 1000px"
      
       >
     <v-flex xs12 sm12 md12 lg12>
@@ -137,7 +134,7 @@
     </v-snackbar>
     </v-layout>
     </v-container>
-  </div>
+
 </template>
 
 <script>

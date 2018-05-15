@@ -331,7 +331,12 @@ class Model {
 
     return this.post(url, data);
   }
+
+
+  transfersIndex(offset) {
+    const url = this.host + "/transfer/index?limit=20&offset=" + offset;
+    return this.get(url);
+  }
+  
 }//end class
-
-
 export default Model;

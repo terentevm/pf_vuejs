@@ -9,6 +9,7 @@ import ItemsExpenditure from '@/components/ItemsExpenditure'
 import DocExpends from '@/components/DocExpends'
 import ExpendElement from '@/components/ExpendElement'
 import NewSettings from '@/components/NewSettings'
+import TransfersList from '@/components/TransfersList'
 Vue.use(Router)
 
 export default new Router({
@@ -55,12 +56,21 @@ export default new Router({
     }
     
     ,
+   
     {
       path: '/expends',
       name: 'DocExpends',
       component: DocExpends,
       meta: { requiresAuth: true }
     }
+    ,
+    {
+      path: '/transfers',
+      name: 'TransfersList',
+      component: TransfersList,
+      meta: { requiresAuth: true }
+    },
+
     ,
     {
       path: '/expend/:docId',
