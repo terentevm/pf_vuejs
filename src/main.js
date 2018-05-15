@@ -35,7 +35,9 @@ router.beforeEach((to, from, next) => {
 });
 const store = new Vuex.Store({
   state: {
-    auth: false
+    auth: false,
+    title: "",
+    iconTitle: ""
   },
   mutations: {
     increment (state) {

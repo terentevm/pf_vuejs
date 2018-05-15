@@ -291,6 +291,22 @@ class Model {
 
   }
 
+  getExpenditureItemsTree() {
+    const url= this.host + "/expenditureitems/index";
+    return this.get(url);
+
+  }
+
+  saveExpenditureItems(data , isUpdate) {
+
+    let url = this.host + "/expenditureitems/create";
+    if (isUpdate === true) {
+      url= this.host + "/expenditureitems/update";  
+    } 
+    
+    return this.post(url, data);
+  }
+
   getExpends(offset) {
     const url= this.host + "/expenditure/index?limit=20&offset=" + offset;
     return this.get(url);

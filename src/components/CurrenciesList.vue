@@ -194,7 +194,9 @@ const Model = new ModelClass();
     created () {
       this.initialize()
     },
-
+    beforeMount: function(){
+      this.$store.state.title = "Currencies";
+    },
     methods: {
       
 

@@ -221,7 +221,9 @@ const Model = new ModelClass();
         val || this.close()
       }
     },
-
+    beforeMount: function(){
+      this.$store.state.title = "Wallets";
+    },
     created () {
       this.initialize()
     },

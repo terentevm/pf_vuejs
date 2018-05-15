@@ -3,14 +3,14 @@
   <v-layout justify-center>
     <v-flex xs12 sm10 md8 lg6>
       <v-card ref="form">
-         <v-toolbar color="green darken-3" dark>
+         <!-- <v-toolbar color="green darken-3" dark>
         
         <v-toolbar-title>Signup</v-toolbar-title>
         <v-spacer></v-spacer>
         <v-btn icon>
           <v-icon>account_box</v-icon>
         </v-btn>
-      </v-toolbar>
+      </v-toolbar> -->
     <v-divider class="mt-5"></v-divider>
         <v-card-text>
           <v-text-field
@@ -49,11 +49,19 @@
           
         </v-card-text>
         
-        <v-card-actions>
-          
 
-          <v-btn :loading="sending" :disabled="sending" outline  color="success" block flat @click="sendData">Signup</v-btn>
+        <v-card-actions>
+        
+          <v-btn :loading="sending" :disabled="sending" outline  color="success" block  flat @click="sendData">Signup</v-btn>
+
         </v-card-actions>
+        <div class="row pr-1">
+          <div class="col-12 col-sm-12 col-md-12 col-lg-12"> 
+            <span class="grey--text pl-2">Already have account?</span>
+            <a href="/#/login">Войти</a>
+          </div>
+        </div>
+        
       </v-card>
     </v-flex>
   </v-layout>
@@ -113,6 +121,10 @@ data(){
     
     }
 },
+beforeMount: function(){
+    this.$store.state.title = "Signup";
+},
+
 mounted () {
       this.$validator.localize('en', this.dictionary)
     },

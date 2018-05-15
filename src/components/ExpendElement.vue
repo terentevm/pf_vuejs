@@ -188,11 +188,10 @@
                 
             </div>
         
-        </v-card-text>
         
         <v-card-actions>
           
-          <v-btn :disabled="sending" color="blue darken-1" flat @click.native="close">Cancel</v-btn>
+          <v-btn :disabled="sending" color="blue darken-1" flat to='/expends'>Cancel</v-btn>
           <v-spacer></v-spacer>
           <v-progress-circular v-show="sending" indeterminate :width="3" color="green"></v-progress-circular>
           <v-spacer></v-spacer>
@@ -237,7 +236,7 @@
             </v-card-text>
             <v-card-actions>
             <v-spacer></v-spacer>
-            <v-btn color="blue darken-1" flat @click.native="close">Cancel</v-btn>
+            <v-btn color="blue darken-1" flat to='/expends'>Cancel</v-btn>
              <v-progress-circular indeterminate :width="3" color="green"></v-progress-circular>
             </v-card-actions>
         </v-card>

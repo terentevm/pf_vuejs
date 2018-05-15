@@ -1,16 +1,17 @@
 <template>
-    <div v-scroll:#scroll-target="onScroll">
+    <!-- <div v-scroll:#scroll-target="onScroll">
         <v-container class="scroll-y" id="scroll-target">
             <v-layout
                 wrap
                 v-scroll:#scroll-target="onScroll"
                 style="height: 786px"           
-            >
+            > -->
                 <v-flex xs12 sm12 md12 lg12>
-                    <v-btn color="primary" dark  to='/expend' class="mb-2">Add<v-icon dark right>add</v-icon></v-btn>
+        
                     <v-data-table
                     :headers="headers"
                     :items="items"
+                    :loading="updating"
                     hide-actions
                     class="elevation-1"
                     >
@@ -32,13 +33,55 @@
                         </td>
                     </template>
                     <template slot="no-data">
-                        <v-btn color="primary" @click="initialize">Reset</v-btn>
+                        
                     </template>
                     </v-data-table>
+                    <div class="text-xs-center pt-2">
+                      <v-btn outline  color="success" :loading="updating" :disabled="updating" @click="addDocs">load</v-btn>
+                    </div>
+                    <v-speed-dial
+      
+        fixed
+        bottom
+        right
+        :direction='top'
+        :transition='slide-y-reverse-transition'
+    >
+      <v-btn
+        slot="activator"
+        color="green darken-2"
+        dark
+        fab
+        hover
+        v-model="fab"
+      >
+        <v-icon>touch_app</v-icon>
+        <v-icon>close</v-icon>
+      </v-btn>
+           
+      <v-btn
+        fab
+        dark
+        to='/expend'
+        color="primary"
+      >
+        <v-icon>add</v-icon>
+      </v-btn>
+      <v-btn
+        fab
+        dark
+        small
+        color="warning"
+        @click="update()"
+      >
+       <v-icon dark>cached</v-icon>
+ </v-btn>
+
+    </v-speed-dial>
                 </v-flex>
-            </v-layout>
+            <!-- </v-layout>
         </v-container>
-    </div>
+</div>     -->
 </template>
 
 <script>
@@ -103,21 +146,59 @@ export default {
     addDoc() {
         this.$router.push({ path: `expend`}); 
     },
-    onScroll(e) {
+    
+    addDocs() {
+        
         if (this.updating == true) {
             return;
         }
         
-        this.offsetTop = e.target.scrollTop;
-        let currOffset = e.target.scrollTop;
-        let maxOffset = e.target.scrollTopMax;
-
-        if (((currOffset / maxOffset) * 100) > 70 ) {
-            this.offset += 20;
-            this.updating = true;
-            this.getDocs(this.offset);
-        }
+        this.offset += 20;
+        this.updating = true;
+        this.getDocs(this.offset);
+        
     }
   }
 };
 </script>
+
+<style scoped>
+ 
+  .custom-loader {
+    animation: loader 1s infinite;
+    display: flex;
+  }
+  @-moz-keyframes loader {
+    from {
+      transform: rotate(0);
+    }
+    to {
+      transform: rotate(360deg);
+    }
+  }
+  @-webkit-keyframes loader {
+    from {
+      transform: rotate(0);
+    }
+    to {
+      transform: rotate(360deg);
+    }
+  }
+  @-o-keyframes loader {
+    from {
+      transform: rotate(0);
+    }
+    to {
+      transform: rotate(360deg);
+    }
+  }
+  @keyframes loader {
+    from {
+      transform: rotate(0);
+    }
+    to {
+      transform: rotate(360deg);
+    }
+  }
+
+</style>
