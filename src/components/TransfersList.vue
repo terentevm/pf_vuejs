@@ -1,41 +1,80 @@
 <template>
     <div class="col-12 col-sm-12 col-md-12 col-lg-12">
         <v-data-table
-            :headers="headers"
+            :headers = "headers"
             :items="items"
             :loading="updating"
             hide-actions
-            class="elevation-1"
+            v-model="selected"
+            :select-all ="showSelect"
+            class=" mytable"
+            id="MyTable"
         >
-            <template slot="items" slot-scope="props" >
-                <td class='d-none'>{{ props.item.id }}</td>               
-                <td ><v-icon color="red">remove</v-icon> {{ props.item.date }}</td>             
+        <tbody>
+        <tr v-for="item in items">
+            <!-- <td v-show="showSelect">
+                <v-checkbox
+                    v-model="props.selected"
+                    primary
+                ></v-checkbox>
+            </td> -->
+            
+            <td class='d-none' >{{ item.id }}</td> 
+            <td style="padding: 0 5px;" > {{ item.dateShow }}</td>
+                          
+            <td style="padding: 0 5px;">
+                <tr>{{ item.walletFromName }}</tr>
+                <tr>{{ item.walletToName }}</tr>     
+            </td>
+ 
+            <td style="padding: 0 5px;">    
+                <tr><v-icon color="red">remove</v-icon>{{ item.sumFrom }}</tr>
+                <tr><v-icon color="green">add</v-icon>{{ item.sumTo }}</tr>           
+            </td>
                 
-                <td>
-                    <tr>
-                        <td >{{ props.item.walletFromName }}</td>
-                        <td >{{ props.item.sumFrom }}</td>
-                    </tr>
-                    <tr>
-                       <td >{{ props.item.walletToName }}</td>
-                       <td >{{ props.item.sumTo }}</td> 
-                    </tr>
-                </td>
-                             
-                <td class="justify-center layout px-0 ">
-                    <v-btn icon class="mx-0" @click="editItem(props.item)">
-                        <v-icon color="teal">edit</v-icon>
-                    </v-btn>
-                    <v-btn icon class="mx-0" @click="deleteItem(props.item)">
-                        <v-icon color="pink">delete</v-icon>
-                    </v-btn>
-                </td>
-            </template>
-    
-            <template slot="no-data">
-                            
-            </template>
+        </tr>         
+        </tbody>  
         </v-data-table>
+
+        <v-speed-dial
+      
+            fixed
+            bottom
+            right
+            :direction='top'
+            :transition='slide-y-reverse-transition'
+        >
+            <v-btn
+                slot="activator"
+                color="green darken-2"
+                dark
+                fab
+                hover
+                v-model="fab"
+            >
+                <v-icon>touch_app</v-icon>
+                <v-icon>close</v-icon>
+            </v-btn>
+           
+            <v-btn
+                fab
+                dark
+                to='/expend'
+                color="primary"
+            >
+                <v-icon>add</v-icon>
+            </v-btn>
+            <v-btn
+                fab
+                dark
+                small
+                color="warning"
+                @click="update()"
+            >
+                <v-icon dark>cached</v-icon>
+            </v-btn>
+
+        </v-speed-dial>
     </div>
 </template>
 
@@ -43,17 +82,19 @@
 
 import ModelClass from "./Model";
 const Model = new ModelClass();
-
+var  moment = require("moment");
 export default {
     data: () =>({
         headers: [
             { text: "id", value: "id", class: "d-none" },
-            { text: "Date", value: "date", class: "xs4 sm4 md4" },
-            { text: "Wallet", value: "wallet" },  
-            { text: "sum", value: "sum" },
+            { text: "Date", value: "date", align:"left", class: "hdata"},
+            { text: "Wallet", value: "wallet", align:"left", width: "50%"},  
+            { text: "Sum", value: "sum" , align:"left", width: "30%"},
             
         ],
+        selected: [],
         items: [],
+        showSelect: false,
         offset: 0,
         updating: false
     }),
@@ -73,6 +114,11 @@ export default {
             Model.transfersIndex(this.offset).then(data =>{
                 for (let elem of data) {
                     //elem.walletName = elem.Wallet.name;
+                    elem.walletFromName = elem.WalletFrom.name;
+                    elem.walletToName = elem.WalletTo.name;
+
+                    let day = moment(elem.date);
+                    elem.dateShow = day.format("DD-MM-YYYY");
                     this.items.push(elem);
                 }
 
@@ -80,7 +126,18 @@ export default {
             }).catch(e=>{
                 this.updating = false;    
             })
+        }, // end getDocs
+
+        hello() {
+            alert("Hello");
         }
     }
 }
 </script>
+
+<style scoped>
+
+</style>
+
+    
+
