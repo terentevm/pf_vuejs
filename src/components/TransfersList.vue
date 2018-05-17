@@ -10,30 +10,22 @@
             class=" mytable"
             id="MyTable"
         >
-        <tbody>
-        <tr v-for="item in items">
-            <!-- <td v-show="showSelect">
-                <v-checkbox
-                    v-model="props.selected"
-                    primary
-                ></v-checkbox>
-            </td> -->
+        <template slot="items" slot-scope="props" >
             
-            <td class='d-none' >{{ item.id }}</td> 
-            <td style="padding: 0 5px;" > {{ item.dateShow }}</td>
+            <td class='d-none' >{{ props.item.id }}</td> 
+            <td style="padding: 0 5px;" > {{ props.item.dateShow }}</td>
                           
             <td style="padding: 0 5px;">
-                <tr>{{ item.walletFromName }}</tr>
-                <tr>{{ item.walletToName }}</tr>     
+                <tr>{{ props.item.walletFromName }}</tr>
+                <tr>{{ props.item.walletToName }}</tr>     
             </td>
  
             <td style="padding: 0 5px;">    
-                <tr><v-icon color="red">remove</v-icon>{{ item.sumFrom }}</tr>
-                <tr><v-icon color="green">add</v-icon>{{ item.sumTo }}</tr>           
+                <tr><v-icon color="red">remove</v-icon>{{ props.item.sumFrom }}</tr>
+                <tr><v-icon color="green">add</v-icon>{{ props.item.sumTo }}</tr>           
             </td>
                 
-        </tr>         
-        </tbody>  
+        </template>
         </v-data-table>
 
         <v-speed-dial
