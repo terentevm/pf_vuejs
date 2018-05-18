@@ -106,7 +106,7 @@ export default {
   }),
   
   beforeMount: function(){
-        this.$store.state.title = "Expenditures";
+        this.$store.state.title = "Expenses";
   },
   
   created() {

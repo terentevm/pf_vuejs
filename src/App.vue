@@ -145,7 +145,7 @@
           text: 'Transactions',
           model: true,
           children: [
-            { icon: 'add', text: 'Expenditures', link: '/expends' },
+            { icon: 'add', text: 'Expenses', link: '/expends' },
             { icon: 'add', text: 'Incomes' },
             { icon: 'add', text: 'Transfers', link: '/transfers'},
             

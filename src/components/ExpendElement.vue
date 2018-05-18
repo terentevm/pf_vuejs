@@ -283,7 +283,7 @@ toggle_multiple: [0, 1],
     })
     ,
     beforeMount() {
-        this.$store.state.title = "Expend";
+        this.$store.state.title = "Expense";
         this.id = this.docId;
         if (this.id == null) {
             let moment = require("moment");
