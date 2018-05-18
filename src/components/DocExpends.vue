@@ -11,20 +11,18 @@
     >
 
       <template slot="items" slot-scope="props" >
-        <td class='d-none'>{{ props.item.id }}</td>
-                        
-        <td ><v-icon color="red">remove</v-icon> {{ props.item.date }}</td>
-                        
-        <td >{{ props.item.walletName }}</td>
-        <td >{{ props.item.sum }}</td>
-        <td class="justify-center layout px-0 ">
-          <v-btn icon class="mx-0" @click="editItem(props.item)">
-            <v-icon color="teal">edit</v-icon>
-          </v-btn>
+        <td style="padding: 0 10px;" v-show = "showDel">
           <v-btn icon class="mx-0" @click="deleteItem(props.item)">
             <v-icon color="pink">delete</v-icon>
           </v-btn>
         </td>
+        <td class='d-none'>{{ props.item.id }}</td>
+                        
+        <td style="padding: 0 10px;" @click="editItem(props.item)"><v-icon color="red">remove</v-icon> {{ props.item.dateShow }}</td>
+                        
+        <td style="padding: 0 5px;" @click="editItem(props.item)">{{ props.item.walletName }}</td>
+        <td style="padding: 0 5px;" @click="editItem(props.item)">{{ props.item.sum }}</td>
+
       </template>
     
       <template slot="no-data">
@@ -73,8 +71,16 @@
         @click="update()"
       >
        <v-icon dark>cached</v-icon>
- </v-btn>
-
+      </v-btn>
+      <v-btn
+        fab
+        dark
+        small
+        color="error"
+        @click="showDelBtn()"
+      >
+        <v-icon dark>delete</v-icon>
+      </v-btn>
     </v-speed-dial>
 </v-flex>
 
@@ -83,13 +89,14 @@
 <script>
 import ModelClass from "./Model";
 const Model = new ModelClass();
-
+var  moment = require("moment");
 export default {
   data: () => ({
     items: [],
     offsetTop: 0,
     offset: 0,
     updating: false,
+    showDel: false,
     headers: [
       { text: "id", value: "id", class: "d-none" },
       { text: "Date", value: "date", class: "xs4 sm4 md4" },
@@ -97,10 +104,15 @@ export default {
       { text: "Sum", value: "sum" }
     ]
   }),
-
+  
+  beforeMount: function(){
+        this.$store.state.title = "Expenditures";
+  },
+  
   created() {
     this.initialize();
   },
+
   methods: {
     initialize() {
     var scrollHeight = Math.max(
@@ -122,8 +134,16 @@ export default {
 
         Model.getExpends(this.offset)
         .then(data => {
+          
           for (let elem of data) {
+            
+            if (elem.Wallet == null) {
+              console.log(JSON.stringify(elem));
+              continue;
+            }
             elem.walletName = elem.Wallet.name;
+            let day = moment(elem.date);
+            elem.dateShow = day.format("DD-MM-YYYY");         
             this.items.push(elem);
           }
 
@@ -153,6 +173,13 @@ export default {
         this.updating = true;
         this.getDocs(this.offset);
         
+    },
+    showDelBtn() {
+      this.showDel = !this.showDel;
+    }
+    ,
+    deleteItem(item) {
+      alert("Action doesn't support yet");
     }
   }
 };

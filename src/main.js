@@ -10,9 +10,11 @@ import VeeValidate from 'vee-validate';
 import 'vuetify/dist/vuetify.min.css'
 import '../src/assets/css/bootstrap-grid.css';
 
+import store from './store'
+
 Vue.use(Vuetify)
-Vue.use(Vuex)
 Vue.use(VeeValidate);
+
 Vue.config.productionTip = false;
 
 /* eslint-disable no-new */
@@ -33,18 +35,7 @@ router.beforeEach((to, from, next) => {
     next() 
   }
 });
-const store = new Vuex.Store({
-  state: {
-    auth: false,
-    title: "",
-    iconTitle: ""
-  },
-  mutations: {
-    increment (state) {
-      state.count++
-    }
-  }
-});
+
 var vm = new Vue({
   el: '#app',
   router: router,

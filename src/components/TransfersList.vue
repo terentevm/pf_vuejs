@@ -5,29 +5,35 @@
             :items="items"
             :loading="updating"
             hide-actions
-            v-model="selected"
-            :select-all ="showSelect"
             class=" mytable"
             id="MyTable"
         >
         <template slot="items" slot-scope="props" >
-            
-            <td class='d-none' >{{ props.item.id }}</td> 
-            <td style="padding: 0 5px;" > {{ props.item.dateShow }}</td>
-                          
-            <td style="padding: 0 5px;">
-                <tr>{{ props.item.walletFromName }}</tr>
-                <tr>{{ props.item.walletToName }}</tr>     
-            </td>
- 
-            <td style="padding: 0 5px;">    
-                <tr><v-icon color="red">remove</v-icon>{{ props.item.sumFrom }}</tr>
-                <tr><v-icon color="green">add</v-icon>{{ props.item.sumTo }}</tr>           
-            </td>
+            <tr >
                 
+                <td style="padding: 0 10px;" v-show = "showSelect">
+                    <v-btn icon class="mx-0" @click="deleteItem('test')">
+                        <v-icon color="pink">delete</v-icon>
+                    </v-btn>
+                </td>
+                <td class='d-none' >{{ props.item.id }}</td> 
+                <td style="padding: 0 5px;" @click="editDoc(props.item)"> {{ props.item.dateShow }}</td>
+                            
+                <td style="padding: 0 5px;" @click="editDoc(props.item)">
+                    <tr>{{ props.item.walletFromName }}</tr>
+                    <tr>{{ props.item.walletToName }}</tr>     
+                </td>
+    
+                <td style="padding: 0 5px;" @click="editDoc(props.item)">    
+                    <tr><v-icon color="red">remove</v-icon>{{ props.item.sumFrom }}</tr>
+                    <tr><v-icon color="green">add</v-icon>{{ props.item.sumTo }}</tr>           
+                </td>
+            </tr>    
         </template>
         </v-data-table>
-
+        <div class="text-xs-center pt-2">
+            <v-btn outline  color="success" :loading="updating" :disabled="updating" @click="addDocs">load</v-btn>
+        </div>
         <v-speed-dial
       
             fixed
@@ -51,7 +57,7 @@
             <v-btn
                 fab
                 dark
-                to='/expend'
+                to="/transfer"
                 color="primary"
             >
                 <v-icon>add</v-icon>
@@ -65,7 +71,15 @@
             >
                 <v-icon dark>cached</v-icon>
             </v-btn>
-
+            <v-btn
+                fab
+                dark
+                small
+                color="error"
+                @click="showDel()"
+            >
+                <v-icon dark>delete</v-icon>
+            </v-btn>
         </v-speed-dial>
     </div>
 </template>
@@ -119,15 +133,80 @@ export default {
                 this.updating = false;    
             })
         }, // end getDocs
+        
+        update() {
+            this.getDocs();
+        },
+        addDocs() {
+        
+            if (this.updating == true) {
+                return;
+            }
+            
+            this.offset += 20;
+            this.updating = true;
+            this.getDocs(this.offset);
+        
+        },
 
-        hello() {
-            alert("Hello");
+        addDoc() {
+            this.$router.push({ path: `transfer`});
+        },
+
+        editDoc(item) {
+            let id = item.id
+            this.$router.push({ path: `transfer/${ id }`}); 
+        },
+
+        showDel() {
+            this.showSelect = !this.showSelect;
+        }
+        ,
+        deleteItem(item) {
+            console.log("Action doesn't support yet");
         }
     }
 }
 </script>
 
 <style scoped>
+ 
+  .custom-loader {
+    animation: loader 1s infinite;
+    display: flex;
+  }
+  @-moz-keyframes loader {
+    from {
+      transform: rotate(0);
+    }
+    to {
+      transform: rotate(360deg);
+    }
+  }
+  @-webkit-keyframes loader {
+    from {
+      transform: rotate(0);
+    }
+    to {
+      transform: rotate(360deg);
+    }
+  }
+  @-o-keyframes loader {
+    from {
+      transform: rotate(0);
+    }
+    to {
+      transform: rotate(360deg);
+    }
+  }
+  @keyframes loader {
+    from {
+      transform: rotate(0);
+    }
+    to {
+      transform: rotate(360deg);
+    }
+  }
 
 </style>
 

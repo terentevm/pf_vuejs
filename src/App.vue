@@ -166,7 +166,6 @@
     },
     computed: {
       title() {
-        console.log(this.$store.state.title);
         return this.$store.state.title == undefined ? "Personal finanses" : this.$store.state.title;
       }
     }

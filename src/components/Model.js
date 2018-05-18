@@ -337,6 +337,21 @@ class Model {
     const url = this.host + "/transfer/index?limit=20&offset=" + offset;
     return this.get(url);
   }
+
+  getTransfer(id) {
+    const url= this.host + "/transfer/show?id=" + id;
+    return this.get(url);
+  }
+
+  saveTransfer(data, isUpdate) {
+    let url =this.host + "/transfer/create";
+
+    if (isUpdate === true) {
+      let url =this.host + "/transfer/update";
+    }
+
+    return this.post(url, data);
+  }
   
 }//end class
 export default Model;

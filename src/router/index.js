@@ -10,6 +10,8 @@ import DocExpends from '@/components/DocExpends'
 import ExpendElement from '@/components/ExpendElement'
 import NewSettings from '@/components/NewSettings'
 import TransfersList from '@/components/TransfersList'
+import Transfer from '@/components/Transfer'
+
 Vue.use(Router)
 
 export default new Router({
@@ -70,7 +72,22 @@ export default new Router({
       component: TransfersList,
       meta: { requiresAuth: true }
     },
-
+    ,
+    {
+      path: '/transfer/:docId',
+      name: 'Transfer',
+      component: Transfer,
+      props: true ,
+      meta: { requiresAuth: true }
+    }
+    ,
+    {
+      path: '/transfer',
+      name: 'Transfer',
+      component: Transfer,
+      props: true ,
+      meta: { requiresAuth: true }
+    }
     ,
     {
       path: '/expend/:docId',
