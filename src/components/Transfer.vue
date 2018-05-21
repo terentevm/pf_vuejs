@@ -41,7 +41,11 @@
             </v-btn> 
         </div>
     </div>
-
+    <div class="row">
+        <div class ="col-12 col-sm-12 col-md-12 col-lg-12">
+            <span class="grey--text">From</span>
+        </div>
+    </div>
     <div class="row">
         <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
             <v-select
@@ -74,6 +78,11 @@
 
     </div>
     <v-divider ></v-divider>
+    <div class="row">
+        <div class ="col-12 col-sm-12 col-md-12 col-lg-12">
+            <span class="grey--text">To</span>
+        </div>
+    </div>
     <div class="row">
         <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
             <v-select

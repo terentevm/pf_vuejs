@@ -12,8 +12,8 @@ class Model {
       data: {}
     });
 
-    this.host = "http://pf/app";
-    //this.host = "/app"; //PRODACTION
+    //this.host = "http://pf/app";
+    this.host = "/app"; //PRODACTION
     //this.host = "http://localhost:9000"; //PRODACTION
                 
   }
@@ -75,6 +75,11 @@ class Model {
 
   }
 
+  delete(url) {
+    let fullUrl = this.host + url;
+
+    return this.get(fullUrl)
+  }
   processResponseData(response) {
     
     var dataObj = undefined;
