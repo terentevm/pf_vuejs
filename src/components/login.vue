@@ -22,8 +22,9 @@
             v-model="email"
             prepend-icon="email"
             :error-messages="errors.collect('email')"
-      v-validate="'required|email'"
-      data-vv-name="email"
+            v-validate="'required|email'"
+            data-vv-name="email"
+           
           ></v-text-field>
           <v-text-field
             label="password"
@@ -74,6 +75,7 @@ import ModelClass from "./Model";
 
 
 const Model = new ModelClass();
+const touchMap = new WeakMap()
 
 export default {
 name: 'Login',

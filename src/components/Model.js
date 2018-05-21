@@ -12,8 +12,8 @@ class Model {
       data: {}
     });
 
-    //this.host = "http://pf/app";
-    this.host = "/app"; //PRODACTION
+    this.host = "http://pf/app";
+    //this.host = "/app"; //PRODACTION
     //this.host = "http://localhost:9000"; //PRODACTION
                 
   }
@@ -75,6 +75,28 @@ class Model {
 
   }
 
+  processResponseData(response) {
+    
+    var dataObj = undefined;
+
+    console.log(response.data);
+    if (typeof(response.data) === "object" && response.data !== null) {
+      
+      dataObj = response.data;
+    }
+    else {
+      dataObj = {
+        success: false,
+        data: response.data,
+        message: "Unexepcted response type" 
+      };  
+    }
+    
+    console.log(dataObj);
+
+    return dataObj;
+  }
+
   signUp(userData) {
     const url= this.host + "/user/signup";
     return this.post(url, userData);  
@@ -94,10 +116,17 @@ class Model {
         data: loginData,
         responseType: 'json',
       }).then(response => {
-
-        sessionStorage.setItem('jwt', response.data.jwt);
-        sessionStorage.setItem('settings', response.data.settings);
-        resolve(response.data.settings);
+          let dataObj = this.processResponseData(response);
+          
+          if (dataObj.success === true) {
+            sessionStorage.setItem('jwt', dataObj.data.jwt);
+            sessionStorage.setItem('settings', dataObj.data.settings);
+            resolve(dataObj.data.settings);
+          }
+          else {
+            
+            reject(dataObj);
+          }    
 
       })
         .catch(e => {
