@@ -173,11 +173,12 @@
 
 <script>
 import ModelClass from "./Model";
-
-
 const Model = new ModelClass();
 
-  export default {
+import ApiClass from "./Api";
+const Api = new ApiClass();
+
+export default {
     data: () => ({
       dialog: false,
       formTitle:'New',
@@ -269,7 +270,9 @@ const Model = new ModelClass();
               console.log(e);
               this.updating = false;
           });
-
+        
+        //let res = Api.index({model: "wallets"});
+        
       },
 
       getCurrencies() {
