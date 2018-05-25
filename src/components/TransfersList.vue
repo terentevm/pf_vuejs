@@ -32,7 +32,7 @@
         </template>
         </v-data-table>
         <div class="text-xs-center pt-2">
-            <v-btn outline  color="success" :loading="updating" :disabled="updating" @click="addDocs">load</v-btn>
+            <v-btn outline  color="success" :loading="updating" :disabled="updating" @click="addDocs">more</v-btn>
         </div>
         <v-speed-dial
       
@@ -88,6 +88,10 @@
 
 import ModelClass from "./Model";
 const Model = new ModelClass();
+
+import ApiClass from "./Api";
+const Api = new ApiClass();
+
 var  moment = require("moment");
 export default {
     data: () =>({
@@ -116,10 +120,16 @@ export default {
     methods: {
         getDocs() {
             this.updating = true;
-
-            Model.transfersIndex(this.offset).then(data =>{
+            const settings = {
+                model: "expenditure",
+                conditions: {
+                    limit: 50,
+                    offset: this.offset
+                }
+            };
+            Api.index({model: "transfer"}).then(data => {
                 for (let elem of data) {
-                    //elem.walletName = elem.Wallet.name;
+                    
                     elem.walletFromName = elem.WalletFrom.name;
                     elem.walletToName = elem.WalletTo.name;
 
@@ -127,11 +137,24 @@ export default {
                     elem.dateShow = day.format("DD-MM-YYYY");
                     this.items.push(elem);
                 }
-
+              
                 this.updating = false;
-            }).catch(e=>{
-                this.updating = false;    
-            })
+            });
+            // Model.transfersIndex(this.offset).then(data =>{
+            //     for (let elem of data) {
+            //         //elem.walletName = elem.Wallet.name;
+            //         elem.walletFromName = elem.WalletFrom.name;
+            //         elem.walletToName = elem.WalletTo.name;
+
+            //         let day = moment(elem.date);
+            //         elem.dateShow = day.format("DD-MM-YYYY");
+            //         this.items.push(elem);
+            //     }
+
+            //     this.updating = false;
+            // }).catch(e=>{
+            //     this.updating = false;    
+            // })
         }, // end getDocs
         
         update() {

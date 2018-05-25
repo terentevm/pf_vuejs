@@ -176,6 +176,8 @@
 import ModelClass from "./Model";
 
 const Model = new ModelClass();
+import ApiClass from "./Api";
+const Api = new ApiClass();
 
 export default {
     data: () =>({
@@ -248,15 +250,14 @@ export default {
             if (offset == 0) {
               this.items = [];
             }
-            this.updating = true;
-            Model.getExpenditureItemsTree().then((data)=>{
+
             
+            this.updating = true;
+            Api.index({model: "expenditureitems"}).then(data => {
+              
               for (let elem of data){
                 this.items.push(elem);
               }
-              this.updating = false;
-            }).catch(e=>{
-            
               this.updating = false;
             });
 

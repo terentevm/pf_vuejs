@@ -255,23 +255,16 @@ export default {
         }
       },
       getItems(offset) {
-        this.updating = true;
-        Model.getWallets(0).then(data => {
-    
-            for (let elem of data){
-                  elem.currencyName = elem.Currency.name;
-                  this.items.push(elem);
-            }
-
-            this.updating = false;  
-            
-          })
-          .catch(e=>{
-              console.log(e);
-              this.updating = false;
-          });
         
-        //let res = Api.index({model: "wallets"});
+        this.updating = true;
+        Api.index({model: "wallets"}).then(rows =>{
+          
+          for (let elem of rows){
+            elem.currencyName = elem.Currency.name;
+            this.items.push(elem);
+          }
+          this.updating = false;
+        });
         
       },
 

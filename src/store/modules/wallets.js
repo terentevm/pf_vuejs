@@ -1,7 +1,7 @@
 
-import ModelClass from "../../components/Model";
-const Model = new ModelClass();
 
+import ApiClass from "../../components/Api";
+const Api = new ApiClass();
 // initial state
 const state = {
     all: []
@@ -15,7 +15,7 @@ const state = {
   // actions
   const actions = {
     getAllWallets ({ commit }) {
-        Model.getWallets(0).then((wallets)=>{
+        Api.index({model: "wallets"}).then((wallets)=>{
             commit('setWallets', wallets)   
         }).catch(()=>{
             commit('setWallets', [])    

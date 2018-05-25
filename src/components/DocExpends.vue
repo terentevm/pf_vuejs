@@ -32,7 +32,7 @@
     </v-data-table>
     
     <div class="text-xs-center pt-2">
-      <v-btn outline  color="success" :loading="updating" :disabled="updating" @click="addDocs">load</v-btn>
+      <v-btn outline  color="success" :loading="updating" :disabled="updating" @click="addDocs">more</v-btn>
     </div>
     
     <v-speed-dial
@@ -89,6 +89,11 @@
 <script>
 import ModelClass from "./Model";
 const Model = new ModelClass();
+
+import ApiClass from "./Api";
+const Api = new ApiClass();
+
+
 var  moment = require("moment");
 export default {
   data: () => ({
@@ -119,7 +124,7 @@ export default {
         document.body.scrollHeight, document.documentElement.scrollHeight,
         document.body.offsetHeight, document.documentElement.offsetHeight,
         document.body.clientHeight, document.documentElement.clientHeight
-        );
+    );
 
     //console.log( 'Высота с учетом прокрутки: ' + scrollHeight );
      this.updating = true;
@@ -131,11 +136,19 @@ export default {
         this.$router.push({ path: "login" });
         return false;
       }
+      
+      const settings = {
+        model: "expenditure",
+        conditions: {
+          limit: 50,
+          offset: this.offset
+        }
+      };
 
-        Model.getExpends(this.offset)
-        .then(data => {
-          
-          for (let elem of data) {
+      this.updating = true;
+
+      Api.index(settings).then(data => {
+        for (let elem of data) {
             
             if (elem.Wallet == null) {
               console.log(JSON.stringify(elem));
@@ -145,14 +158,11 @@ export default {
             let day = moment(elem.date);
             elem.dateShow = day.format("DD-MM-YYYY");         
             this.items.push(elem);
-          }
+        }
 
-          this.updating = false;
-        })
-        .catch(e => {
-          console.log(e);
-          this.updating = false;
-        });
+        this.updating = false;
+      });
+
     },
     editItem (item) {
       
@@ -169,7 +179,7 @@ export default {
             return;
         }
         
-        this.offset += 20;
+        this.offset += 50;
         this.updating = true;
         this.getDocs(this.offset);
         

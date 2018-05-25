@@ -19,6 +19,8 @@ class Api {
           this.host = "http://localhost:9000"; //PRODACTION
     }
 
+  
+ 
     /**
      * 
      * @param {Object} params 
@@ -28,64 +30,67 @@ class Api {
      * }
      * @return {Array}
      */
+    
     async index(params) {
         let model = params.model;
         let fullUrl = `${this.host}/${model}/index`
         const AUTH_TOKEN = this.getToken();
         let conditions = this.getConditions(params);
-       // console.log("tag 1");
+        
         try {
             const res = await this.http.request({
-                method: 'POST',
-                  headers: {
+                method: 'GET',
+                headers: {
                     "Authorization": AUTH_TOKEN,
                     'Content-Type': 'application/json',
                     'Accept': 'text/json'
-                  },
-                  params: conditions,
-                  url: fullUrl
+                },
+                params: conditions,
+                url: fullUrl
             });
-
+            
             if (typeof(res.data) == "object") {
+                
                 if (this.isCorrectResponse(res.data)) {
+                    
                     if (res.data.success === true) {
+                        
+                       
                         return res.data.data;  //return result from server to model for rendering
-                        console.log("tag 2");
+                        
                     }
                     else {
+                        
                         this.toConsole("error") 
                         this.toConsole(res.data.msg) 
-                        console.log("tag 3");   
+                       
+                        return [];   
                     }
                 }
                 else {
+
                     console.log(res.data);
+                    return [];  
                 }
             } 
             
             else {
                 if (res.data === null) {
-                    this.toConsole("Response data is null");
-                    console.log("tag 4");     
+                    this.toConsole("Response data is null");   
                 }
                 else {
-                    this.toConsole(res.data.toString()) ;
-                    console.log("tag 5");    
+                    this.toConsole(res.data.toString()) ; 
                 }    
 
                 return [];
             }
-            
-
-            
         }
-        catch (error) {
-            console.log("tag catch");
-            console.log(error);
+        catch (err) {
+            this.toConsole("Error") ;
             return [];
-        }
+        }         
         
-    }
+    } //end index
 
     async show() {
 

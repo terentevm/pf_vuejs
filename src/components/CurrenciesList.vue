@@ -141,6 +141,8 @@
 
 import ModelClass from "./Model";
 const Model = new ModelClass();
+import ApiClass from "./Api";
+const Api = new ApiClass();
 
   export default {
     data: () => ({
@@ -211,31 +213,25 @@ const Model = new ModelClass();
           
         }
       },
+      
       getItems(offset) {
        
-       if (!sessionStorage.getItem('jwt')) {
-         this.$router.push({ path: 'login' });
-         return false;
-       }
+        if (!sessionStorage.getItem('jwt')) {
+          this.$router.push({ path: 'login' });
+          return false;
+        }
 
-      this.updating = true;
-
-       Model.getCurrencies(offset).then(response => {
-  
-           for (let elem of response){
-                this.items.push(elem);
-           }
-           
-           this.updating = false;
-           
-           
-        })
-        .catch(e=>{
-            
-            this.updating = false;
+        this.updating = true;
+        Api.index({model: "currency"}).then(rows =>{
+        
+          for (let elem of rows){
+            this.items.push(elem);
+          }
+          this.updating = false;
         });
 
-      },
+      }, //getItems end
+
       sendData(item) {
 
         let isUpdate = false;
