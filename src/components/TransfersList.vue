@@ -12,7 +12,7 @@
             <tr >
                 
                 <td style="padding: 0 10px;" v-show = "showSelect">
-                    <v-btn icon class="mx-0" @click="deleteItem('test')">
+                    <v-btn icon class="mx-0" @click="deleteItem(props.item)">
                         <v-icon color="pink">delete</v-icon>
                     </v-btn>
                 </td>
@@ -186,7 +186,15 @@ export default {
         }
         ,
         deleteItem(item) {
-            console.log("Action doesn't support yet");
+            let id = item.id;
+            let url = `/transfer/delete?id=${id}`;
+            Model.delete(url).then(response =>{
+                const index = this.items.indexOf(item);
+                this.items.splice(index, 1); 
+                alert("Deleted") ;
+            }).catch(e=>{
+                alert("Not deleted!") ;
+            });
         }
     }
 }

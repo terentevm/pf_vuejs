@@ -75,7 +75,7 @@
                     dark
                     slider-color="yellow"
                 >
-                <v-tab :key="1">Edit expend</v-tab>
+                <v-tab :key="1">Edit expense</v-tab>
                 <v-tab :key="2">All rows</v-tab>
                 
                 <v-tab-item :key="1">
@@ -98,7 +98,7 @@
                         </div>
                         </div>
                         
-                        <div class="row myinputRow">
+                        <div class="row mySmallRow">
                             
                             <div class="col-12 col-sm-12 col-md-12 col-lg-12">
                                 <v-select
@@ -518,7 +518,7 @@ toggle_multiple: [0, 1],
     }
 
     .myinputRow {
-        height: 8%;
+        height: 50px;
     }
     
     .mySmallRow {
