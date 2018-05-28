@@ -134,6 +134,9 @@ import { mapGetters, mapActions } from 'vuex'
 import ModelClass from "./Model";
 const Model = new ModelClass();
 
+import ApiClass from "./Api";
+const Api = new ApiClass();
+
 export default {
     props: ['docId'],
     data:() => ({
@@ -169,19 +172,21 @@ export default {
         }
         else {
             this.processing = true;
-            Model.getTransfer(this.id).then((obj) =>{
+            const param ={
+                model: "transfer",
+                conditions: {id: this.id}
+            }
+
+            Api.show(param).then(obj => {
                 let day = moment();
                 this.date = day.format(obj.date);
                 this.WalletFrom = obj.wallet_id_from;
                 this.WalletTo = obj.wallet_id_to;
                 this.sumFrom = obj.sumFrom;
                 this.sumTo = obj.sumTo;
-                this.processing = false;
-            }).catch(e=>{
-                this.processing = false;
-                this.msgError = "Cannot get data from server"
-                this.showError = true;
-            })
+                this.processing = false;    
+            });
+            
         }
         
     },

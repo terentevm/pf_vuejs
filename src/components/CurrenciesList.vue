@@ -144,7 +144,9 @@ const Model = new ModelClass();
 import ApiClass from "./Api";
 const Api = new ApiClass();
 
-  export default {
+import { mapGetters, mapActions } from 'vuex'
+
+export default {
     data: () => ({
       dialog: false,
       formTitle:'New',
@@ -157,7 +159,7 @@ const Api = new ApiClass();
         { text: 'Name', value: 'name'},
         { text: 'Short name', value: 'short_name', class:"hidden-md-and-down", sortable: false }
       ],
-      items: [],
+      
       editedIndex: -1,
       editedItem: {
         id: null,
@@ -180,9 +182,9 @@ const Api = new ApiClass();
       }
     }),
 
-    computed: {
-    
-    },
+    computed: mapGetters({
+        items: 'allCurrencies'
+    }),
 
     watch: {
       dialog (val) {
@@ -192,25 +194,25 @@ const Api = new ApiClass();
 
     created () {
       this.initialize()
+
     },
     beforeMount: function(){
       this.$store.state.title = "Currencies";
+      this.$store.dispatch('getAllCurrencies');
     },
     methods: {
-      
-
+    
       initialize () {
-       
-        this.getItems(0); 
+        
         
       },
      
      update() {
         if (this.updating == false) {
-         this.items = [];
-         this.updating = true;
-          this.getItems(0);
-          
+          this.items = [];
+          this.updating = true;
+          this.$store.dispatch('getAllCurrencies');
+          this.updating = false;
         }
       },
       
@@ -239,21 +241,25 @@ const Api = new ApiClass();
         if (item.id !== null) {
           isUpdate = true;
         }
+        const param = {
+          model: "currency",
+          isUpdate: isUpdate,
+          data: item
+        };
 
-       Model.saveCurrency(item, isUpdate).then(response => {
-           this.showMsg(true);
-           
-          this.items= [];
-           this.getItems(this.offset);
-           this.close();
-           return true; 
-           
-        })
-        .catch(e=>{
+        Api.save(param).then(success => {
+          if (success === true) {
+            this.showMsg(true);
+            this.update();
+            this.close();
+            return true; 
+          }
+          else {
             this.showMsg(false);
-            console.log(e);
             return false;
-        });  
+          }
+        });
+
       }
       ,
       editItem (item) {
@@ -283,13 +289,13 @@ const Api = new ApiClass();
       save () {
         
         let ok = this.sendData(this.editedItem);
-        if (ok) {
-          this.close();
-          this.items= [];
-           this.getItems(this.offset);
-        }
+          if (ok) {   
+            this.update();
+            this.close();
+          }
         
       },
+
       showMsg(success) {
        
         this.msgSettings.color = success ? "light-green darken-3" : "orange darken-4";

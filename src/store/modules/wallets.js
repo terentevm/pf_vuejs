@@ -4,12 +4,14 @@ import ApiClass from "../../components/Api";
 const Api = new ApiClass();
 // initial state
 const state = {
-    all: []
+    all: [],
+    allList: []
   }
   
   // getters
   const getters = {
-    allWallets: state => state.all
+    allWallets: state => state.all,
+    allWalletsList: state => state.allList,
   }
   
   // actions
@@ -21,6 +23,20 @@ const state = {
             commit('setWallets', [])    
         })
        
+    },
+
+    getAllWalletsList({commit}) {
+      
+      Api.index({model: "wallets"}).then((wallets)=>{
+        for (let wallet of wallets) {  
+          wallet.currencyName = wallet.Currency.name;  
+        }
+      
+        commit('setWalletsList', wallets)   
+      }).catch((error)=>{
+        console.log(error);
+        commit('setWalletsList', [])    
+      }) 
     }
   }
   
@@ -28,6 +44,10 @@ const state = {
   const mutations = {
     setWallets (state, wallets) {
       state.all = wallets
+    }
+    ,
+    setWalletsList (state, wallets) {
+      state.allList = wallets
     }
   }
   

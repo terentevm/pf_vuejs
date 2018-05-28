@@ -140,21 +140,7 @@ export default {
               
                 this.updating = false;
             });
-            // Model.transfersIndex(this.offset).then(data =>{
-            //     for (let elem of data) {
-            //         //elem.walletName = elem.Wallet.name;
-            //         elem.walletFromName = elem.WalletFrom.name;
-            //         elem.walletToName = elem.WalletTo.name;
 
-            //         let day = moment(elem.date);
-            //         elem.dateShow = day.format("DD-MM-YYYY");
-            //         this.items.push(elem);
-            //     }
-
-            //     this.updating = false;
-            // }).catch(e=>{
-            //     this.updating = false;    
-            // })
         }, // end getDocs
         
         update() {

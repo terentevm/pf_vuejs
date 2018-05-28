@@ -172,12 +172,10 @@
 </template>
 
 <script>
-import ModelClass from "./Model";
-const Model = new ModelClass();
 
 import ApiClass from "./Api";
 const Api = new ApiClass();
-
+import { mapGetters, mapActions } from 'vuex'
 export default {
     data: () => ({
       dialog: false,
@@ -191,8 +189,8 @@ export default {
         { text: 'Name', value: 'name'},
         { text: 'Currency', value: 'currency'},
       ],
-      items: [],
-      currencies: [],
+      //items: [],
+      //currencies: [],
       editedIndex: -1,
       editedItem: {
         id: null,
@@ -219,9 +217,10 @@ export default {
       }
     }),
 
-    computed: {
-     
-    },
+    computed: mapGetters({
+        items: 'allWalletsList',
+        currencies: 'allCurrencies'
+    }),
 
     watch: {
       dialog (val) {
@@ -230,6 +229,8 @@ export default {
     },
     beforeMount: function(){
       this.$store.state.title = "Wallets";
+      this.$store.dispatch('getAllWalletsList');
+      this.$store.dispatch('getAllCurrencies') 
     },
     created () {
       this.initialize()
@@ -237,47 +238,17 @@ export default {
 
     methods: {
       initialize () {
-       
-        this.getItems(0);
-        
-        if (this.currencies.length == 0) {
-          this.getCurrencies();
-        }
         
       },
 
       update() {
-        if (this.updating == false) {
-         this.items = [];
-         this.updating = true;
-          this.getItems(0);
-          
+        if (this.updating == false) {  
+          this.updating = true;
+          this.$store.dispatch('getAllWalletsList');
+          this.updating = false;
         }
       },
-      getItems(offset) {
-        
-        this.updating = true;
-        Api.index({model: "wallets"}).then(rows =>{
-          
-          for (let elem of rows){
-            elem.currencyName = elem.Currency.name;
-            this.items.push(elem);
-          }
-          this.updating = false;
-        });
-        
-      },
 
-      getCurrencies() {
-       Model.getCurrencies(0).then(data => {
-          this.currencies = data;  
-           
-        })
-        .catch(e=>{
-            console.log(e);
-            
-        });
-        },
 
       sendData(item) {
         item.currency_id = item.Currency.id;
@@ -287,18 +258,25 @@ export default {
           update = true;
         }
         
-        Model.saveWallet(item, update).then(response => {
-          this.showMsg(true);    
-          this.items= [];
-          this.getItems(this.offset);
-          this.close();
-          return true;
-  
-        })
-        .catch(e=>{
+        const param = {
+          model: "wallets",
+          isUpdate: update,
+          data: item
+        };
+
+        Api.save(param).then(success => {
+          if (success === true) {
+            this.showMsg(true);
+            this.update();
+            this.close();
+            return true; 
+          }
+          else {
             this.showMsg(false);
             return false;
-        });  
+          }
+        });
+
       }
       ,
       editItem (item) {

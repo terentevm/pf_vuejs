@@ -249,11 +249,11 @@
 </template>
 
 <script>
-import ModelClass from "./Model";
-const Model = new ModelClass();
 
 import ApiClass from "./Api";
 const Api = new ApiClass();
+
+import { mapGetters, mapActions } from 'vuex'
 
 export default {
    props: ['docId'],
@@ -268,7 +268,7 @@ export default {
         { text: 'Sum', value: 'sum'},
       ],
         rows: [],
-        items: [],
+        
         countRows: 0,
         currentRow: 0,
         editRow: {
@@ -277,16 +277,24 @@ export default {
             comment: ''
         },
         
-        wallets: [],
+        //wallets: [],
         menu: false,
         modal: false,
         active: null,
         dialog: false,
         sending: false
-    })
-    ,
+    }),
+
+    computed: mapGetters({
+        wallets: 'allWallets',
+        items: 'allExpenseItems'
+    }),
+    
     beforeMount() {
         this.$store.state.title = "Expense";
+        this.$store.dispatch('getAllWallets');
+        this.$store.dispatch('getAllExpenseItems');
+
         this.id = this.docId;
         if (this.id == null) {
             let moment = require("moment");
@@ -320,8 +328,7 @@ export default {
     },
      methods: {
         initialize () {      
-            this.getItems();
-            this.getWallets() ; 
+            
         },
         
         addRow() {
@@ -394,7 +401,7 @@ export default {
         }
         ,
         chooseItem(item){
-            //console.log(JSON.stringify(item));
+            
             this.editRow.item = item;
             this.dialog = false;
         }
@@ -430,7 +437,7 @@ export default {
 
                    temp_rows.push(lineObj);
                 }
-                console.log("ok");
+                
                 this.rows = temp_rows;
             });
           
@@ -463,9 +470,11 @@ export default {
         },
 
         getWallets() {
-            Model.getWallets(0).then(data=>{
+            
+            Api.index({model:"wallets"}).then(data =>{
                 this.wallets = data;
-            })
+            });
+
         },
 
         save() {
@@ -479,13 +488,21 @@ export default {
                 rows: rows 
             };
 
+            const params = {
+                isUpload: (this.id !== null),
+                model: "expenditure",
+                data: doc
+            };    
            
-            Model.saveExpend(doc).then(res=>{
-               this.$router.push({ path: '/expends' });
-             })
-             .catch(e=>{
-                this.sending = false;
+            Api.save(params).then(success => {
+                if (success === true) {
+                    this.$router.push({ path: '/expends' });    
+                }
+                else {
+                    this.sending = false;
+                }
             });
+
         },
 
         getRowsUpload() {

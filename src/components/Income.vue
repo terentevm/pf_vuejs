@@ -252,8 +252,6 @@
 </template>
 
 <script>
-import ModelClass from "./Model";
-const Model = new ModelClass();
 
 import ApiClass from "./Api";
 const Api = new ApiClass();
@@ -513,7 +511,7 @@ export default {
                 else {
                     this.sending = false;
                 }
-            })
+            });
 
         },
 
