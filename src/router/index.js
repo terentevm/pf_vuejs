@@ -6,7 +6,10 @@ import Login from '@/components/Login'
 import Index from '@/components/Index'
 import CurrenciesList from '@/components/CurrenciesList'
 import ItemsExpenditure from '@/components/ItemsExpenditure'
+import ItemsIncome from '@/components/ItemsIncome'
 import DocExpends from '@/components/DocExpends'
+import DocIncomes from '@/components/DocIncomes'
+import Income from '@/components/Income'
 import ExpendElement from '@/components/ExpendElement'
 import NewSettings from '@/components/NewSettings'
 import TransfersList from '@/components/TransfersList'
@@ -56,13 +59,27 @@ export default new Router({
       component: ItemsExpenditure,
       meta: { requiresAuth: true }
     }
-    
+    ,
+    {
+      path: '/itemsincome',
+      name: 'ItemsIncome',
+      component: ItemsIncome,
+      meta: { requiresAuth: true }
+    }
     ,
    
     {
       path: '/expends',
       name: 'DocExpends',
       component: DocExpends,
+      meta: { requiresAuth: true }
+    }
+    ,
+   
+    {
+      path: '/incomes',
+      name: 'DocIncomes',
+      component: DocIncomes,
       meta: { requiresAuth: true }
     }
     ,
@@ -101,6 +118,22 @@ export default new Router({
       path: '/expend',
       name: 'ExpendElement',
       component: ExpendElement,
+      props: true ,
+      meta: { requiresAuth: true }
+    }
+    ,
+    {
+      path: '/income/:docId',
+      name: 'Income',
+      component: Income,
+      props: true ,
+      meta: { requiresAuth: true }
+    }
+    ,
+    {
+      path: '/income',
+      name: 'Income',
+      component: Income,
       props: true ,
       meta: { requiresAuth: true }
     }

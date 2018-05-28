@@ -46,23 +46,6 @@
 
             </div>  
               
-            <div class="row myinputRow">
-                
-                    <div class="col-12 col-sm-12 col-md-12 col-lg-12">
-                        <v-select
-                            :items="wallets"
-                            v-model="wallet"
-                            auto
-                        
-                            label="Wallet"
-                            single-line
-                            item-text="name"
-                            item-value="id"
-                            return-object
-                        ></v-select>
-                    </div>
-                  
-            </div>
             </v-card-text> 
             </v-card>   
             
@@ -75,7 +58,7 @@
                     dark
                     slider-color="yellow"
                 >
-                <v-tab :key="1">Edit expense</v-tab>
+                <v-tab :key="1">Edit</v-tab>
                 <v-tab :key="2">All rows</v-tab>
                 
                 <v-tab-item :key="1">
@@ -84,7 +67,7 @@
                     
                     <div class="col-12 col-sm-12 col-md-12 col-lg-12">
                         
-                        <div class="row myinputRow">
+                        <div class="row mySmallRow">
                         <div class="col-12 col-sm-12 col-md-12 col-lg-12"> 
                             <v-text-field 
                                 label="Sum" 
@@ -97,7 +80,25 @@
                             ></v-text-field>
                         </div>
                         </div>
-                        
+                        <div class="row mySmallRow">
+                
+                            <div class="col-12 col-sm-12 col-md-12 col-lg-12">
+                                <v-select
+                                    :items="wallets"
+                                    v-model="editRow.wallet"
+                                    prepend-icon="account_balance_wallet"
+                                    auto
+                                    cache-items
+                                    clearable
+                                    label="Wallet"
+                                    single-line
+                                    item-text="name"
+                                    item-value="id"
+                                    return-object
+                                ></v-select>
+                            </div>
+                  
+                        </div>
                         <div class="row mySmallRow">
                             
                             <div class="col-12 col-sm-12 col-md-12 col-lg-12">
@@ -174,6 +175,8 @@
                     >
                     <template slot="items" slot-scope="props" >
                     <td class='d-none'>{{ props.item.item }}</td>
+                    <td class='d-none'>{{ props.item.wallet }}</td>
+                    <td v-if="props.item.wallet !== null">{{ props.item.wallet.name }}</td>
                     <td v-if="props.item.item !== null">{{ props.item.item.name }}</td>
                     <td v-if="props.item.item == null">empty</td>
                     <td >{{ props.item.sum }}</td>
@@ -254,16 +257,16 @@ const Model = new ModelClass();
 
 import ApiClass from "./Api";
 const Api = new ApiClass();
+var moment = require("moment");
 
 export default {
    props: ['docId'],
     data: () => ({
         id: null,
         date: null,
-        wallet: null,
         toggle_multiple: [0, 1],
         headers: [
-        
+        { text: 'wallet', value: 'wallet'},
         { text: 'item', value: 'item'},
         { text: 'Sum', value: 'sum'},
       ],
@@ -272,6 +275,7 @@ export default {
         countRows: 0,
         currentRow: 0,
         editRow: {
+            wallet: null,
             item: null,
             sum : 0,
             comment: ''
@@ -286,7 +290,7 @@ export default {
     })
     ,
     beforeMount() {
-        this.$store.state.title = "Expense";
+        this.$store.state.title = "Income";
         this.id = this.docId;
         if (this.id == null) {
             let moment = require("moment");
@@ -295,6 +299,7 @@ export default {
             this.date = day.format("YYYY-MM-DD");
 
             this.rows.push({
+                wallet: null,
                 item: null,
                 sum : 0,
                 comment: ''
@@ -310,7 +315,6 @@ export default {
     ,
     created () {
         this.initialize();
-        //this.editRow = this.rows[this.rows.lenght - 1]; 
         
     },
     watch: {
@@ -326,6 +330,7 @@ export default {
         
         addRow() {
             this.rows.push({
+                wallet: null,
                 item: null,
                 sum : 0,
                 comment: ''
@@ -362,6 +367,7 @@ export default {
             }
             else {
                 this.rows.push({
+                    wallet: null,
                     item: null,
                     sum : 0,
                     comment: ''
@@ -375,7 +381,6 @@ export default {
         ,
         addDay() {
             
-            let moment = require("moment");
             let day = moment(this.date);
             day.add(1,"days");
             this.date = day.format("YYYY-MM-DD");
@@ -383,7 +388,7 @@ export default {
         }
         ,
         subDay(){
-            let moment = require("moment");
+           
             let day = moment(this.date);
             day.add(-1,"days");
             this.date = day.format("YYYY-MM-DD");
@@ -409,31 +414,36 @@ export default {
         },
 
         getData(id) {
+            
             const params = {
-                model: "expenditure",
+                model: "income",
                 conditions: {id: this.id}
             }
+
             Api.show(params).then(data => {
-                
-                let moment = require("moment");
+                if (data === false) {
+                    return;
+                }
                 let day = moment(data.date);
                 this.date = day.format("YYYY-MM-DD");
-               
-                this.wallet = data.wallet_id;
-                let storage = data.rows.storage; 
                 let temp_rows = [];
-                for (let line of storage)  {
-                   let lineObj = {
-                       item: line.ItemExpenditure,
+                for (let line of data.rows.storage)  {
+                   let lineObj ={
+                       //wallet: this.getWallet(line.wallet_id),
+                       wallet: line.Wallet,
+                       //item: this.getItem(line.item_id),
+                       item: line.ItemIncome,
                        sum: line.sum
                    }
 
+                   
+
                    temp_rows.push(lineObj);
                 }
-                console.log("ok");
+                
                 this.rows = temp_rows;
             });
-          
+            
         }
         ,
         getItems() {
@@ -446,15 +456,19 @@ export default {
                 this.$router.push({ path: 'login' });
                 return false;
             }
+
             const conditions = {list:1};
-            
-            Api.index({model: "expenditureitems", conditions: conditions}).then(items => {
+            Api.index({model: "incomeitems", conditions: conditions}).then(items => {
+                
                 this.items = items;
+            
             });
-           
+          
         },
 
         getItem(id) {
+            console.log(id);
+            console.log(JSON.stringify(this.items));
             for (let item of this.items) {
                 if(item.id == id) {
                     return item;
@@ -462,10 +476,18 @@ export default {
             }
         },
 
+        getWallet(id) {
+            for (let wallet of this.wallets) {
+                if(wallet.id == id) {
+                    return wallet;
+                }
+            }
+        },
+
         getWallets() {
-            Model.getWallets(0).then(data=>{
-                this.wallets = data;
-            })
+            Api.index({model: "wallets"}).then(wallets => {
+                this.wallets = wallets;
+            });
         },
 
         save() {
@@ -475,27 +497,36 @@ export default {
             let doc = {
                 id: this.id,
                 date: this.date,
-                wallet_id: this.wallet.id,
                 rows: rows 
             };
 
-           
-            Model.saveExpend(doc).then(res=>{
-               this.$router.push({ path: '/expends' });
-             })
-             .catch(e=>{
-                this.sending = false;
-            });
+            const params = {
+                isUpload: (this.id !== null),
+                model: "income",
+                data: doc
+            };
+
+            Api.save(params).then(success => {
+                if (success === true) {
+                    this.$router.push({ path: '/incomes' });    
+                }
+                else {
+                    this.sending = false;
+                }
+            })
+
         },
 
         getRowsUpload() {
             let arr_rows = [];
             for (let row of this.rows) {
-               if (row.item === null) {
+               if (row.item === null || row.wallet === null) {
                    continue;
                }
+
                arr_rows.push({
                    item_id: row.item.id,
+                   wallet_id: row.wallet.id,
                    sum: row.sum,
                    comment: row.comment
                }); 

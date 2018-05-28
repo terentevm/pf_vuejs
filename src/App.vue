@@ -134,8 +134,8 @@
           children: [
             { icon: 'euro_symbol', text: 'Currencies', link:'/currencies' },
             { icon: 'account_balance_wallet', text: 'Wallets' , link:'/wallets'},
-            { icon: 'add', text: 'Income items' },
-            { icon: 'add', text: 'Expenditure items' , link: '/itemsexpenditure'},
+            { icon: 'local_atm', text: 'Income items', link: '/itemsincome' },
+            { icon: 'shopping_basket', text: 'Expenditure items' , link: '/itemsexpenditure'},
           ]
         },
 
@@ -145,9 +145,9 @@
           text: 'Transactions',
           model: true,
           children: [
-            { icon: 'add', text: 'Expenses', link: '/expends' },
-            { icon: 'add', text: 'Incomes' },
-            { icon: 'add', text: 'Transfers', link: '/transfers'},
+            { icon: 'remove', text: 'Expenses', link: '/expends' },
+            { icon: 'add', text: 'Incomes', link: '/incomes'  },
+            { icon: 'compare_arrows', text: 'Transfers', link: '/transfers'},
             
           ]
         },
