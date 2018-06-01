@@ -10,7 +10,8 @@ export default new Vuex.Store({
     state: {
       auth: false,
       title: "",
-      iconTitle: ""
+      iconTitle: "",
+      componentMenu: []
     },
     modules: {
         wallets,

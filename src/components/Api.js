@@ -158,10 +158,17 @@ class Api {
 
     async save(params) {
         const model = params.model;
+
+        
         let fullUrl = `${this.host}/${model}/create`;
         if (params.isUpdate === true) {
             fullUrl = `${this.host}/${model}/update` ;  
         }
+
+        if ("url" in params) {
+            fullUrl = `${this.host}${params.url}`;       
+        }
+
         const AUTH_TOKEN = this.getToken();
         const data = params.data;
         

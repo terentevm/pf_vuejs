@@ -14,6 +14,7 @@ import ExpendElement from '@/components/ExpendElement'
 import NewSettings from '@/components/NewSettings'
 import TransfersList from '@/components/TransfersList'
 import Transfer from '@/components/Transfer'
+import LoadRates from '@/components/LoadRates'
 
 Vue.use(Router)
 
@@ -142,6 +143,14 @@ export default new Router({
       path: '/newsettings',
       name: 'NewSettings',
       component: NewSettings,
+      props: true ,
+      meta: { requiresAuth: false }
+    }
+    ,
+    {
+      path: '/loadrates',
+      name: 'LoadRates',
+      component: LoadRates,
       props: true ,
       meta: { requiresAuth: false }
     }

@@ -66,14 +66,6 @@
         <td @click="editItem(props.item)">{{ props.item.name }}</td>
         <td @click="editItem(props.item)" class= 'hidden-md-and-down'>{{ props.item.short_name }}</td>
 
-        <!-- <td class="justify-center layout px-0 ">
-          <v-btn icon class="mx-0" @click="editItem(props.item)">
-            <v-icon color="teal">edit</v-icon>
-          </v-btn>
-          <v-btn icon class="mx-0" @click="deleteItem(props.item)">
-            <v-icon color="pink">delete</v-icon>
-          </v-btn>
-        </td> -->
       </template>
       <template slot="no-data" >
         
@@ -81,47 +73,25 @@
 
          
     </v-data-table>
-    
+
+
     </v-flex>
-        <v-speed-dial
-      
+    
+    <v-fab-transition>
+      <v-btn
+        fab
         fixed
         bottom
         right
-        :direction='top'
-        :transition='slide-y-reverse-transition'
-    >
-      <v-btn
-        slot="activator"
-        color="green darken-2"
-        dark
-        fab
-        hover
-        v-model="fab"
-      >
-        <v-icon>touch_app</v-icon>
-        <v-icon>close</v-icon>
-      </v-btn>
-           
-      <v-btn
-        fab
         dark
         @click="add()"
         color="primary"
       >
-        <v-icon>add</v-icon>
+      <v-icon>add</v-icon>
       </v-btn>
-      <v-btn
-        fab
-        dark
-        small
-        color="warning"
-        @click="update()"
-      >
-       <v-icon dark>cached</v-icon>
- </v-btn>
+      
+    </v-fab-transition>
 
-    </v-speed-dial> 
     <v-snackbar
       :timeout="msgSettings.timeout"
       :color="msgSettings.color"
@@ -199,6 +169,7 @@ export default {
     beforeMount: function(){
       this.$store.state.title = "Currencies";
       this.$store.dispatch('getAllCurrencies');
+      this.$store.state.componentMenu = this.getUpMenu();
     },
     methods: {
     
@@ -206,8 +177,34 @@ export default {
         
         
       },
-     
-     update() {
+    
+      getUpMenu() {
+        let menu = [];
+
+        const action1 = {
+          title: "Update",
+          icon: "cached",
+          action: ()=>{
+            this.update();
+          }
+        }
+
+        const action2 = {
+          title: "Load rates",
+          icon: "move_to_inbox",
+          action: ()=>{
+            this.$router.push({ path: 'loadrates' });;
+          }
+        }
+
+        menu.push(action1);
+        menu.push(action2);
+        
+        return menu;
+
+      },
+      
+      update() {
         if (this.updating == false) {
           this.items = [];
           this.updating = true;
@@ -216,6 +213,10 @@ export default {
         }
       },
       
+      loadRates() {
+        
+      },
+
       getItems(offset) {
        
         if (!sessionStorage.getItem('jwt')) {

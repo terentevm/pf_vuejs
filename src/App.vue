@@ -84,6 +84,7 @@
       fixed
       height=40
     >
+
       <v-toolbar-title fixed style="width: 300px" class="ml-0 pl-3">
         <v-toolbar-side-icon @click.stop="drawer = !drawer" ></v-toolbar-side-icon>
         <span>{{ title }}</span>
@@ -91,7 +92,19 @@
 
       <v-spacer></v-spacer>
       
- 
+      <v-menu bottom left transition="scale-transition" v-show = "componentMenu.length !== 0">
+            <v-btn slot="activator" icon dark>
+              <v-icon>more_vert</v-icon>
+            </v-btn>
+            <v-list>
+              <v-list-tile v-for="(item, i) in componentMenu" :key="i" @click="item.action()">
+                <v-list-tile-action>
+                <v-icon medium  color="grey darken-3">{{ item.icon }}</v-icon>
+                </v-list-tile-action>
+                <v-list-tile-title>{{ item.title }}</v-list-tile-title>
+              </v-list-tile>
+            </v-list>
+          </v-menu>
       <v-btn icon large>
         <v-avatar size="32px" tile>
           <img
@@ -167,6 +180,9 @@
     computed: {
       title() {
         return this.$store.state.title == undefined ? "Personal finanses" : this.$store.state.title;
+      },
+      componentMenu() {
+        return this.$store.state.componentMenu;
       }
     }
   ,

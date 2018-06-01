@@ -230,7 +230,8 @@ export default {
     beforeMount: function(){
       this.$store.state.title = "Wallets";
       this.$store.dispatch('getAllWalletsList');
-      this.$store.dispatch('getAllCurrencies') 
+      this.$store.dispatch('getAllCurrencies')
+      this.$store.state.componentMenu = []; 
     },
     created () {
       this.initialize()
