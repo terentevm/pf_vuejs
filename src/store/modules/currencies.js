@@ -2,12 +2,14 @@ import ApiClass from "../../components/Api";
 const Api = new ApiClass();
 // initial state
 const state = {
-    all: []
+    all: [],
+    withRates: []
   }
   
   // getters
   const getters = {
-    allCurrencies: state => state.all
+    allCurrencies: state => state.all,
+    allCurrenciesWithRates: state => state.withRates
   }
   
   // actions
@@ -20,6 +22,15 @@ const state = {
             commit('setCurrencies', [])    
         })
        
+    },
+
+    getAllCurrenciesWithRates ({ commit }) {
+      Api.index({model: "currency", conditions: {withRates:1}}).then((currencies)=>{  
+          commit('setCurrenciesWithRates', currencies)   
+      }).catch(()=>{
+          commit('setCurrenciesWithRates', [])    
+      })
+     
     }
   }
   
@@ -28,6 +39,10 @@ const state = {
     setCurrencies (state, currencies) {
       
       state.all = currencies
+    },
+    setCurrenciesWithRates (state, currencies) {
+      
+      state.withRates = currencies
     }
   }
   

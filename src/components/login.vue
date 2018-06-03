@@ -143,12 +143,12 @@ methods: {
                 this.success = true;
                 this.$store.state.auth = true;
 
-                if (settings.newUser === true) {
-                  this.$router.push({ path: 'newsettings' }) ; 
-                }
-                else {
+                //if (settings.newUser === true) {
+                  //this.$router.push({ path: 'newsettings' }) ; 
+                //}
+                //else {
                   this.$router.push({ path: 'index' });
-                }
+                //}
                 
             })
             .catch(e=>{

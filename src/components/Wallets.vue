@@ -11,7 +11,7 @@
         wrap   
       >
     <v-flex xs12 sm12 md12 lg12>
-    <v-dialog v-model="dialog" max-width="500px">
+    <v-dialog persistent v-model="dialog" max-width="500px">
       
       <v-card>
       
@@ -43,6 +43,7 @@
                   <v-select
                     :items="currencies"
                     v-model="editedItem.Currency"
+                    max-height=15
                     auto                    
                     label="Currency"
                     single-line
@@ -64,17 +65,22 @@
                 </div>
               </div>
 
-              <div class="row">
-                <div class="col-12 col-sm-12 col-md-6 col-lg-6">
-                  <v-text-field label="Credit limit"  v-model="editedItem.credit_limit" row-height=15></v-text-field>
+              <div class="row" >
+                <div class="col-6 col-sm-6 col-md-6 col-lg-6">
+                  <v-text-field label="Credit limit"  v-model="editedItem.credit_limit" row-height=15 v-show="editedItem.is_creditcard == 1"></v-text-field>
                 </div>
 
-                <div class="col-12 col-sm-12 col-md-6 col-lg-6">
-                  <v-text-field label="Grace period" v-model="editedItem.grace_period" row-height=15></v-text-field>
+                <div class="col-6 col-sm-6 col-md-6 col-lg-6">
+                  <v-text-field label="Grace period" v-model="editedItem.grace_period" row-height=15 v-show="editedItem.is_creditcard == 1"></v-text-field>
                 </div>
 
               </div>
-            
+              
+                
+              <p class="title text-xs-left  balancePositive" v-if="editedItem.currentBalance >= 0"><span>Balance: <v-btn flat @click="openChangeBalance()"><span class="title text-xs-left  balancePositive" >{{ editedItem.currentBalance }}</span> <v-icon right green darken-3>edit</v-icon></v-btn></span></p>
+              <p class="title text-sm-left balanceNegative" v-if="editedItem.currentBalance < 0"><span>Balance: <v-btn flat @click="openChangeBalance()"><span class="title text-xs-left  balanceNegative" >{{ editedItem.currentBalance }}</span> <v-icon right green darken-3>edit</v-icon></v-btn></span></p>
+
+              
           </v-container>
         </v-card-text>
         <v-card-actions>
@@ -86,6 +92,23 @@
       </v-card>
     </v-dialog>
     
+    <v-dialog persistent v-model="dialogCB" max-width="500px"> <!-- Change balance -->
+      <v-card>
+        <v-card-text>
+        
+          <v-text-field autofocus label="New balance" value="editedItem.newBalance" v-model="editedItem.newBalance" type="number" row-height=15></v-text-field>        
+       
+        </v-card-text>
+        
+
+        <v-card-actions>
+          <v-btn flat color="success" @click="changeBalance()">Change</v-btn>
+          <v-spacer></v-spacer>
+          <v-btn flat color="primary" @click.native="dialogCB = false">Cancel</v-btn>
+        </v-card-actions> 
+      </v-card>
+    </v-dialog>
+
     <v-data-table
       :headers="headers"
       :items="items"
@@ -98,15 +121,6 @@
         <td @click="editItem(props.item)" >{{ props.item.name }}</td>
         <td @click="editItem(props.item)" >{{ props.item.currencyName }}</td>
     
-
-        <!-- <td class="justify-center layout px-0 ">
-          <v-btn icon class="mx-0" @click="editItem(props.item)">
-            <v-icon color="teal">edit</v-icon>
-          </v-btn>
-          <v-btn icon class="mx-0" @click="deleteItem(props.item)">
-            <v-icon color="pink">delete</v-icon>
-          </v-btn>
-        </td> -->
       </template>
       <template slot="no-data" >
         <div class="progress">
@@ -179,6 +193,7 @@ import { mapGetters, mapActions } from 'vuex'
 export default {
     data: () => ({
       dialog: false,
+      dialogCB: false,
       formTitle:'New',
       offsetTop: 0,
       offset: 0,
@@ -189,8 +204,7 @@ export default {
         { text: 'Name', value: 'name'},
         { text: 'Currency', value: 'currency'},
       ],
-      //items: [],
-      //currencies: [],
+
       editedIndex: -1,
       editedItem: {
         id: null,
@@ -198,7 +212,9 @@ export default {
         currency_id: '',
         is_creditcard: false,
         grace_period:0,
-        credit_limit:0
+        credit_limit:0,
+        currentBalance: 0,
+        newBalance: 0
       },
       defaultItem: {
         id: null,
@@ -206,7 +222,9 @@ export default {
         currency_id: '',
         is_creditcard: false,
         grace_period:0,
-        credit_limit:0
+        credit_limit:0,
+        currentBalance: 0,
+        newBalance: 0
       },
       msgSettings: {
         show: false,
@@ -217,10 +235,16 @@ export default {
       }
     }),
 
-    computed: mapGetters({
-        items: 'allWalletsList',
-        currencies: 'allCurrencies'
-    }),
+    computed: {
+      balance: function() {
+        this.editedItem.currentBalance;
+      },
+      ...mapGetters({
+              items: 'allWalletsList',
+              currencies: 'allCurrencies'
+          })
+    } ,
+    
 
     watch: {
       dialog (val) {
@@ -286,8 +310,59 @@ export default {
         this.editedItem = Object.assign({}, item)
         this.dialog = true,
         this.formTitle = item.name;
+        this.checkBalance(this.editedItem.id);
       },
       
+      openChangeBalance() {
+        this.editedItem.newBalance = this.editedItem.currentBalance
+        this.dialogCB = true;
+      },
+
+      changeBalance() {
+        if (this.editedItem.newBalance === this.editedItem.currentBalance) {
+          this.dialogCB = false;
+          return; 
+        }
+
+        let diff = this.editedItem.newBalance - this.editedItem.currentBalance;
+        let moment = require("moment");
+        let day = moment();
+    
+        const data = {
+          date: day.format("YYYY-MM-DD"),
+          wallet_id: this.editedItem.id,
+          sumExpend: diff < 0 ? diff * -1 : 0,
+          sumIncome: diff > 0 ? diff : 0,
+          newBalance: Number(this.editedItem.newBalance)
+        };
+
+        const param = {
+          model: "changebalance",
+          data: data
+        }
+
+        Api.save(param).then(success => {
+          if (success === true) {   
+            this.checkBalance(this.editedItem.id); 
+            this.dialogCB = false; 
+          }
+        });
+      },
+
+      checkBalance(id) {
+        
+        const param = {
+          url: "/wallets/balance",
+          conditions: {id: id}
+        }
+
+        Api.index(param).then(result => {
+          this.$set(this.editedItem, 'currentBalance', result.balance);
+         
+        });
+
+      },
+
       add(){
         this.dialog = true;
       },
@@ -347,6 +422,14 @@ export default {
   .progress {
     text-align: center;
     margin: 1rem;
+  }
+
+  .balancePositive {
+    color: darkgreen
+  }
+
+  .balanceNegative {
+    color:darkred
   }
 
   #create .speed-dial {

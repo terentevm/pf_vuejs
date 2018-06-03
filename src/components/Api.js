@@ -14,9 +14,9 @@ class Api {
             data: {}
           });
 
-          //this.host = "http://pf/app";
+          this.host = "http://pf/app";
           //this.host = "/app"; //PRODACTION
-          this.host = "http://localhost:9000"; //PRODACTION
+          //this.host = "http://localhost:9000"; //PRODACTION
     }
 
   
@@ -33,7 +33,11 @@ class Api {
     
     async index(params) {
         let model = params.model;
-        let fullUrl = `${this.host}/${model}/index`
+        let fullUrl = `${this.host}/${model}/index`;
+        if ("url" in params) {
+            fullUrl = `${this.host}${params.url}`;       
+        }
+
         const AUTH_TOKEN = this.getToken();
         let conditions = this.getConditions(params);
         

@@ -62,39 +62,40 @@
         <div class="row myDevider"></div>
         <div class="row">
             <div class="col-12 col-sm-12 col-md-12 col-lg-12">
-                <v-btn color="info" block :disabled="selected.length == 0 || processing" @click="load()">Load</v-btn>
+                <v-btn color="info" block :disabled="processing" @click="load()">Load</v-btn>
             </div>     
         </div>
         <v-progress-linear v-show="processing" :indeterminate="true"></v-progress-linear>    
         <div class="row">
             <div class="col-12 col-sm-12 col-md-12 col-lg-12">
-                <v-data-table
-                    v-model="selected"
-                    
-                    :items="currencies"
-                    select-all
-                    item-key="name"
-                    hide-headers
-                    hide-actions
-                >
-                <template slot="items" slot-scope="props" >
-                    <tr :active="props.selected" @click="props.selected = !props.selected">
-                        <td>
-                            <v-checkbox
-                                :input-value="props.selected"
-                                primary
-                                hide-details
-                            ></v-checkbox>
-                        </td>
-                        <td class='d-none'>{{ props.item.id }}</td>
-                        <td> {{ props.item.name }}</td>
-                        <td >{{ props.item.short_name }}</td>
-                    </tr>
-                </template>
-                <template slot="no-data" >
-            
-                </template>
-                </v-data-table>
+                <v-list two-line>
+                    <template v-for="(item, index) in currencies">
+                        <v-list-tile
+                            :key="item.short_name"
+                            avatar
+                            ripple
+                            @click="toggle(item)"
+                        >
+                            <v-list-tile-content>
+                                <v-list-tile-title>{{ item.short_name }}</v-list-tile-title>
+                                <v-list-tile-sub-title>{{ item.name }}</v-list-tile-sub-title>
+                            </v-list-tile-content>
+                            <v-list-tile-action>
+                                <v-list-tile-action-text v-if="item.rate == null">The rate isn't loaded</v-list-tile-action-text>
+                                <v-list-tile-action-text v-if="item.rate !== null && item.mult == 1">{{ item.rate }} CZK</v-list-tile-action-text>
+                                <v-list-tile-action-text v-if="item.rate !== null && item.mult > 1">{{ item.rate }} CZK for {{ item.mult }} {{ item.short_name }}</v-list-tile-action-text>
+                                <v-list-tile-action>
+                                    <v-checkbox
+                                        :input-value=" isSelected(item)"
+                                        primary
+                                        hide-details
+                                    ></v-checkbox>
+                                </v-list-tile-action>
+                            </v-list-tile-action>    
+                        </v-list-tile>
+                        <v-divider v-if="index + 1 < currencies.length" :key="index"></v-divider>
+                    </template>
+                </v-list>
             </div>
         </div>
 
@@ -119,11 +120,12 @@ export default {
     }),
 
     computed: {
+        
         computedDateFrom () {
             return this.formatDate(this.dateFrom)
         },
         ...mapGetters({
-            currencies: 'allCurrencies'
+            currencies: 'allCurrenciesWithRates'
         }),
     },
     
@@ -135,13 +137,34 @@ export default {
     },
     beforeMount: function(){
         this.$store.state.title = "Load rates";
-        this.$store.dispatch('getAllCurrencies');
+        this.$store.dispatch('getAllCurrenciesWithRates');
         this.$store.state.componentMenu = [];
 
         let day = moment();
         this.dateTo = day.format("YYYY-MM-DD");
     },
     methods: {
+        toggle (item) {
+            
+            let index = this.selected.findIndex(obj => obj.id == item.id);
+
+            if (index == -1) {
+                this.selected.push(item)    
+            }
+            else {
+                this.selected.splice(index , 1);
+            }
+            
+
+        },
+
+        isSelected(item) {
+            let index = this.selected.findIndex(obj => obj.id == item.id);
+            if (index == -1) {
+                return false;
+            }
+            return true;
+        },
         formatDate (date) {
             if (!date) return null
 
@@ -157,6 +180,7 @@ export default {
         },
 
         load() {
+
             this.processing = true;
             
             if (this.dateFrom == null || this.dateTo == null) {
@@ -179,6 +203,7 @@ export default {
             };
 
             Api.save(params).then(success =>{
+                this.$store.dispatch('getAllCurrenciesWithRates');
                 this.processing = false;    
             });
             
@@ -194,7 +219,7 @@ export default {
     }
 
     .groupheader {
-        height: 10px;
+        height: 20px;
         vertical-align: middle;
         color: #546E7A 
     }

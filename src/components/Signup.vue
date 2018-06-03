@@ -58,7 +58,7 @@
         <div class="row pr-1">
           <div class="col-12 col-sm-12 col-md-12 col-lg-12"> 
             <span class="grey--text pl-2">Already have account?</span>
-            <a href="/#/login">Войти</a>
+            <a href="/#/login">Login</a>
           </div>
         </div>
         
