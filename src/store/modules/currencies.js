@@ -3,13 +3,15 @@ const Api = new ApiClass();
 // initial state
 const state = {
     all: [],
-    withRates: []
+    withRates: [],
+    classificator: []
   }
   
   // getters
   const getters = {
     allCurrencies: state => state.all,
-    allCurrenciesWithRates: state => state.withRates
+    allCurrenciesWithRates: state => state.withRates,
+    currencyClassificator: state => state.classificator
   }
   
   // actions
@@ -31,6 +33,15 @@ const state = {
           commit('setCurrenciesWithRates', [])    
       })
      
+    },
+
+    getCurrencyClassificator({ commit }) {
+      
+      Api.get({model: "settings", action: "currencyclassificator"}).then((classificator)=>{  
+        commit('setClassificator', classificator)   
+      }).catch(()=>{
+        commit('setClassificator', [])    
+      });
     }
   }
   
@@ -43,6 +54,10 @@ const state = {
     setCurrenciesWithRates (state, currencies) {
       
       state.withRates = currencies
+    },
+
+    setClassificator(state, classificator) {
+      state.classificator = classificator;
     }
   }
   

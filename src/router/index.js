@@ -15,6 +15,7 @@ import NewSettings from '@/components/NewSettings'
 import TransfersList from '@/components/TransfersList'
 import Transfer from '@/components/Transfer'
 import LoadRates from '@/components/LoadRates'
+import CurrencyClassificator from '@/components/CurrencyClassificator'
 
 Vue.use(Router)
 
@@ -48,9 +49,23 @@ export default new Router({
     }
     ,
     {
+      path: '/index',
+      name: 'Index',
+      component: Index,
+      meta: { requiresAuth: true }
+    }
+    ,
+    {
       path: '/currencies',
       name: 'Currencies',
       component: CurrenciesList,
+      meta: { requiresAuth: true }
+    }
+    ,
+    {
+      path: '/loadcurrency',
+      name: 'CurrencyClassificator',
+      component: CurrencyClassificator,
       meta: { requiresAuth: true }
     }
     ,

@@ -34,53 +34,22 @@
         <div class="text-xs-center pt-2">
             <v-btn outline  color="success" :loading="updating" :disabled="updating" @click="addDocs">more</v-btn>
         </div>
-        <v-speed-dial
-      
-            fixed
-            bottom
-            right
-            :direction='top'
-            :transition='slide-y-reverse-transition'
-        >
-            <v-btn
-                slot="activator"
-                color="green darken-2"
-                dark
-                fab
-                hover
-                v-model="fab"
-            >
-                <v-icon>touch_app</v-icon>
-                <v-icon>close</v-icon>
-            </v-btn>
-           
+        
+        <v-fab-transition>
             <v-btn
                 fab
+                fixed
+                bottom
+                right
                 dark
                 to="/transfer"
                 color="primary"
             >
-                <v-icon>add</v-icon>
-            </v-btn>
-            <v-btn
-                fab
-                dark
-                small
-                color="warning"
-                @click="update()"
-            >
-                <v-icon dark>cached</v-icon>
-            </v-btn>
-            <v-btn
-                fab
-                dark
-                small
-                color="error"
-                @click="showDel()"
-            >
-                <v-icon dark>delete</v-icon>
-            </v-btn>
-        </v-speed-dial>
+            <v-icon>add</v-icon>
+        </v-btn>
+      
+    </v-fab-transition>
+
     </div>
 </template>
 
@@ -111,6 +80,7 @@ export default {
 
     beforeMount: function(){
         this.$store.state.title = "Transfers money";
+        this.$store.state.componentMenu = this.getUpMenu();
     },
 
     created() {
@@ -118,6 +88,32 @@ export default {
     },
 
     methods: {
+        getUpMenu() {
+        let menu = [];
+
+        const action1 = {
+            title: "Update",
+            icon: "cached",
+            action: ()=>{
+            this.offset = 0;
+            this.getDocs();
+            }
+        };
+
+        const action2 = {
+            title: "Delete",
+            icon: "delete",
+            action: ()=>{
+            this.update();
+            }
+        };
+
+        menu.push(action1);
+        menu.push(action2); 
+            
+        return menu;
+
+        },
         getDocs() {
             this.updating = true;
             const settings = {
@@ -167,7 +163,7 @@ export default {
             this.$router.push({ path: `transfer/${ id }`}); 
         },
 
-        showDel() {
+        showDelBtn() {
             this.showSelect = !this.showSelect;
         }
         ,

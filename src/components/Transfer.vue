@@ -157,10 +157,6 @@ export default {
         wallets: 'allWallets'
     }),
 
-    created: ()=>{
-          
-    },
-
     beforeMount: function() {
         this.$store.dispatch('getAllWallets')  
         this.$store.state.title = "Transfer money";

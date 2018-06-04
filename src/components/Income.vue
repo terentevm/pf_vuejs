@@ -256,6 +256,7 @@
 import ApiClass from "./Api";
 const Api = new ApiClass();
 var moment = require("moment");
+import { mapGetters, mapActions } from 'vuex'
 
 export default {
    props: ['docId'],
@@ -269,7 +270,7 @@ export default {
         { text: 'Sum', value: 'sum'},
       ],
         rows: [],
-        items: [],
+       
         countRows: 0,
         currentRow: 0,
         editRow: {
@@ -279,16 +280,23 @@ export default {
             comment: ''
         },
         
-        wallets: [],
         menu: false,
         modal: false,
         active: null,
         dialog: false,
         sending: false
-    })
+    }),
+    computed: {
+        ...mapGetters({
+            wallets: 'allWallets',
+            items: 'allIncomeItems'
+        })
+    }
     ,
     beforeMount() {
         this.$store.state.title = "Income";
+        this.$store.dispatch('getAllWallets');
+        this.$store.dispatch('getAllIncomeItems');
         this.id = this.docId;
         if (this.id == null) {
             let moment = require("moment");
@@ -311,20 +319,14 @@ export default {
         }
     }
     ,
-    created () {
-        this.initialize();
-        
-    },
+
     watch: {
       dialog (val) {
         val || this.close()
       }
     },
-     methods: {
-        initialize () {      
-            this.getItems();
-            this.getWallets() ; 
-        },
+    
+    methods: {
         
         addRow() {
             this.rows.push({

@@ -2,17 +2,11 @@
 
  
 
-    <v-container
-     
-      id="scroll-target"
-    >
+    <v-container>
 
-    <v-layout
-        wrap
-     
-      >
+    <v-layout wrap>
     <v-flex xs12 sm12 md12 lg12>
-    <v-dialog v-model="dialog" max-width="500px">
+    <v-dialog v-model="dialog" max-width="500px" persistent>
   
       <v-card>
 
@@ -162,22 +156,14 @@ export default {
       }
     },
 
-    created () {
-      this.initialize()
 
-    },
     beforeMount: function(){
       this.$store.state.title = "Currencies";
       this.$store.dispatch('getAllCurrencies');
       this.$store.state.componentMenu = this.getUpMenu();
     },
     methods: {
-    
-      initialize () {
-        
-        
-      },
-    
+       
       getUpMenu() {
         let menu = [];
 
@@ -187,7 +173,7 @@ export default {
           action: ()=>{
             this.update();
           }
-        }
+        };
 
         const action2 = {
           title: "Load rates",
@@ -195,11 +181,19 @@ export default {
           action: ()=>{
             this.$router.push({ path: 'loadrates' });;
           }
-        }
+        };
+        const action3 = {
+          title: "Add from classifitator",
+          icon: "format_list_bulleted",
+          action: ()=>{
+            this.$router.push({ path: 'loadcurrency' });;
+          }
+        };
 
         menu.push(action1);
         menu.push(action2);
-        
+        menu.push(action3);
+
         return menu;
 
       },
@@ -213,28 +207,6 @@ export default {
         }
       },
       
-      loadRates() {
-        
-      },
-
-      getItems(offset) {
-       
-        if (!sessionStorage.getItem('jwt')) {
-          this.$router.push({ path: 'login' });
-          return false;
-        }
-
-        this.updating = true;
-        Api.index({model: "currency"}).then(rows =>{
-        
-          for (let elem of rows){
-            this.items.push(elem);
-          }
-          this.updating = false;
-        });
-
-      }, //getItems end
-
       sendData(item) {
 
         let isUpdate = false;
@@ -303,18 +275,7 @@ export default {
         this.msgSettings.msg = success ? "Saved/Updated successfully!" : "Error";
         this.msgSettings.show = true; 
       }
-      ,
-      onScroll (e) {
-        this.offsetTop = e.target.scrollTop;
-        let currOffset = e.target.scrollTop;
-        let maxOffset = e.target.scrollTopMax;
-
-        if (((currOffset / maxOffset) * 100) > 70 ) {
-            this.offset += 50;
-            this.getItems(this.offset);
-        }
-
-      }
+      
     }
   }
 </script>

@@ -199,15 +199,15 @@
         </v-card-actions>
    
 
-        <v-dialog v-model="dialog" max-width="500px">
+        <v-dialog v-model="dialog" max-width="500px" scrollable persistent>
         <v-card>
 
             <v-toolbar color="green darken-3" dark>
-            
+                <v-icon>add_shopping_cart</v-icon>
                 <v-toolbar-title>Choose item</v-toolbar-title>
                 <v-spacer></v-spacer>
-                <v-btn icon>
-                <v-icon>add_shopping_cart</v-icon>
+                <v-btn icon @click="dialog = false;">
+                    <v-icon>close</v-icon>
                 </v-btn>
             </v-toolbar>
 
@@ -234,11 +234,7 @@
                     </template>
                 </v-list>
             </v-card-text>
-            <v-card-actions>
-            <v-spacer></v-spacer>
-            <v-btn color="blue darken-1" flat to='/expends'>Cancel</v-btn>
-             <v-progress-circular indeterminate :width="3" color="green"></v-progress-circular>
-            </v-card-actions>
+
         </v-card>
         </v-dialog>
 
@@ -263,12 +259,10 @@ export default {
         wallet: null,
         toggle_multiple: [0, 1],
         headers: [
-        
-        { text: 'item', value: 'item'},
-        { text: 'Sum', value: 'sum'},
-      ],
+            { text: 'item', value: 'item'},
+            { text: 'Sum', value: 'sum'},
+      ] ,
         rows: [],
-        
         countRows: 0,
         currentRow: 0,
         editRow: {

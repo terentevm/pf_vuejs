@@ -14,13 +14,159 @@ class Api {
             data: {}
           });
 
-          this.host = "http://pf/app";
+          //this.host = "http://pf/app";
           //this.host = "/app"; //PRODACTION
-          //this.host = "http://localhost:9000"; //PRODACTION
+          this.host = "http://localhost:9000"; //PRODACTION
     }
 
-  
- 
+    /**
+     * Sends post request to server
+     * @param {Object} params 
+     * {
+     *  model: 'wallets',
+     *  action: 
+     *  data: {id: 123, name: test}  data for sending
+     * }
+     * @return {Array}
+     */
+    async post(params) {
+        const model = params.model;
+        const action = params.action;
+
+        let fullUrl = `${this.host}/${model}/${action}`;
+        const AUTH_TOKEN = this.getToken();
+        
+        const data = params.data;
+        
+        try {
+            const res = await this.http.request({
+                method: 'POST',
+                headers: {
+                    "Authorization": AUTH_TOKEN,
+                    'Content-Type': 'application/json',
+                    'Accept': 'text/json'
+                },
+                data: data,
+                url: fullUrl
+            });
+
+            if (typeof(res.data) == "object") {
+                
+                if (this.isCorrectResponse(res.data)) {
+                    
+                    
+                    if (res.data.success === true) {
+                        
+                        return res.data.success;  //return result from server to model for rendering
+                        
+                    }
+                    else {
+                        
+                        this.toConsole(res.data.msg) 
+                       
+                        return false;   
+                    }
+                }
+                else {
+
+                    this.toConsole("unexpected response data"); 
+                    return false;  
+                }
+            } 
+            
+            else {
+                if (res.data === null) {
+                    this.toConsole("Response data is null");   
+                }
+                else {
+                    this.toConsole(res.data.toString()) ; 
+                }    
+
+                return false;
+            }
+
+        }
+        catch (err) {
+            
+            if (this.isCorrectResponse(err.response.data)) {
+                this.toConsole(err.response.data.msg)     
+            }
+
+            return false;
+        }
+    }
+    
+    /**
+     * Sends get request to server
+     * @param {Object} params 
+     * {
+     *  model: 'wallets',
+     *  action: 
+     *  conditions: {id: 123, name: test}  data for sending
+     * }
+     * @return {Array}
+     */
+    async get(params) {
+        const model = params.model;
+        const action = params.action;
+
+        let fullUrl = `${this.host}/${model}/${action}`;
+        const AUTH_TOKEN = this.getToken();
+        let conditions = this.getConditions(params); 
+        
+        try {
+            const res = await this.http.request({
+                method: 'GET',
+                headers: {
+                    "Authorization": AUTH_TOKEN,
+                    'Content-Type': 'application/json',
+                    'Accept': 'text/json'
+                },
+                params: conditions,
+                url: fullUrl
+            });
+            
+            if (typeof(res.data) == "object") {
+                
+                if (this.isCorrectResponse(res.data)) {
+                    
+                    if (res.data.success === true) {
+                        
+                       
+                        return res.data.data;  //return result from server to model for rendering
+                        
+                    }
+                    else {
+                        
+                        this.toConsole("error") 
+                        this.toConsole(res.data.msg) 
+                       
+                        return [];   
+                    }
+                }
+                else {
+
+                    console.log(res.data);
+                    return [];  
+                }
+            } 
+            
+            else {
+                if (res.data === null) {
+                    this.toConsole("Response data is null");   
+                }
+                else {
+                    this.toConsole(res.data.toString()) ; 
+                }    
+
+                return [];
+            }
+        }
+        catch (err) {
+            this.toConsole("Error") ;
+            return [];
+        }         
+    }
     /**
      * 
      * @param {Object} params 

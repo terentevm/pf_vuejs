@@ -165,6 +165,7 @@ export default {
             }
             return true;
         },
+        
         formatDate (date) {
             if (!date) return null
 

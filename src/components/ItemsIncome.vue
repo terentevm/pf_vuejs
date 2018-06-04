@@ -118,45 +118,22 @@
       </v-card>
 
     </v-flex>
-    <v-speed-dial
-      
+    
+    <v-fab-transition>
+      <v-btn
+        fab
         fixed
         bottom
         right
-        :direction='top'
-        :transition='slide-y-reverse-transition'
-    >
-      <v-btn
-        slot="activator"
-        color="green darken-2"
-        dark
-        fab
-        hover
-        v-model="fab"
-      >
-        <v-icon>touch_app</v-icon>
-        <v-icon>close</v-icon>
-      </v-btn>
-           
-      <v-btn
-        fab
         dark
         @click="add()"
         color="primary"
       >
-        <v-icon>add</v-icon>
+      <v-icon>add</v-icon>
       </v-btn>
-      <v-btn
-        fab
-        dark
-        small
-        color="warning"
-        @click="update()"
-      >
-       <v-icon dark>cached</v-icon>
-    </v-btn>
+      
+    </v-fab-transition>
 
-    </v-speed-dial>
     <v-snackbar
       :timeout="msgSettings.timeout"
       :color="msgSettings.color"
@@ -178,11 +155,11 @@ import ModelClass from "./Model";
 const Model = new ModelClass();
 import ApiClass from "./Api";
 const Api = new ApiClass();
+import { mapGetters, mapActions } from 'vuex'
 
 export default {
     data: () =>({
         headers: [{ text: 'Name', value: 'name'}],
-        items: [],
         dialog: false,
         formTitle:'New',
         editedIndex: -1,
@@ -210,12 +187,18 @@ export default {
         msg: ''
       }
     }),
+    computed: {
+      ...mapGetters({
+          items: 'allIncomeItemsHierarchically',           
+      })
+    },
     beforeMount: function(){
       this.$store.state.title = "Income items";
+      this.$store.dispatch('getAllIncomeItemsHierarchically');
+      this.$store.state.componentMenu = this.getUpMenu(); 
     },
-    created () {
-      this.initialize()
-    },
+    
+
     
     watch: {
       dialog (val) {
@@ -224,44 +207,32 @@ export default {
     },
 
     methods: {
-      
-        
-        initialize () {
+
+      getUpMenu() {
+        let menu = [];
+
+        const action1 = {
+          title: "Update",
+          icon: "cached",
+          action: ()=>{
+            this.update();
+          }
+        }
+
+        menu.push(action1);
        
-            this.getItems(0); 
         
-        },
-        
+        return menu;
+
+      },
         add(){
           this.dialog = true;
         },
         
         update() {
-          this.getItems(0);
+          this.$store.dispatch('getAllIncomeItemsHierarchically');
         },
 
-        getItems(offset) {
-            
-            if (!sessionStorage.getItem('jwt')) {
-                this.$router.push({ path: 'login' });
-                return false;
-            }
-
-            if (offset == 0) {
-              this.items = [];
-            }
-
-            
-            this.updating = true;
-            Api.index({model: "incomeitems"}).then(data => {
-              
-              for (let elem of data){
-                this.items.push(elem);
-              }
-              this.updating = false;
-            });
-
-      },
     
       editItem (item) {
        

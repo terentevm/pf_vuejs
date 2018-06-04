@@ -77,8 +77,8 @@
               </div>
               
                 
-              <p class="title text-xs-left  balancePositive" v-if="editedItem.currentBalance >= 0"><span>Balance: <v-btn flat @click="openChangeBalance()"><span class="title text-xs-left  balancePositive" >{{ editedItem.currentBalance }}</span> <v-icon right green darken-3>edit</v-icon></v-btn></span></p>
-              <p class="title text-sm-left balanceNegative" v-if="editedItem.currentBalance < 0"><span>Balance: <v-btn flat @click="openChangeBalance()"><span class="title text-xs-left  balanceNegative" >{{ editedItem.currentBalance }}</span> <v-icon right green darken-3>edit</v-icon></v-btn></span></p>
+              <p class="title text-xs-left  balancePositive" v-if="editedItem.currentBalance >= 0 && editedItem.id != null"><span>Balance: <v-btn flat @click="openChangeBalance()"><span class="title text-xs-left  balancePositive" >{{ editedItem.currentBalance }}</span> <v-icon right green darken-3>edit</v-icon></v-btn></span></p>
+              <p class="title text-sm-left balanceNegative" v-if="editedItem.currentBalance < 0 && editedItem.id != null"><span>Balance: <v-btn flat @click="openChangeBalance()"><span class="title text-xs-left  balanceNegative" >{{ editedItem.currentBalance }}</span> <v-icon right green darken-3>edit</v-icon></v-btn></span></p>
 
               
           </v-container>
@@ -130,45 +130,21 @@
         </template>
     </v-data-table>
     </v-flex>
-      <v-speed-dial
-      
+    <v-fab-transition>
+      <v-btn
+        fab
         fixed
         bottom
         right
-        :direction='top'
-        :transition='slide-y-reverse-transition'
-    >
-      <v-btn
-        slot="activator"
-        color="green darken-2"
-        dark
-        fab
-        hover
-        v-model="fab"
-      >
-        <v-icon>touch_app</v-icon>
-        <v-icon>close</v-icon>
-      </v-btn>
-           
-      <v-btn
-        fab
         dark
         @click="add()"
         color="primary"
       >
-        <v-icon>add</v-icon>
+      <v-icon>add</v-icon>
       </v-btn>
-      <v-btn
-        fab
-        dark
-        small
-        color="warning"
-        @click="update()"
-      >
-       <v-icon dark>cached</v-icon>
- </v-btn>
-
-    </v-speed-dial>
+      
+    </v-fab-transition>
+    
     <v-snackbar
       :timeout="msgSettings.timeout"
       :color="msgSettings.color"
@@ -254,16 +230,29 @@ export default {
     beforeMount: function(){
       this.$store.state.title = "Wallets";
       this.$store.dispatch('getAllWalletsList');
-      this.$store.dispatch('getAllCurrencies')
-      this.$store.state.componentMenu = []; 
-    },
-    created () {
-      this.initialize()
+      this.$store.dispatch('getAllCurrencies');
+      this.$store.state.componentMenu = this.getUpMenu(); 
     },
 
+
     methods: {
-      initialize () {
+
+      getUpMenu() {
+        let menu = [];
+
+        const action1 = {
+          title: "Update",
+          icon: "cached",
+          action: ()=>{
+            this.update();
+          }
+        }
+
+        menu.push(action1);
+       
         
+        return menu;
+
       },
 
       update() {

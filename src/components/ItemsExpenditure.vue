@@ -118,45 +118,22 @@
       </v-card>
 
     </v-flex>
-    <v-speed-dial
-      
+    
+    <v-fab-transition>
+      <v-btn
+        fab
         fixed
         bottom
         right
-        :direction='top'
-        :transition='slide-y-reverse-transition'
-    >
-      <v-btn
-        slot="activator"
-        color="green darken-2"
-        dark
-        fab
-        hover
-        v-model="fab"
-      >
-        <v-icon>touch_app</v-icon>
-        <v-icon>close</v-icon>
-      </v-btn>
-           
-      <v-btn
-        fab
         dark
         @click="add()"
         color="primary"
       >
-        <v-icon>add</v-icon>
+      <v-icon>add</v-icon>
       </v-btn>
-      <v-btn
-        fab
-        dark
-        small
-        color="warning"
-        @click="update()"
-      >
-       <v-icon dark>cached</v-icon>
-    </v-btn>
+      
+    </v-fab-transition>
 
-    </v-speed-dial>
     <v-snackbar
       :timeout="msgSettings.timeout"
       :color="msgSettings.color"
@@ -178,143 +155,139 @@ import ModelClass from "./Model";
 const Model = new ModelClass();
 import ApiClass from "./Api";
 const Api = new ApiClass();
+import { mapGetters, mapActions } from 'vuex'
 
 export default {
-    data: () =>({
-        headers: [{ text: 'Name', value: 'name'}],
-        items: [],
-        dialog: false,
-        formTitle:'New',
-        editedIndex: -1,
-        updating: false,
-        processing: false,
-        editedItem: {
-            id: null,
-            name: '',
-            parentid: null,
-            parent:null,
-            notActive: ''
-        },
-        defaultItem: {
-            id: null,
-            name: '',
-            parentid: null,
-            parent:null,
-            notActive: ''
-        },
-        msgSettings: {
-        show: false,
-        color: "light-green darken-3",
-        mode: 'vertical',
-        timeout: 6000,
-        msg: ''
-      }
-    }),
-    beforeMount: function(){
-      this.$store.state.title = "Expenditure items";
+  data: () => ({
+    headers: [{ text: "Name", value: "name" }],
+ 
+    dialog: false,
+    formTitle: "New",
+    editedIndex: -1,
+    updating: false,
+    processing: false,
+    editedItem: {
+      id: null,
+      name: "",
+      parentid: null,
+      parent: null,
+      notActive: ""
     },
-    created () {
-      this.initialize()
+    defaultItem: {
+      id: null,
+      name: "",
+      parentid: null,
+      parent: null,
+      notActive: ""
     },
-    
-    watch: {
-      dialog (val) {
-        val || this.close()
-      }
-    },
+    msgSettings: {
+      show: false,
+      color: "light-green darken-3",
+      mode: "vertical",
+      timeout: 6000,
+      msg: ""
+    }
+  }),
 
-    methods: {
-      
-        
-        initialize () {
-       
-            this.getItems(0); 
-        
-        },
-        
-        add(){
-          this.dialog = true;
-        },
-        
-        update() {
-          this.getItems(0);
-        },
+  computed: {
+    ...mapGetters({
+        items: 'allExpenseItemsHierarchically',           
+    })
+  },
 
-        getItems(offset) {
-            
-            if (!sessionStorage.getItem('jwt')) {
-                this.$router.push({ path: 'login' });
-                return false;
-            }
+  beforeMount: function() {
+    this.$store.state.title = "Expenditure items";
+    this.$store.dispatch('getAllExpenseItemsHierarchically');
+    this.$store.state.componentMenu = this.getUpMenu();
+  },
 
-            if (offset == 0) {
-              this.items = [];
-            }
 
-            
-            this.updating = true;
-            Api.index({model: "expenditureitems"}).then(data => {
-              
-              for (let elem of data){
-                this.items.push(elem);
-              }
-              this.updating = false;
-            });
+  watch: {
+    dialog(val) {
+      val || this.close();
+    }
+  },
 
-      },
-    
-      editItem (item) {
-       
-        this.editedIndex = this.items.indexOf(item)
-        this.editedItem = Object.assign({}, item)
-        this.dialog = true,
-        this.formTitle = item.name;
-      },
+  methods: {
 
-      close () {
-        
-        this.dialog = false
-        this.formTitle ='New';
-        setTimeout(() => {
-          this.editedItem = Object.assign({}, this.defaultItem)
-          this.editedIndex = -1
-        }, 300)
-      },
 
-      save () {
+    getUpMenu() {
+      let menu = [];
 
-        let isUpdate = false;
-        
-        if (this.editedItem.id !== null) {
-          isUpdate = true;
+      const action1 = {
+        title: "Update",
+        icon: "cached",
+        action: () => {
+          this.update();
         }
+      };
 
-        if (this.editedItem.parent !== null) {
-          this.editedItem.parentid = this.editedItem.parent 
-        }
+      menu.push(action1);
 
-        this.processing = true;
-        Model.saveExpenditureItems(this.editedItem, isUpdate).then((resp)=>{
+      return menu;
+    },
+
+    add() {
+      this.dialog = true;
+    },
+
+    update() {
+      this.$store.dispatch('getAllExpenseItemsHierarchically');
+    },
+
+
+
+    editItem(item) {
+      this.editedIndex = this.items.indexOf(item);
+      this.editedItem = Object.assign({}, item);
+      (this.dialog = true), (this.formTitle = item.name);
+    },
+
+    close() {
+      this.dialog = false;
+      this.formTitle = "New";
+      setTimeout(() => {
+        this.editedItem = Object.assign({}, this.defaultItem);
+        this.editedIndex = -1;
+      }, 300);
+    },
+
+    save() {
+      let isUpdate = false;
+
+      if (this.editedItem.id !== null) {
+        isUpdate = true;
+      }
+
+      if (this.editedItem.parent !== null) {
+        this.editedItem.parentid = this.editedItem.parent;
+      }
+
+      this.processing = true;
+
+      Model.saveExpenditureItems(this.editedItem, isUpdate)
+        .then(resp => {
           this.showMsg(true);
-          this.processing =  false;
+          this.processing = false;
           this.close();
-          this.items= [];
+          this.items = [];
           this.getItems(this.offset);
-        }).catch((e)=>{
+        })
+        .catch(e => {
           this.processing = false;
           this.showMsg(false);
         });
-        
-      },
+    },
 
-      showMsg(success) {
-       
-        this.msgSettings.color = success ? "light-green darken-3" : "orange darken-4";
-        this.msgSettings.msg = success ? "Saved/Updated successfully!" : "Error";
-        this.msgSettings.show = true; 
-      }
-      
-      /////////
+    showMsg(success) {
+      this.msgSettings.color = success
+        ? "light-green darken-3"
+        : "orange darken-4";
+      this.msgSettings.msg = success ? "Saved/Updated successfully!" : "Error";
+      this.msgSettings.show = true;
     }
+
+  
   }
+};
 </script>

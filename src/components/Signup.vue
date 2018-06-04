@@ -22,6 +22,7 @@
             :error-messages="errors.collect('name')"
             v-validate="'required|min:2'"
             data-vv-name="name"
+            data-vv-validate-on="change"
           ></v-text-field>
           <v-text-field
             label="E-mail"
@@ -32,19 +33,21 @@
             :error-messages="errors.collect('email')"
              v-validate="'required|email'"
             data-vv-name="email"
+            data-vv-validate-on="change"
           ></v-text-field>
           <v-text-field
             label="password"
             v-model="password"
             prepend-icon="https"
             :append-icon="e3 ? 'visibility' : 'visibility_off'"
-          :append-icon-cb="() => (e3 = !e3)"
+            :append-icon-cb="() => (e3 = !e3)"
            
             :type="e3 ? 'password' : 'text'"
             required
             :error-messages="errors.collect('password')"
             v-validate="'required|min:3'"
             data-vv-name="password"
+            data-vv-validate-on="change"
           ></v-text-field>
           
         </v-card-text>

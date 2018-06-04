@@ -35,53 +35,21 @@
       <v-btn outline  color="success" :loading="updating" :disabled="updating" @click="addDocs">more</v-btn>
     </div>
     
-    <v-speed-dial
-      
+    <v-fab-transition>
+      <v-btn
+        fab
         fixed
         bottom
         right
-        :direction='top'
-        :transition='slide-y-reverse-transition'
-    >
-      <v-btn
-        slot="activator"
-        color="green darken-2"
         dark
-        fab
-        hover
-        v-model="fab"
-      >
-        <v-icon>touch_app</v-icon>
-        <v-icon>close</v-icon>
-      </v-btn>
-           
-      <v-btn
-        fab
-        dark
-        to='/income'
+        @click="add()"
         color="primary"
       >
-        <v-icon>add</v-icon>
+      <v-icon>add</v-icon>
       </v-btn>
-      <v-btn
-        fab
-        dark
-        small
-        color="warning"
-        @click="update()"
-      >
-       <v-icon dark>cached</v-icon>
-      </v-btn>
-      <v-btn
-        fab
-        dark
-        small
-        color="error"
-        @click="showDelBtn()"
-      >
-        <v-icon dark>delete</v-icon>
-      </v-btn>
-    </v-speed-dial>
+      
+    </v-fab-transition>
+    
 </v-flex>
 
 </template>
@@ -111,7 +79,8 @@ export default {
   }),
   
   beforeMount: function(){
-        this.$store.state.title = "Incomes";
+    this.$store.state.title = "Incomes";
+    this.$store.state.componentMenu = this.getUpMenu();
   },
   
   created() {
@@ -126,9 +95,36 @@ export default {
         document.body.clientHeight, document.documentElement.clientHeight
     );
 
-    //console.log( 'Высота с учетом прокрутки: ' + scrollHeight );
+    
      this.updating = true;
      this.getDocs();
+    },
+
+    getUpMenu() {
+      let menu = [];
+
+      const action1 = {
+        title: "Update",
+        icon: "cached",
+        action: ()=>{
+          this.offset = 0;
+          this.getDocs();
+        }
+      };
+
+      const action2 = {
+        title: "Delete",
+        icon: "delete",
+        action: ()=>{
+          this.showDelBtn();
+        }
+      };
+
+      menu.push(action1);
+      menu.push(action2); 
+        
+      return menu;
+
     },
 
     getDocs() {
@@ -164,7 +160,8 @@ export default {
        let id = item.id
        this.$router.push({ path: `income/${ id }`}); 
     },
-    addDoc() {
+
+    add() {
         this.$router.push({ path: `income`}); 
     },
     

@@ -24,6 +24,7 @@
             :error-messages="errors.collect('email')"
             v-validate="'required|email'"
             data-vv-name="email"
+            data-vv-validate-on="change"
            
           ></v-text-field>
           <v-text-field
@@ -31,11 +32,11 @@
             v-model="password"
             prepend-icon="https"
             :append-icon="e3 ? 'visibility' : 'visibility_off'"
-          :append-icon-cb="() => (e3 = !e3)"
-           :error-messages="errors.collect('password')"
+            :append-icon-cb="() => (e3 = !e3)"
+            :error-messages="errors.collect('password')"
             v-validate="'required|min:3'"
             data-vv-name="password"
-     
+            data-vv-validate-on="change"
             :type="e3 ? 'password' : 'text'"
             required
           ></v-text-field>
@@ -43,10 +44,11 @@
         </v-card-text>
         
          <v-card-actions>
-           <v-container fluid grid-list-md>
+           
+          <v-container fluid grid-list-md>
              <v-layout row wrap>
                <v-flex d-flex xs12 sm6 md6>
-                 <v-btn outline  color="success" block :loading="sending" :disabled="sending" @click="sendData">Login</v-btn>
+                 <v-btn outline type="submit" color="success" block :loading="sending" :disabled="btnLoginDisable" @click="sendData">Login</v-btn>
                </v-flex>
                <v-flex d-flex xs12 sm6 md6>
                  <v-btn outline  color="indigo " block to="/signup">Create new account</v-btn>
@@ -54,7 +56,6 @@
              </v-layout>
            </v-container>
     
-        
         </v-card-actions>
           
 
@@ -109,6 +110,14 @@ data(){
       }
     }
 },
+
+computed: {
+  btnLoginDisable() {
+    const $ok = !(this.email !== "" && this.password !== "") || this.sending;
+    return $ok
+  }
+},
+
 beforeMount: function(){
     this.$store.state.title = "Login";
     sessionStorage.removeItem("jwt");
