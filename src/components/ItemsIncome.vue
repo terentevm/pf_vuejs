@@ -150,9 +150,7 @@
 </template>
 
 <script>
-import ModelClass from "./Model";
 
-const Model = new ModelClass();
 import ApiClass from "./Api";
 const Api = new ApiClass();
 import { mapGetters, mapActions } from 'vuex'
@@ -271,7 +269,7 @@ export default {
           this.showMsg(success);
           this.close();
           this.items= [];
-          this.getItems(this.offset);
+          this.$store.dispatch('getAllIncomeItemsHierarchically');
 
         });
         

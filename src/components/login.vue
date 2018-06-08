@@ -48,7 +48,7 @@
           <v-container fluid grid-list-md>
              <v-layout row wrap>
                <v-flex d-flex xs12 sm6 md6>
-                 <v-btn outline type="submit" color="success" block :loading="sending" :disabled="btnLoginDisable" @click="sendData">Login</v-btn>
+                 <v-btn outline  color="success" block :loading="sending" :disabled="btnLoginDisable" @click="sendData">Login</v-btn>
                </v-flex>
                <v-flex d-flex xs12 sm6 md6>
                  <v-btn outline  color="indigo " block to="/signup">Create new account</v-btn>
@@ -77,6 +77,9 @@ import ModelClass from "./Model";
 
 const Model = new ModelClass();
 const touchMap = new WeakMap()
+
+import ApiClass from "./Api";
+const Api = new ApiClass();
 
 export default {
 name: 'Login',
@@ -125,7 +128,7 @@ beforeMount: function(){
 },
 mounted () {
       this.$validator.localize('en', this.dictionary)
-    },
+},
 methods: {
         sendData() {
         this.$validator.validateAll().then((result)=>{
@@ -136,37 +139,49 @@ methods: {
         
             this.sending = true; //block the sending button;
             
-            let obj = 
+            const userData = 
             {
-                'login': this.email,
-                'password': this.password
+                login: this.email,
+                password: this.password
             };
 
-            let qs = require("qs");
-
-            let params = qs.stringify(obj);
+            const param = {
+              model: "user",
+              action: "login",
+              data: userData
+            }
+            
             this.showSnack = false;
-
-            Model.login(obj).then((settings) => {
-                this.sending = false;
-                this.success = true;
+            
+            Api.post(param).then(respData => {
+              
+              if (respData.success === true) {
+                
+                sessionStorage.setItem('jwt', respData.data.jwt);
+                sessionStorage.setItem('settings', respData.data.settings);
                 this.$store.state.auth = true;
-
-                //if (settings.newUser === true) {
-                  //this.$router.push({ path: 'newsettings' }) ; 
-                //}
-                //else {
+                
+                if (typeof(sessionStorage.getItem("jwt")) == "string" ) {
                   this.$router.push({ path: 'index' });
-                //}
+                }
                 
-            })
-            .catch(e=>{
-                
+              }
+              else {
                 this.resultMessage = "Error. Login or password is incorrect!"
                 this.showSnack = true;
                 this.success = false;
-                this.sending = false;
+                this.sending = false; 
+              }
+
+              
+            }).catch(error =>{
+              this.resultMessage = "Error. Login or password is incorrect!"
+              this.showSnack = true;
+              this.success = false;
+              this.sending = false; 
             });
+
+            
         });
     }
 }  

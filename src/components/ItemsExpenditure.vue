@@ -264,19 +264,16 @@ export default {
       }
 
       this.processing = true;
-
-      Model.saveExpenditureItems(this.editedItem, isUpdate)
-        .then(resp => {
-          this.showMsg(true);
-          this.processing = false;
+      
+      Api.save({isUpdate:isUpdate, model: "expenditureitems",data:this.editedItem}).then(success =>{
+          this.processing =  false;
+          this.showMsg(success);
           this.close();
-          this.items = [];
-          this.getItems(this.offset);
-        })
-        .catch(e => {
-          this.processing = false;
-          this.showMsg(false);
+          this.items= [];
+          this.$store.dispatch('getAllExpenseItemsHierarchically');
+
         });
+
     },
 
     showMsg(success) {

@@ -15,8 +15,8 @@ class Api {
           });
 
           //this.host = "http://pf/app";
-          //this.host = "/app"; //PRODACTION
-          this.host = "http://localhost:9000"; //PRODACTION
+          this.host = "/app"; //PRODACTION
+          //this.host = "http://localhost:9000"; //PRODACTION
     }
 
     /**
@@ -34,7 +34,8 @@ class Api {
         const action = params.action;
 
         let fullUrl = `${this.host}/${model}/${action}`;
-        const AUTH_TOKEN = this.getToken();
+        
+        //const AUTH_TOKEN = this.getToken();
         
         const data = params.data;
         
@@ -42,7 +43,7 @@ class Api {
             const res = await this.http.request({
                 method: 'POST',
                 headers: {
-                    "Authorization": AUTH_TOKEN,
+                  //  "Authorization": AUTH_TOKEN,
                     'Content-Type': 'application/json',
                     'Accept': 'text/json'
                 },
@@ -57,20 +58,20 @@ class Api {
                     
                     if (res.data.success === true) {
                         
-                        return res.data.success;  //return result from server to model for rendering
+                        return res.data;  //return result from server to model for rendering
                         
                     }
                     else {
                         
                         this.toConsole(res.data.msg) 
                        
-                        return false;   
+                        return {success: false};   
                     }
                 }
                 else {
 
                     this.toConsole("unexpected response data"); 
-                    return false;  
+                    return {success: false}; 
                 }
             } 
             
@@ -82,7 +83,7 @@ class Api {
                     this.toConsole(res.data.toString()) ; 
                 }    
 
-                return false;
+                return {success: false};
             }
 
         }
@@ -92,7 +93,7 @@ class Api {
                 this.toConsole(err.response.data.msg)     
             }
 
-            return false;
+            return {success: false};
         }
     }
     
@@ -167,6 +168,8 @@ class Api {
             return [];
         }         
     }
+
+   
     /**
      * 
      * @param {Object} params 
