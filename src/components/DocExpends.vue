@@ -194,7 +194,10 @@ export default {
 </script>
 
 <style scoped>
- 
+ thead {
+   position: fixed;
+   z-index: 2;
+ }
   .custom-loader {
     animation: loader 1s infinite;
     display: flex;

@@ -1,5 +1,5 @@
 <template>
-  <v-app id="inspire">
+  <v-app dark id="inspire">
     <v-navigation-drawer
       fixed
       :clipped="$vuetify.breakpoint.lgAndUp"
@@ -82,7 +82,7 @@
       app
       :clipped-left="$vuetify.breakpoint.lgAndUp"
       fixed
-      height=40
+      height=58
     >
 
       <v-toolbar-title fixed style="width: 300px" class="ml-0 pl-3">
@@ -114,18 +114,17 @@
         </v-avatar>
       </v-btn>
     </v-toolbar>
-    <!-- <div class="container"> -->
-    <div class ="row">
+     
+
       <v-content>
-        <v-container  align-center>
+        <v-container fluid>
         
           <router-view></router-view>
           
         </v-container>
       </v-content>
-    </div>
+  
     
-    <!-- </div> -->
   </v-app>
 </template>
 
@@ -200,11 +199,13 @@
 <style scoped>
   .container {
     width: 100%;
-    padding: 10px;
-    padding-right: 10px;
-    padding-left: 10px;
+    height: 90vh;
+    padding: 0px;
+    padding-right: 0px;
+    padding-left: 0px;
     margin-right: auto;
     margin-left: auto;
+    
   }
   
 </style>

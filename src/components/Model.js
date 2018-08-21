@@ -14,7 +14,7 @@
 
           //this.host = "http://pf/app";
           this.host = "/app"; //PRODACTION
-          //this.host = "http://localhost:9000"; //PRODACTION
+          //this.host = "http://localhost:9000"; //Fake server
                       
         }
         getToken() {
