@@ -5,13 +5,17 @@ const Api = new ApiClass();
 // initial state
 const state = {
     all: [],
-    allList: []
+    allList: [],
+    balanceAll: [],
+    loading: false
   }
   
   // getters
   const getters = {
     allWallets: state => state.all,
     allWalletsList: state => state.allList,
+    balanceAll: state => state.balanceAll,
+    loading: state => state.loading
   }
   
   // actions
@@ -37,6 +41,22 @@ const state = {
         console.log(error);
         commit('setWalletsList', [])    
       }) 
+    },
+
+    getBalanceAll({ commit }) {
+      const params = {
+        model: "wallets",
+        action: "BalanceAll"
+      };
+      state.loading = true;
+      Api.post(params).then((wallets)=>{  
+        commit('setBalanceAll', wallets.data) 
+        state.loading = false; 
+      }).catch((error)=>{
+        console.log(error);
+        commit('setBalanceAll', [])
+        state.loading = false;     
+      }) 
     }
   }
   
@@ -48,6 +68,10 @@ const state = {
     ,
     setWalletsList (state, wallets) {
       state.allList = wallets
+    },
+
+    setBalanceAll(state, wallets) {
+      state.balanceAll = wallets;
     }
   }
   

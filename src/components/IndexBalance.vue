@@ -9,25 +9,32 @@
             <v-icon>account_balance_wallet</v-icon>
             </v-btn>
         </v-toolbar>
+        <v-progress-circular
+      v-show="loading"
+      :size="70"
+      :width="7"
+      color="purple"
+      indeterminate
+    ></v-progress-circular>
         <v-list>
         <v-list-tile
             v-for="item in items "
-            :key="item.title"
+            :key="item.wallet_id"
             avatar
             @click=""
           >
             <v-list-tile-avatar>
-              <v-icon :class="[item.iconClass]">{{ item.icon }}</v-icon>
+              <v-icon class="amber white--text">credit_card</v-icon>
             </v-list-tile-avatar>
 
             <v-list-tile-content>
-              <v-list-tile-title>{{ item.title }}</v-list-tile-title>
+              <v-list-tile-title>{{ item.wallet }}</v-list-tile-title>
               
-              <v-list-tile-sub-title>{{ item.currency }}</v-list-tile-sub-title>
+              <v-list-tile-sub-title>{{ item.currencyCharCode }}</v-list-tile-sub-title>
             </v-list-tile-content>
             <v-spacer></v-spacer>
             
-              <h3 class="font-weight-thin">{{ item.balance }}</h3>
+              <h3 class="font-weight-thin">{{ item.BalanceInReportCurrency }}</h3>
             
 
           </v-list-tile>
@@ -37,19 +44,28 @@
 </template>
 
 <script>
-
+  import { mapGetters, mapActions } from 'vuex'
   export default {
     data () {
       return {
-        items: [
-          { icon: 'credit_card', iconClass: 'amber white--text', title: 'Свободные деньги',  balance: '80000', currency: "CZK" },
-          { icon: 'credit_card', iconClass: 'amber white--text', title: 'Кредитная карта',    balance: '-25000',  currency: "RUB" },
-          { icon: 'credit_card', iconClass: 'amber white--text', title: 'Накопительный счет', balance: '278000' , currency: "EUR" },
-          { icon: 'credit_card', iconClass: 'amber white--text', title: 'Накопительный счет', balance: '278000' , currency: "EUR" }
-        ],
-
+        
       }
-    }
+    },
+
+    computed: {
+
+      ...mapGetters({
+              items: 'balanceAll',
+              loading: 'loading'
+          })
+    },
+
+    beforeMount: function(){
+      
+      this.$store.dispatch('getBalanceAll');
+   
+      
+    },
   }
 
 </script>

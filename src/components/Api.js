@@ -14,8 +14,8 @@ class Api {
             data: {}
           });
 
-          //this.host = "http://pf/app";
-         this.host = "/app"; //PRODACTION
+          this.host = "http://pf/app";
+         //this.host = "/app"; //PRODACTION
         //this.host = "http://localhost:9000"; //fake server
     }
 
@@ -35,7 +35,7 @@ class Api {
 
         let fullUrl = `${this.host}/${model}/${action}`;
         
-        //const AUTH_TOKEN = this.getToken();
+        const AUTH_TOKEN = this.getToken();
         
         const data = params.data;
         
@@ -43,7 +43,7 @@ class Api {
             const res = await this.http.request({
                 method: 'POST',
                 headers: {
-                  //  "Authorization": AUTH_TOKEN,
+                    "Authorization": AUTH_TOKEN,
                     'Content-Type': 'application/json',
                     'Accept': 'text/json'
                 },
