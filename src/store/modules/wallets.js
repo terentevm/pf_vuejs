@@ -49,9 +49,11 @@ const state = {
         action: "BalanceAll"
       };
       state.loading = true;
-      Api.post(params).then((wallets)=>{  
-        commit('setBalanceAll', wallets.data) 
-        state.loading = false; 
+      Api.post(params).then((wallets)=>{
+        console.log(wallets);
+        commit('setBalanceAll', wallets.data)
+        state.loading = false;
+
       }).catch((error)=>{
         console.log(error);
         commit('setBalanceAll', [])

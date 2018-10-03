@@ -32,10 +32,15 @@
               
               <v-list-tile-sub-title>{{ item.currencyCharCode }}</v-list-tile-sub-title>
             </v-list-tile-content>
+
             <v-spacer></v-spacer>
-            
-              <h3 class="font-weight-thin">{{ item.BalanceInReportCurrency }}</h3>
-            
+
+            <v-list-tile-action>
+                <v-list-tile-title>{{ item.convertedAmount }} (CZK)</v-list-tile-title>
+
+                <v-list-tile-sub-title>{{ item.balance }} ({{item.currencyCharCode}})</v-list-tile-sub-title>
+            </v-list-tile-action>
+
 
           </v-list-tile>
         </v-list>
