@@ -1,10 +1,11 @@
 <template>
-  <v-app dark id="inspire">
+  <v-app id="inspire">
     <v-navigation-drawer
       fixed
       :clipped="$vuetify.breakpoint.lgAndUp"
       app
       v-model="drawer"
+      class="side-menu"
       v-if="this.$store.state.auth"
     >
       <v-list dense>
@@ -13,8 +14,8 @@
             row
             v-if="item.heading"
             align-center
-            :key="item.heading"
-            
+            :key="item.heading" 
+            class="side-menu"  
           >
             <v-flex xs6>
               <v-subheader v-if="item.heading">
@@ -25,17 +26,17 @@
               <a href="#!" class="body-2 black--text">EDIT</a>
             </v-flex>
           </v-layout>
+
           <v-list-group
             v-else-if="item.children"
             v-model="item.model"
             :key="item.text"
-            
             :prepend-icon="item.model ? item.icon : item['icon-alt']"
             append-icon=""
           >
             <v-list-tile slot="activator">
               <v-list-tile-content>
-                <v-list-tile-title>
+                <v-list-tile-title class="side-menu">
                   {{ item.text }}
                 </v-list-tile-title>
               </v-list-tile-content>
@@ -47,10 +48,10 @@
               :to="child.link"
             >
               <v-list-tile-action v-if="child.icon">
-                <v-icon large  color="green darken-2">{{ child.icon }}</v-icon>
+                <v-icon large  color="#A3A0FB">{{ child.icon }}</v-icon>
               </v-list-tile-action>
               <v-list-tile-content>
-                <v-list-tile-title>
+                <v-list-tile-title class="side-menu">
                   {{ child.text }}
                 </v-list-tile-title>
               </v-list-tile-content>
@@ -59,12 +60,12 @@
           
           <v-list-tile v-else @click="" :key="item.text" :to="item.link">
             <v-list-tile-action>
-              <v-icon color="green darken-2">{{ item.icon }}</v-icon>
+              <v-icon color="#A3A0FB">{{ item.icon }}</v-icon>
             </v-list-tile-action>
             <v-list-tile-content>
              
               
-              <v-list-tile-title>
+              <v-list-tile-title class="side-menu">
                 {{ item.text }}
               </v-list-tile-title>
               
@@ -77,7 +78,7 @@
     </v-navigation-drawer>
 
     <v-toolbar
-      color="green darken-3"
+      color="#43425D"
       dark
       app
       :clipped-left="$vuetify.breakpoint.lgAndUp"
@@ -99,7 +100,7 @@
             <v-list>
               <v-list-tile v-for="(item, i) in componentMenu" :key="i" @click="item.action()">
                 <v-list-tile-action>
-                <v-icon medium  color="grey darken-3">{{ item.icon }}</v-icon>
+                <v-icon medium  color="#A3A0FB">{{ item.icon }}</v-icon>
                 </v-list-tile-action>
                 <v-list-tile-title>{{ item.title }}</v-list-tile-title>
               </v-list-tile>
@@ -206,6 +207,11 @@
     margin-right: auto;
     margin-left: auto;
     
+  }
+
+  .side-menu {
+    background-color: #43425D;
+    color: white;
   }
   
 </style>

@@ -33,7 +33,7 @@ class Api {
         const model = params.model;
         const action = params.action;
 
-        let fullUrl = `${this.host}/${model}/${action}?XDEBUG_SESSION_START=16882`;
+        let fullUrl = `${this.host}/${model}/${action}?XDEBUG_SESSION_START=13830`;
         
         const AUTH_TOKEN = this.getToken();
         
@@ -312,16 +312,17 @@ class Api {
     async save(params) {
         const model = params.model;
 
+        console.log(params.isUpdate);
         
-        let fullUrl = `${this.host}/${model}/create`;
+        let fullUrl = `${this.host}/${model}/create?XDEBUG_SESSION_START=10906`;
         if (params.isUpdate === true) {
-            fullUrl = `${this.host}/${model}/update` ;  
+            fullUrl = `${this.host}/${model}/update?XDEBUG_SESSION_START=10906` ;  
         }
 
         if ("url" in params) {
             fullUrl = `${this.host}${params.url}`;       
         }
-
+        console.log(fullUrl);
         const AUTH_TOKEN = this.getToken();
         const data = params.data;
         

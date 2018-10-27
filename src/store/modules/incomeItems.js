@@ -28,7 +28,7 @@ const state = {
         })
        
     },
-    getAllExpenseItemsHierarchically ({ commit }) {
+    getAllIncomeItemsHierarchically ({ commit }) {
        
         Api.index({model: "incomeitems"}).then((items)=>{
           

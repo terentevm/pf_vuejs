@@ -10,7 +10,7 @@
   
       <v-card>
 
-        <v-toolbar color="green darken-3" dark>
+        <v-toolbar color="#43425D" dark>
         
             <v-toolbar-title>Currency: {{ formTitle }}</v-toolbar-title>
             <v-spacer></v-spacer>

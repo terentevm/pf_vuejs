@@ -441,15 +441,18 @@ export default {
       this.sending = true;
 
       let rows = this.getRowsUpload();
+
+      console.dir(this.wallet.id);
+
       let doc = {
         id: this.id,
         date: this.date,
-        wallet_id: this.wallet.id,
+        wallet_id: this.wallet,
         rows: rows
       };
-
+      
       const params = {
-        isUpload: this.id !== null,
+        isUpdate: this.id !== null,
         model: "expenditure",
         data: doc
       };

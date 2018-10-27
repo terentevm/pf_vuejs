@@ -501,7 +501,7 @@ export default {
             };
 
             const params = {
-                isUpload: (this.id !== null),
+                isUpdate: (this.id !== null),
                 model: "income",
                 data: doc
             };

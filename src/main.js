@@ -1,5 +1,6 @@
 // The Vue build version to load with the `import` command
 // (runtime-only or standalone) has been set in webpack.base.conf with an alias.
+
 import Vue from 'vue'
 import App from './App'
 import Vuex from 'vuex'
@@ -12,7 +13,7 @@ import '../src/assets/css/bootstrap-grid.css';
 import indexBalance from './components/IndexBalance.vue';
 
 import store from './store'
-
+import 'babel-polyfill'
 Vue.use(Vuetify)
 Vue.use(VeeValidate);
 Vue.component("tm-index-balance", indexBalance);

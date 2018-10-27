@@ -12,7 +12,7 @@
       <v-dialog v-model="dialog" max-width="500px">
       <v-card>
 
-        <v-toolbar color="green darken-3" dark>
+        <v-toolbar color="#43425D" dark>
         
             <v-toolbar-title>Item: {{ formTitle }}</v-toolbar-title>
             <v-spacer></v-spacer>
