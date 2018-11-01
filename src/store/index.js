@@ -4,6 +4,7 @@ import wallets from './modules/wallets'
 import currencies from './modules/currencies'
 import expenseItems from './modules/expenseitems'
 import incomeItems from './modules/incomeitems'
+import reports from './modules/reports'
 
 Vue.use(Vuex)
 
@@ -18,7 +19,8 @@ export default new Vuex.Store({
         wallets,
         currencies,
         expenseItems,
-        incomeItems
+        incomeItems,
+        reports
     },
     mutations: {
       increment (state) {

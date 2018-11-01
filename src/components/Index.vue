@@ -32,29 +32,7 @@
           </v-flex>
 
           <v-flex d-flex xs12 sm6 md4 >
-            <v-card class="mx-1 mt-2">
-              <v-card-title>
-                  <div>
-                    <span class="grey--text">Expences</span><br>
-                  </div>
-                </v-card-title>
-                <v-divider light></v-divider>
-                <v-layout>
-                  
-                  <v-flex xs7>
-                    <v-card-title primary-title>
-                      <div>
-                        <div class="headline">999999 CZK</div>
-                      </div>
-                    </v-card-title>
-                  </v-flex>
-
-                  <v-flex xs5 d-flex justify-space-around >
-                    <img src="../assets/graph_expenses.svg" height="64px" width="64px">
-                  </v-flex>
-
-                </v-layout>
-            </v-card>
+            <tm-index-expense-total v-bind:totalExpenses ="this.expenseTotalAmount"></tm-index-expense-total>
           </v-flex>
 
           <v-flex d-flex xs12 sm6 md4>
@@ -86,11 +64,42 @@
       </v-layout>
     </div>
     
+    <v-layout row wrap>
+    <v-flex d-flex xs12 sm6 md4 >
+      <tm-index-expenses-list v-bind:expenses ="this.expenses"></tm-index-expenses-list>
+    </v-flex>  
+    </v-layout>
   </v-container>
 </template>
 
 <script>
+import { mapGetters, mapActions } from 'vuex'
 
+export default {
+    computed: {
+
+        ...mapGetters([
+            'expenses',
+            'expenseTotalAmount'
+        ])
+    },
+
+    beforeMount: function ()
+    {
+        this.$store.dispatch("getExpenses", this.getParams());
+    },
+  
+    methods: {
+        getParams()
+        {
+            return {
+                beginDate: "2018-09-01",
+                endDate: "2018-09-30"    
+            }
+        }
+    }
+    
+}
 
 </script>
 
