@@ -14,11 +14,13 @@ import '../src/assets/css/bootstrap-grid.css';
 //my custom list
 import RoundedList from './components/Reusable/ListOfAmount.vue';
 
-import indexBalance from './components/IndexBalance.vue';
+import BalanceTotal from './components/IndexDashboard/BalanceTotal.vue';
 
 import ExpenseTotal from './components/IndexDashboard/ExpenseTotal.vue'
+import IncomeTotal from './components/IndexDashboard/IncomeTotal.vue'
 import ExpensesList from './components/IndexDashboard/ExpensesList.vue'
-
+import IncomesList from './components/IndexDashboard/IncomesList.vue'
+import BalanceByWallets from './components/IndexDashboard/BalanceByWallets.vue'
 
 import store from './store'
 import 'babel-polyfill'
@@ -26,9 +28,12 @@ Vue.use(Vuetify)
 Vue.use(VeeValidate);
 Vue.component("tm-list-rounded", RoundedList);
 
-Vue.component("tm-index-balance", indexBalance);
+Vue.component("tm-index-balance-total", BalanceTotal);
 Vue.component("tm-index-expense-total", ExpenseTotal);
+Vue.component("tm-index-income-total", IncomeTotal);
 Vue.component("tm-index-expenses-list", ExpensesList);
+Vue.component("tm-index-incomes-list", IncomesList);
+Vue.component("tm-index-balance-list", BalanceByWallets);
 
 Vue.config.productionTip = false;
 

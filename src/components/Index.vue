@@ -3,31 +3,8 @@
     <div class="panel-top">
       <v-layout row wrap> 
           <v-flex d-flex xs12 sm6 md4 >
-            <v-hover>
-              <v-card slot-scope="{ hover }" class="mx-1 mt-2">
-                <v-card-title>
-                  <div>
-                    <span class="grey--text">Balance</span><br>
-                  </div>
-                </v-card-title>
-                <v-divider light></v-divider>
-                <v-layout>
-                  
-                  <v-flex xs7>
-                    <v-card-title primary-title>
-                      <div>
-                        <div class="headline">999999 CZK</div>
-                      </div>
-                    </v-card-title>
-                  </v-flex>
-
-                  <v-flex xs5 d-flex justify-space-around >
-                    <img src="../assets/balance.svg" height="64px" width="64px">
-                  </v-flex>
-
-                </v-layout>
-              </v-card>
-            </v-hover>
+            
+            <tm-index-balance-total v-bind:totalBalance ="this.balanceTotal"></tm-index-balance-total>
             
           </v-flex>
 
@@ -36,29 +13,7 @@
           </v-flex>
 
           <v-flex d-flex xs12 sm6 md4>
-            <v-card class="mx-1 mt-2">
-              <v-card-title>
-                  <div>
-                    <span class="grey--text">Incomes</span><br>
-                  </div>
-              </v-card-title>
-              <v-divider light></v-divider>
-                <v-layout>
-                  
-                  <v-flex xs7>
-                    <v-card-title primary-title>
-                      <div>
-                        <div class="headline">999999 CZK</div>
-                      </div>
-                    </v-card-title>
-                  </v-flex>
-
-                  <v-flex xs5 d-flex justify-space-around >
-                    <img src="../assets/graph_income.svg" height="64px" width="64px">
-                  </v-flex>
-
-                </v-layout>
-            </v-card>
+            <tm-index-income-total v-bind:totalIncomes ="this.incomeTotal"></tm-index-income-total>
           </v-flex>
 
       </v-layout>
@@ -66,8 +21,17 @@
     
     <v-layout row wrap>
     <v-flex d-flex xs12 sm6 md4 >
+      <tm-index-balance-list v-bind:balanceAll ="this.balanceAll"></tm-index-balance-list>
+    </v-flex>
+
+    <v-flex d-flex xs12 sm6 md4 >
       <tm-index-expenses-list v-bind:expenses ="this.expenses"></tm-index-expenses-list>
-    </v-flex>  
+    </v-flex>
+
+    <v-flex d-flex xs12 sm6 md4 >
+      <tm-index-incomes-list v-bind:incomes ="this.incomes"></tm-index-incomes-list>
+    </v-flex>
+
     </v-layout>
   </v-container>
 </template>
@@ -79,14 +43,21 @@ export default {
     computed: {
 
         ...mapGetters([
+            'balanceTotal',
+            'balanceAll',
             'expenses',
-            'expenseTotalAmount'
+            'incomes',
+            'expenseTotalAmount',
+            'incomeTotal'
         ])
     },
 
     beforeMount: function ()
     {
-        this.$store.dispatch("getExpenses", this.getParams());
+        const params = this.getParams();
+        this.$store.dispatch("getBalanceAll");
+        this.$store.dispatch("getExpenses", params);
+        this.$store.dispatch("getIncomes", params);
     },
   
     methods: {
@@ -111,7 +82,7 @@ export default {
   }
 
   .panel-top {
-    padding: 10px;
+    /* padding: 10px; */
   }
   
 </style>

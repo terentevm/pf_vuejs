@@ -1,31 +1,30 @@
 <template>
-    <ul class="list">
-        <li v-for ="item in elements">
-            <div class="list-row">
-                <div class="list-row-ava-letter">
-                    <span>{{ item.itemName.trim()[0].toUpperCase() }}</span>
-                </div>
+<v-card class="mx-1 mt-2">
+    <v-card-title>
+        <div>
+            <span class="grey--text">Structure of incomes </span><br>
+        </div>
+        </v-card-title>
+        
+        <v-divider light></v-divider>
+        
+        <v-layout row>
+            <v-flex xs12>
+                <tm-list-rounded v-bind:elements ="this.incomes"></tm-list-rounded>
+            </v-flex>        
                 
-                <div class="list-row-content">
-                    <span>{{ item.itemName }}</span>
-                </div>
-                
-                <div class="list-row-sum">
-                     <span>{{ item.sumConverted }}</span>
-                </div>     
-            </div>
-                    
-        </li>
-    </ul>
+        </v-layout>
+    </v-card>      
 </template>
 
 <script>
-    export default {
-        props: {
-            elements: Array,
-            roundColor: String,
-        }
-    }
+
+import { mapGetters, mapActions } from 'vuex'
+
+export default {
+    props: ['incomes']
+    
+}
 </script>
 
 <style scoped>
@@ -84,7 +83,7 @@
     .list-row-sum {
         display: flex;
         flex-direction: row;
-        /* flex-grow: 1; */
+        flex-grow: 1;
         justify-content:right;
         align-items: center;
         margin-right: 20px;

@@ -7,6 +7,7 @@ const state = {
     all: [],
     allList: [],
     balanceAll: [],
+    balanceTotal: 0,
     loading: false
   }
   
@@ -15,6 +16,7 @@ const state = {
     allWallets: state => state.all,
     allWalletsList: state => state.allList,
     balanceAll: state => state.balanceAll,
+    balanceTotal: state => state.balanceTotal,
     loading: state => state.loading
   }
   
@@ -73,7 +75,14 @@ const state = {
     },
 
     setBalanceAll(state, wallets) {
+      let total = 0;
+
+      for (let balanceData of wallets) {
+        total += balanceData.convertedAmount;
+      }
+      
       state.balanceAll = wallets;
+      state.balanceTotal = total;
     }
   }
   
