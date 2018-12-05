@@ -58,7 +58,7 @@
             <v-layout row >
                 <v-flex xs12 sm12 md12 lg12>
                 <v-tabs v-model="active"
-                        color="green darken-3"
+                        color="#43425D"
                         dark
                         slider-color="yellow"
                     >
@@ -403,6 +403,10 @@ export default {
         }
 
         this.rows = temp_rows;
+        if (this.rows.length > 0) {
+          this.editRow = this.rows[0];
+        }
+        
       });
     },
     getItems() {
