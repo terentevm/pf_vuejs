@@ -10,13 +10,7 @@
     >
       <v-list dense>
         <template v-for="item in items">
-          <v-layout
-            row
-            v-if="item.heading"
-            align-center
-            :key="item.heading" 
-            class="side-menu"  
-          >
+          <v-layout row v-if="item.heading" align-center :key="item.heading" class="side-menu">
             <v-flex xs6>
               <v-subheader v-if="item.heading">
                 {{ item.heading }}
@@ -41,15 +35,11 @@
                 </v-list-tile-title>
               </v-list-tile-content>
             </v-list-tile>
-            <v-list-tile
-              v-for="(child, i) in item.children"
-              :key="i"
-              @click=""
-              :to="child.link"
-            >
-              <v-list-tile-action v-if="child.icon">
-                <v-icon large  color="#A3A0FB">{{ child.icon }}</v-icon>
-              </v-list-tile-action>
+            <v-list-tile v-for="(child, i) in item.children" :key="i" :to="child.link">
+              <v-list-tile-avatar tile size="32">
+                <img :src="child.avatar" height="24px" width="24px" />
+              </v-list-tile-avatar>
+
               <v-list-tile-content>
                 <v-list-tile-title class="side-menu">
                   {{ child.text }}
@@ -57,20 +47,16 @@
               </v-list-tile-content>
             </v-list-tile>
           </v-list-group>
-          
-          <v-list-tile v-else @click="" :key="item.text" :to="item.link">
-            <v-list-tile-action>
-              <v-icon color="#A3A0FB">{{ item.icon }}</v-icon>
-            </v-list-tile-action>
+
+          <v-list-tile v-else @click="" avatar dark :key="item.text" :to="item.link">
+            <v-list-tile-avatar tile>
+              <img :src="item.avatar" height="32px" width="32px" />
+            </v-list-tile-avatar>
+
             <v-list-tile-content>
-             
-              
               <v-list-tile-title class="side-menu">
                 {{ item.text }}
               </v-list-tile-title>
-              
-             
-              
             </v-list-tile-content>
           </v-list-tile>
         </template>
@@ -78,140 +64,137 @@
     </v-navigation-drawer>
 
     <v-toolbar
-      color="#43425D"
+      color="appColor"
       dark
       app
       :clipped-left="$vuetify.breakpoint.lgAndUp"
       fixed
-      height=58
+      height="58"
     >
-
       <v-toolbar-title fixed style="width: 300px" class="ml-0 pl-3">
-        <v-toolbar-side-icon @click.stop="drawer = !drawer" ></v-toolbar-side-icon>
+        <v-toolbar-side-icon @click.stop="drawer = !drawer"></v-toolbar-side-icon>
         <span>{{ title }}</span>
       </v-toolbar-title>
 
       <v-spacer></v-spacer>
-      
-      <v-menu bottom left transition="scale-transition" v-show = "componentMenu.length !== 0">
-            <v-btn slot="activator" icon dark>
-              <v-icon>more_vert</v-icon>
-            </v-btn>
-            <v-list>
-              <v-list-tile v-for="(item, i) in componentMenu" :key="i" @click="item.action()">
-                <v-list-tile-action>
-                <v-icon medium  color="#A3A0FB">{{ item.icon }}</v-icon>
-                </v-list-tile-action>
-                <v-list-tile-title>{{ item.title }}</v-list-tile-title>
-              </v-list-tile>
-            </v-list>
-          </v-menu>
+
+      <v-menu bottom left transition="scale-transition" v-show="componentMenu.length !== 0">
+        <v-btn slot="activator" icon dark>
+          <v-icon>more_vert</v-icon>
+        </v-btn>
+        <v-list>
+          <v-list-tile v-for="(item, i) in componentMenu" :key="i" @click="item.action()">
+            <v-list-tile-action>
+              <v-icon medium color="#A3A0FB">{{ item.icon }}</v-icon>
+            </v-list-tile-action>
+            <v-list-tile-title>{{ item.title }}</v-list-tile-title>
+          </v-list-tile>
+        </v-list>
+      </v-menu>
       <v-btn icon large>
         <v-avatar size="32px" tile>
-          <img
-            src="../src/assets/logo_var2.svg"
-            alt="Vuetify"
-          >
+          <img src="../src/assets/logo_var2.svg" alt="Vuetify" />
         </v-avatar>
       </v-btn>
     </v-toolbar>
-     
 
-      <v-content>
-        <v-container fluid>
-        
-          <router-view></router-view>
-          
-        </v-container>
-      </v-content>
-  
-    
+    <v-content>
+      <v-container fluid>
+        <router-view></router-view>
+      </v-container>
+    </v-content>
   </v-app>
 </template>
 
 <script>
-  export default {
-    
-    data: () => ({
-      dialog: false,
-      drawer: true,
-      showMenu: false,
-      items: [
-        { icon: 'home', text: "Home", link: '/index'},
+import imgReport from '@/assets/report.png';
+import imgWallet from '@/assets/wallet.png';
+import imgCurrencies from '@/assets/currencies.svg';
+import imgExpensesItems from '@/assets/shopping-bags.svg';
+import imgIncomes from '@/assets/graph_income.svg';
+import imgExpenses from '@/assets/graph_expenses.svg';
+import imgTransfers from '@/assets/exchange.svg';
+import imgSettings from '@/assets/settings.svg';
+import imgLogout from '@/assets/logout.svg';
+export default {
+  data: () => ({
+    dialog: false,
+    drawer: true,
+    showMenu: false,
+    // avatar: imgReport,
+    items: [
+      { icon: 'home', text: 'Dashboard', link: '/index', avatar: imgReport },
 
-        {
-          icon: 'keyboard_arrow_up',
-          'icon-alt': 'keyboard_arrow_down',
-          text: 'References',
-          model: true,
-          children: [
-            { icon: 'euro_symbol', text: 'Currencies', link:'/currencies' },
-            { icon: 'account_balance_wallet', text: 'Wallets' , link:'/wallets'},
-            { icon: 'local_atm', text: 'Income items', link: '/itemsincome' },
-            { icon: 'shopping_basket', text: 'Expenditure items' , link: '/itemsexpenditure'},
-          ]
-        },
-
-        {
-          icon: 'keyboard_arrow_up',
-          'icon-alt': 'keyboard_arrow_down',
-          text: 'Transactions',
-          model: true,
-          children: [
-            { icon: 'remove', text: 'Expenses', link: '/expends' },
-            { icon: 'add', text: 'Incomes', link: '/incomes'  },
-            { icon: 'compare_arrows', text: 'Transfers', link: '/transfers'},
-            
-          ]
-        },
-
-    
-        { icon: 'settings', text: 'Settings' ,link: "/newsettings"},
-        { icon: 'exit_to_app', text: 'Log out', link: '/login'},
-        
-      ]
-    }),
-
-    mounted: function(){
-      
-      this.$store.state.auth = (sessionStorage.getItem("jwt") === null) ? false : true;
-      
-    },
-    computed: {
-      title() {
-        return this.$store.state.title == undefined ? "Personal finanses" : this.$store.state.title;
+      {
+        icon: 'keyboard_arrow_up',
+        'icon-alt': 'keyboard_arrow_down',
+        text: 'References',
+        model: true,
+        children: [
+          { icon: 'euro_symbol', text: 'Currencies', link: '/currencies', avatar: imgCurrencies },
+          { icon: 'account_balance_wallet', text: 'Wallets', link: '/wallets', avatar: imgWallet },
+          { icon: 'local_atm', text: 'Income items', link: '/itemsincome', avatar: imgIncomes },
+          {
+            icon: 'shopping_basket',
+            text: 'Expenditure items',
+            link: '/itemsexpenditure',
+            avatar: imgExpensesItems,
+          },
+        ],
       },
-      componentMenu() {
-        return this.$store.state.componentMenu;
-      }
-    }
-  ,
-    props: {
-      source: String
+
+      {
+        icon: 'keyboard_arrow_up',
+        'icon-alt': 'keyboard_arrow_down',
+        text: 'Transactions',
+        model: true,
+        children: [
+          { icon: 'remove', text: 'Expenses', link: '/expends', avatar: imgExpenses },
+          { icon: 'add', text: 'Incomes', link: '/incomes', avatar: imgIncomes },
+          { icon: 'compare_arrows', text: 'Transfers', link: '/transfers', avatar: imgTransfers },
+        ],
+      },
+
+      { icon: 'settings', text: 'Settings', link: '/settings', avatar: imgSettings },
+      { icon: 'exit_to_app', text: 'Log out', link: '/login', avatar: imgLogout },
+    ],
+  }),
+
+  mounted: function() {
+    this.$store.state.auth = sessionStorage.getItem('jwt') === null ? false : true;
+  },
+  computed: {
+    title() {
+      return this.$store.state.title == undefined ? 'Personal finanses' : this.$store.state.title;
     },
-    methods:{
-      logout(){
-        console.log("Log out...");
-      }
-    }
-  }
+    componentMenu() {
+      return this.$store.state.componentMenu;
+    },
+  },
+  props: {
+    source: String,
+  },
+  methods: {
+    logout() {
+      console.log('Log out...');
+    },
+  },
+};
 </script>
 
 <style scoped>
-  .container {
-    width: 100%;
-    height: 90vh;
-    padding: 0px;
-    padding-right: 0px;
-    padding-left: 0px;
-    margin-right: auto;
-    margin-left: auto;
-    
-  }
+.container {
+  width: 100%;
+  height: 90vh;
+  padding: 0px;
+  padding-right: 0px;
+  padding-left: 0px;
+  margin-right: auto;
+  margin-left: auto;
+}
 
-  .side-menu {
-    background-color: #43425D;
-    color: white;
-  }
-  
+.side-menu {
+  background-color: #43425d;
+  color: white;
+}
 </style>

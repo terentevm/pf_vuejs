@@ -1,31 +1,31 @@
-import ApiClass from "../../components/Api";
+import ApiClass from '../../components/Api';
 const API = new ApiClass();
 
 const state = {
   expenseTotalAmount: 0,
   expenses: [],
   incomeTotal: 0,
-  incomes: []
+  incomes: [],
 };
 
 const getters = {
   expenseTotalAmount: state => state.expenseTotalAmount,
   incomeTotal: state => state.incomeTotal,
   expenses: state => state.expenses,
-  incomes: state => state.incomes
+  incomes: state => state.incomes,
 };
 
 const actions = {
   getExpenses: ({ commit }, settings) => {
     const params = {
-      model: "reports",
-      action: "expenses",
-      data: settings
+      model: 'reports',
+      action: 'expenses',
+      data: settings,
     };
 
     API.post(params)
       .then(response => {
-        commit("setExpenses", response.data);
+        commit('setExpenses', response.data);
       })
       .catch(error => {
         console.error(error);
@@ -34,19 +34,19 @@ const actions = {
 
   getIncomes: ({ commit }, settings) => {
     const params = {
-      model: "reports",
-      action: "incomes",
-      data: settings
+      model: 'reports',
+      action: 'incomes',
+      data: settings,
     };
 
     API.post(params)
       .then(response => {
-        commit("setIncomes", response.data);
+        commit('setIncomes', response.data);
       })
       .catch(error => {
         console.error(error);
       });
-  }
+  },
 };
 
 const mutations = {
@@ -70,12 +70,12 @@ const mutations = {
 
     state.incomeTotal = total.toFixed(2);
     state.incomes = incomes;
-  }
+  },
 };
 
 export default {
   state,
   getters,
   actions,
-  mutations
+  mutations,
 };

@@ -1,386 +1,345 @@
-      import axios from "axios";
+import axios from 'axios';
 
-      class Model {
-        constructor() {
-          this.http = axios.create({
-            timeout: 5000,
-            headers: {
-              'Content-Type': 'application/json',
+class Model {
+  constructor() {
+    this.http = axios.create({
+      timeout: 5000,
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      proxy: false,
+      data: {},
+    });
 
-            },
-            proxy: false,
-            data: {}
-          });
+    this.host = 'http://pf/app';
+    //this.host = "/app"; //PRODACTION
+    //this.host = "http://localhost:9000"; //Fake server
+  }
+  getToken() {
+    return sessionStorage.getItem('jwt');
+  }
 
-          this.host = "http://pf/app";
-          //this.host = "/app"; //PRODACTION
-          //this.host = "http://localhost:9000"; //Fake server
-                      
-        }
-        getToken() {
-          return sessionStorage.getItem('jwt');
-        
-        }
+  post(url, data) {
+    let AUTH_TOKEN = ' Bearer ' + this.getToken();
 
-        post(url, data) {
-          let AUTH_TOKEN = " Bearer " + this.getToken();
-          
-          return new Promise((resolve, reject) => {
-            this.http({
-              method: 'POST',
-              headers: {
-                "Authorization": AUTH_TOKEN,
-                'Content-Type': 'application/json',
-                'Accept': 'text/json'
-              },
-              data: data,
-              url: url
-            
-            }).then(response => {
-              resolve(response);
+    return new Promise((resolve, reject) => {
+      this.http({
+        method: 'POST',
+        headers: {
+          Authorization: AUTH_TOKEN,
+          'Content-Type': 'application/json',
+          Accept: 'text/json',
+        },
+        data: data,
+        url: url,
+      })
+        .then(response => {
+          resolve(response);
+        })
+        .catch(e => {
+          reject(e);
+        });
+    }); //end promise
+  }
 
-            })
-              .catch(e => {
-                
-                reject(e);
+  get(url) {
+    let AUTH_TOKEN = ' Bearer ' + this.getToken();
+    return new Promise((resolve, reject) => {
+      this.http({
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          Accept: 'text/json',
+          Authorization: AUTH_TOKEN,
+        },
 
-              });
-          }); //end promise
-        }
+        url: url,
+      })
+        .then(response => {
+          resolve(response.data);
+        })
+        .catch(e => {
+          reject(e);
+        });
+    });
+  }
 
-        get(url){
-          let AUTH_TOKEN = " Bearer " + this.getToken();
-          return new Promise((resolve, reject) => {
-            this.http({
-              method: 'GET',
-              headers: {
-                'Content-Type': 'application/json',
-                'Accept': 'text/json',
-                "Authorization": AUTH_TOKEN,
-              },
+  processResponseData(response) {
+    var dataObj = undefined;
 
-              url: url,
-            
-            }).then(response => {
+    console.log(response.data);
+    if (typeof response.data === 'object' && response.data !== null) {
+      dataObj = response.data;
+    } else {
+      dataObj = {
+        success: false,
+        data: response.data,
+        message: 'Unexepcted response type',
+      };
+    }
 
-            resolve(response.data);
+    console.log(dataObj);
 
-            })
-              .catch(e => {
-                
-                reject(e);
+    return dataObj;
+  }
 
-              });
-          });
+  signUp(userData) {
+    const url = this.host + '/user/signup';
+    return this.post(url, userData);
+  }
 
-        }
+  login(loginData) {
+    return new Promise((resolve, reject) => {
+      this.http({
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Accept: 'text/json',
+        },
 
-        processResponseData(response) {
-          
-          var dataObj = undefined;
+        url: this.host + '/user/login',
+        data: loginData,
+        responseType: 'json',
+      })
+        .then(response => {
+          let dataObj = this.processResponseData(response);
 
-          console.log(response.data);
-          if (typeof(response.data) === "object" && response.data !== null) {
-            
-            dataObj = response.data;
-          }
-          else {
-            dataObj = {
-              success: false,
-              data: response.data,
-              message: "Unexepcted response type" 
-            };  
-          }
-          
-          console.log(dataObj);
-
-          return dataObj;
-        }
-
-        signUp(userData) {
-          const url= this.host + "/user/signup";
-          return this.post(url, userData);  
-        }
-
-        login(loginData) {
-          
-          return new Promise((resolve, reject) => {
-            this.http({
-              method: 'POST',
-              headers: {
-                'Content-Type': 'application/json',
-                'Accept': 'text/json'
-              },
-
-              url: this.host + '/user/login',
-              data: loginData,
-              responseType: 'json',
-            }).then(response => {
-                let dataObj = this.processResponseData(response);
-                
-                if (dataObj.success === true) {
-                  sessionStorage.setItem('jwt', dataObj.data.jwt);
-                  sessionStorage.setItem('settings', dataObj.data.settings);
-                  resolve(dataObj.data.settings);
-                }
-                else {
-                  
-                  reject(dataObj);
-                }    
-
-            })
-              .catch(e => {
-                console.log(e);
-                reject(e);
-
-              });
-          });
-
-        }
-
-        getCurrClassificator() {
-          
-          let AUTH_TOKEN = " Bearer " + this.getToken();
-          return new Promise((resolve, reject) => {
-            this.http({
-              method: 'GET',
-              headers: {
-                'Content-Type': 'application/json',
-                "Authorization": AUTH_TOKEN,
-                'Accept': 'text/json'
-              },
-              url: this.host + '/settings/currencyclassificator',
-              responseType: 'json',
-            }).then(response => {
-              resolve(response.data);
-            })
-              .catch(e => {
-                console.log(e);
-                reject(e);
-
-              });
-          });
-        }
-
-        //CURRENCIES
-
-        getCurrencies(offset) {
-          let url = this.host + "/currency/index?offset=" + offset;
-          let AUTH_TOKEN = " Bearer " + this.getToken();
-          return new Promise((resolve, reject) => {
-            this.http({
-              method: 'GET',
-              headers: {
-                "Authorization": AUTH_TOKEN,
-                'Content-Type': 'application/json',
-                'Accept': 'text/json'
-              },
-
-              url: url,
-              
-              responseType: 'json',
-            }).then(response => {
-              resolve(response.data);
-
-            })
-              .catch(e => {
-                console.log(e);
-                reject(e);
-
-              });
-          });
-        }
-        saveCurrency(item, update){
-          let AUTH_TOKEN = " Bearer " + this.getToken();
-          let url = '';
-          if (update === false) {
-            url = this.host + "/currency/create";
+          if (dataObj.success === true) {
+            sessionStorage.setItem('jwt', dataObj.data.jwt);
+            sessionStorage.setItem('settings', dataObj.data.settings);
+            resolve(dataObj.data.settings);
           } else {
-            url = this.host + "/currency/update";
+            reject(dataObj);
           }
-          return new Promise((resolve, reject) => {
-            this.http({
-              method: 'POST',
-              headers: {
-                "Authorization": AUTH_TOKEN,
-                'Content-Type': 'application/json',
-                'Accept': 'text/json'
-              },
-              data: item,
-              url: url
-            
-            }).then(response => {
-              resolve(response);
+        })
+        .catch(e => {
+          console.log(e);
+          reject(e);
+        });
+    });
+  }
 
-            })
-              .catch(e => {
-                
-                reject(e);
+  getCurrClassificator() {
+    let AUTH_TOKEN = ' Bearer ' + this.getToken();
+    return new Promise((resolve, reject) => {
+      this.http({
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: AUTH_TOKEN,
+          Accept: 'text/json',
+        },
+        url: this.host + '/settings/currencyclassificator',
+        responseType: 'json',
+      })
+        .then(response => {
+          resolve(response.data);
+        })
+        .catch(e => {
+          console.log(e);
+          reject(e);
+        });
+    });
+  }
 
-              });
-          }); //end promise
-        }
+  //CURRENCIES
 
-        //WALLETS
+  getCurrencies(offset) {
+    let url = this.host + '/currency/index?offset=' + offset;
+    let AUTH_TOKEN = ' Bearer ' + this.getToken();
+    return new Promise((resolve, reject) => {
+      this.http({
+        method: 'GET',
+        headers: {
+          Authorization: AUTH_TOKEN,
+          'Content-Type': 'application/json',
+          Accept: 'text/json',
+        },
 
-        getWallets(offset) {
-          let url = this.host + "/wallets/index?offset=" + offset;
-          let AUTH_TOKEN = " Bearer " + this.getToken();
-          return new Promise((resolve, reject) => {
-            this.http({
-              method: 'GET',
-              headers: {
-                "Authorization": AUTH_TOKEN,
-                'Content-Type': 'application/json',
-                'Accept': 'text/json'
-              },
+        url: url,
 
-              url: url,
-              
-              responseType: 'json',
-            }).then(response => {
-              resolve(response.data);
+        responseType: 'json',
+      })
+        .then(response => {
+          resolve(response.data);
+        })
+        .catch(e => {
+          console.log(e);
+          reject(e);
+        });
+    });
+  }
+  saveCurrency(item, update) {
+    let AUTH_TOKEN = ' Bearer ' + this.getToken();
+    let url = '';
+    if (update === false) {
+      url = this.host + '/currency/create';
+    } else {
+      url = this.host + '/currency/update';
+    }
+    return new Promise((resolve, reject) => {
+      this.http({
+        method: 'POST',
+        headers: {
+          Authorization: AUTH_TOKEN,
+          'Content-Type': 'application/json',
+          Accept: 'text/json',
+        },
+        data: item,
+        url: url,
+      })
+        .then(response => {
+          resolve(response);
+        })
+        .catch(e => {
+          reject(e);
+        });
+    }); //end promise
+  }
 
-            })
-              .catch(e => {
-                console.log(e);
-                reject(e);
+  //WALLETS
 
-              });
-          });
-        } //end getWallets
+  getWallets(offset) {
+    let url = this.host + '/wallets/index?offset=' + offset;
+    let AUTH_TOKEN = ' Bearer ' + this.getToken();
+    return new Promise((resolve, reject) => {
+      this.http({
+        method: 'GET',
+        headers: {
+          Authorization: AUTH_TOKEN,
+          'Content-Type': 'application/json',
+          Accept: 'text/json',
+        },
 
-        saveWallet(item, update) {
-        
-          let AUTH_TOKEN = " Bearer " + this.getToken();
-          let url = '';
-          if (update === false) {
-            url = this.host + "/wallets/create";
-          } else {
-            url = this.host + "/wallets/update";
-          }
-          return new Promise((resolve, reject) => {
-            this.http({
-              method: 'POST',
-              headers: {
-                "Authorization": AUTH_TOKEN,
-                'Content-Type': 'application/json',
-                'Accept': 'text/json'
-              },
-              data: item,
-              url: url
-            
-            }).then(response => {
-              resolve(response.data);
+        url: url,
 
-            })
-              .catch(e => {
-                
-                reject(e);
+        responseType: 'json',
+      })
+        .then(response => {
+          resolve(response.data);
+        })
+        .catch(e => {
+          console.log(e);
+          reject(e);
+        });
+    });
+  } //end getWallets
 
-              });
-          }); //end promise
-        }
+  saveWallet(item, update) {
+    let AUTH_TOKEN = ' Bearer ' + this.getToken();
+    let url = '';
+    if (update === false) {
+      url = this.host + '/wallets/create';
+    } else {
+      url = this.host + '/wallets/update';
+    }
+    return new Promise((resolve, reject) => {
+      this.http({
+        method: 'POST',
+        headers: {
+          Authorization: AUTH_TOKEN,
+          'Content-Type': 'application/json',
+          Accept: 'text/json',
+        },
+        data: item,
+        url: url,
+      })
+        .then(response => {
+          resolve(response.data);
+        })
+        .catch(e => {
+          reject(e);
+        });
+    }); //end promise
+  }
 
-        //settings
-        saveSettings(item, update) {
-          let AUTH_TOKEN = " Bearer " + this.getToken();
-          let url = '';
-          if (update === false) {
-            url = this.host + "/settings/create";
-          } else {
-            url = this.host + "/settings/update";
-          }
-          return new Promise((resolve, reject) => {
-            this.http({
-              method: 'POST',
-              headers: {
-                "Authorization": AUTH_TOKEN,
-                'Content-Type': 'application/json',
-                'Accept': 'text/json'
-              },
-              data: item,
-              url: url
-            
-            }).then(response => {
-              resolve(response);
+  //settings
+  saveSettings(item, update) {
+    let AUTH_TOKEN = ' Bearer ' + this.getToken();
+    let url = '';
+    if (update === false) {
+      url = this.host + '/settings/create';
+    } else {
+      url = this.host + '/settings/update';
+    }
+    return new Promise((resolve, reject) => {
+      this.http({
+        method: 'POST',
+        headers: {
+          Authorization: AUTH_TOKEN,
+          'Content-Type': 'application/json',
+          Accept: 'text/json',
+        },
+        data: item,
+        url: url,
+      })
+        .then(response => {
+          resolve(response);
+        })
+        .catch(e => {
+          reject(e);
+        });
+    }); //end promise
+  }
 
-            })
-              .catch(e => {
-                
-                reject(e);
+  getExpenditureItems() {
+    const url = this.host + '/expenditureitems/index?list=1';
+    return this.get(url);
+  }
 
-              });
-          }); //end promise  
-        }
+  getExpenditureItemsTree() {
+    const url = this.host + '/expenditureitems/index';
+    return this.get(url);
+  }
 
-        getExpenditureItems() {
-          const url= this.host + "/expenditureitems/index?list=1";
-          return this.get(url);
+  saveExpenditureItems(data, isUpdate) {
+    let url = this.host + '/expenditureitems/create';
+    if (isUpdate === true) {
+      url = this.host + '/expenditureitems/update';
+    }
 
-        }
+    return this.post(url, data);
+  }
 
-        getExpenditureItemsTree() {
-          const url= this.host + "/expenditureitems/index";
-          return this.get(url);
+  getExpends(offset) {
+    const url = this.host + '/expenditure/index?limit=20&offset=' + offset;
+    return this.get(url);
+  }
 
-        }
+  getExpend(id) {
+    const url = this.host + '/expenditure/show?id=' + id;
+    return this.get(url);
+  }
 
-        saveExpenditureItems(data , isUpdate) {
+  saveExpend(data) {
+    let url = '';
+    if (data.id == null || data.id == undefined) {
+      url = this.host + '/expenditure/create';
+    } else {
+      url = this.host + '/expenditure/update';
+    }
 
-          let url = this.host + "/expenditureitems/create";
-          if (isUpdate === true) {
-            url= this.host + "/expenditureitems/update";  
-          } 
-          
-          return this.post(url, data);
-        }
+    return this.post(url, data);
+  }
 
-        getExpends(offset) {
-          const url= this.host + "/expenditure/index?limit=20&offset=" + offset;
-          return this.get(url);
+  transfersIndex(offset) {
+    const url = this.host + '/transfer/index?limit=20&offset=' + offset;
+    return this.get(url);
+  }
 
-        }
+  getTransfer(id) {
+    const url = this.host + '/transfer/show?id=' + id;
+    return this.get(url);
+  }
 
-        getExpend(id) {
-          const url= this.host + "/expenditure/show?id=" + id;
-          return this.get(url);
+  saveTransfer(data, isUpdate) {
+    let url = this.host + '/transfer/create';
 
-        }
+    if (isUpdate === true) {
+      let url = this.host + '/transfer/update';
+    }
 
-        saveExpend(data) {
-          
-          let url ='';
-          if (data.id == null || data.id == undefined) {
-            url = this.host + "/expenditure/create";
-          }
-          else {
-            url = this.host + "/expenditure/update";
-          }
-
-          return this.post(url, data);
-        }
-
-
-        transfersIndex(offset) {
-          const url = this.host + "/transfer/index?limit=20&offset=" + offset;
-          return this.get(url);
-        }
-
-        getTransfer(id) {
-          const url= this.host + "/transfer/show?id=" + id;
-          return this.get(url);
-        }
-
-        saveTransfer(data, isUpdate) {
-          let url =this.host + "/transfer/create";
-
-          if (isUpdate === true) {
-            let url =this.host + "/transfer/update";
-          }
-
-          return this.post(url, data);
-        }
-        
-      }//end class
-      export default Model;
+    return this.post(url, data);
+  }
+} //end class
+export default Model;
