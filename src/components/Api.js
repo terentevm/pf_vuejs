@@ -18,6 +18,7 @@ class Api {
     });
 
     this.host = isProduction ? config_prod.host : config_dev.host;
+    //this.host = 'http://localhost:3000/app';
   }
 
   /**
@@ -34,7 +35,7 @@ class Api {
     const model = params.model;
     const action = params.action;
 
-    let fullUrl = `${this.host}/${model}/${action}?XDEBUG_SESSION_START=13830`;
+    let fullUrl = `${this.host}/${model}/${action}`;
 
     const AUTH_TOKEN = this.getToken();
 

@@ -1,18 +1,15 @@
 <template>
-  <div>
-    <v-layout>
-      <v-flex xs12 sm12 md12 lg6 offset-lg-3>
-        <v-form v-on:submit.prevent="sendData">
-          <v-card ref="form">
-            <!-- <v-toolbar color="green darken-3" dark>
-        
-            <v-toolbar-title>Login</v-toolbar-title>
-            <v-spacer></v-spacer>
-            <v-btn icon>
-            <v-icon>account_box</v-icon>
-            </v-btn>
-        </v-toolbar> -->
-            <v-divider class="mt-5"></v-divider>
+
+    <v-container d-flex align-center align-content-center>
+      <v-flex xs12 sm6 offset-sm-3 md6 offset-md-3 lg6 offset-lg-3 xl6 offset-xl-3>
+        <div>
+              <div class="mb-4">
+                <div class=" font-weight-regular appColor--text text-xs-center"><span class="login-header">PERSONAL FINANSES</span></div>
+                <div class="mt-3 grey--text text-xs-center font-weight-light mt-2"><span class="login-subheader">Welcome back! Please login to your account.</span></div>
+              </div>
+           
+        <v-form v-on:submit.prevent="sendData" class="mt-3">
+
             <v-card-text>
               <v-text-field
                 label="E-mail"
@@ -48,27 +45,27 @@
                   <v-flex d-flex xs12 sm6 md6>
                     <v-btn
                       type="submit"
-                      outline
-                      color="success"
+                      color="appColor"
                       block
+                      dark
                       :loading="sending"
-                      :disabled="btnLoginDisable"
                       @click="sendData"
                       v-on:keyup.enter="submit"
                       >Login</v-btn
                     >
                   </v-flex>
                   <v-flex d-flex xs12 sm6 md6>
-                    <v-btn outline color="indigo " block to="/signup">Create new account</v-btn>
+                    <v-btn outline color="appColor " block to="/signup">Sign up</v-btn>
                   </v-flex>
                 </v-layout>
               </v-container>
             </v-card-actions>
-          </v-card>
+          
         </v-form>
+        </div>
       </v-flex>
-    </v-layout>
-  </div>
+    </v-container>
+
 </template>
 
 <script>
@@ -183,6 +180,14 @@ export default {
 </script>
 
 <style scoped>
+.login-header {
+  font-size: 36px;
+}
+
+.login-subheader {
+  font-size: 18px;
+}
+
 .error_text {
   color: red;
 }

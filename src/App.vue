@@ -5,10 +5,10 @@
       :clipped="$vuetify.breakpoint.lgAndUp"
       app
       v-model="drawer"
-      class="side-menu"
+      class="appColor"
       v-if="this.$store.state.auth"
     >
-      <v-list dense>
+      <v-list dense class="appColor " dark>
         <template v-for="item in items">
           <v-layout row v-if="item.heading" align-center :key="item.heading" class="side-menu">
             <v-flex xs6>
@@ -193,8 +193,8 @@ export default {
   margin-left: auto;
 }
 
-.side-menu {
+/* .side-menu {
   background-color: #43425d;
   color: white;
-}
+} */
 </style>

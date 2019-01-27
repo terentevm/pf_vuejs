@@ -1,17 +1,13 @@
 <template>
-  <div>
-    <v-layout justify-center>
-      <v-flex xs12 sm10 md8 lg6>
-        <v-card ref="form">
-          <!-- <v-toolbar color="green darken-3" dark>
-        
-        <v-toolbar-title>Signup</v-toolbar-title>
-        <v-spacer></v-spacer>
-        <v-btn icon>
-          <v-icon>account_box</v-icon>
-        </v-btn>
-      </v-toolbar> -->
-          <v-divider class="mt-5"></v-divider>
+
+    <v-container d-flex align-center align-content-center>
+      <v-flex xs12 sm6 offset-sm-3 md6 offset-md-3 lg6 offset-lg-3 xl6 offset-xl-3>
+        <div>
+          <div class="mb-4">
+              <div class=" font-weight-regular appColor--text text-xs-center"><span class="login-header">PERSONAL FINANSES</span></div>
+              <div class="mt-3 grey--text text-xs-center font-weight-light mt-2"><span class="login-subheader">Please complete to create your account.</span></div>
+          </div>
+
           <v-card-text>
             <v-text-field
               label="Name"
@@ -51,27 +47,39 @@
           </v-card-text>
 
           <v-card-actions>
-            <v-btn
-              :loading="sending"
-              :disabled="sending"
-              outline
-              color="success"
-              block
-              flat
-              @click="sendData"
-              >Signup</v-btn
-            >
+            <v-container fluid grid-list-md>
+              <v-layout row wrap>
+                <v-flex xs2 sm4 lg4 xl4></v-flex>
+                <v-flex xs8 sm4 lg4 xl4>
+                  <v-btn
+                    :loading="sending"
+                    :disabled="sending"
+                    color="appColor"
+                    dark
+                    block
+                    @click="sendData"
+                    >Signup</v-btn
+                  >
+                </v-flex>
+                <v-flex xs2 sm4 lg4 xl4></v-flex>
+              </v-layout>
+              
+              <v-layout row wrap d-flex justify-center>
+                
+                <v-flex xs2 sm2 lg2 xl2></v-flex>
+                <v-flex xs8 sm8 lg8 xl8>
+                <div class="link-login mt-2">
+                  <span><a class="appColor--text" href="/#/login">Already have account? Login</a></span>
+                </div>
+                </v-flex>
+                <v-flex xs2 sm2 lg2 xl2></v-flex>
+              </v-layout>
+            </v-container>
           </v-card-actions>
-          <div class="row pr-1">
-            <div class="col-12 col-sm-12 col-md-12 col-lg-12">
-              <span class="grey--text pl-2">Already have account?</span>
-              <a href="/#/login">Login</a>
-            </div>
-          </div>
-        </v-card>
+
+        </div>
       </v-flex>
-    </v-layout>
-    <v-snackbar
+          <v-snackbar
       :timeout="msgSettings.timeout"
       :color="msgSettings.color"
       :multi-line="msgSettings.mode === 'multi-line'"
@@ -81,7 +89,9 @@
       {{ msgSettings.msg }}
       <v-btn dark flat @click.native="msgSettings.show = false">Close</v-btn>
     </v-snackbar>
-  </div>
+    </v-container>
+
+ 
 </template>
 
 <script>
@@ -182,8 +192,21 @@ export default {
 </script>
 
 <style scoped>
+.login-header {
+  font-size: 36px;
+}
+
+.login-subheader {
+  font-size: 18px;
+}
 .btn-signup {
   background-color: #ffa701;
+}
+
+.link-login {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
 }
 
 .formheader {

@@ -11,9 +11,9 @@ class Model {
       data: {},
     });
 
-    this.host = 'http://pf/app';
-    //this.host = "/app"; //PRODACTION
-    //this.host = "http://localhost:9000"; //Fake server
+  this.host = 'http://pf/app';
+   // this.host = "/app"; //PRODACTION
+    //this.host = "http://localhost:3000"; //Fake server
   }
   getToken() {
     return sessionStorage.getItem('jwt');
