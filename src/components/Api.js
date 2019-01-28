@@ -40,15 +40,21 @@ class Api {
     const AUTH_TOKEN = this.getToken();
 
     const data = params.data;
+    const headers = {
+      'Content-Type': 'application/json',
+      'Accept': 'text/json',
+    };
+
+    const authReq = this.isAuthRequiered(params);
+
+    if (authReq === true) {
+      headers.Authorization = AUTH_TOKEN;
+    }
 
     try {
       const res = await this.http.request({
         method: 'POST',
-        headers: {
-          Authorization: AUTH_TOKEN,
-          'Content-Type': 'application/json',
-          Accept: 'text/json',
-        },
+        headers: headers,
         data: data,
         url: fullUrl,
       });
@@ -345,6 +351,29 @@ class Api {
     if (this.logToConsole === true) {
       console.log(msg);
     }
+  }
+
+  isAuthRequiered({model, action}) {
+    const openUrls = [
+      {model:'user', action: 'login'},
+      {model:'user', action: 'signup'},
+      {model:'app', action: 'index'},
+      {model:'app', action: 'logout'},
+    ];
+    
+    const finder = (function(model, action) {
+      
+      return function(el) {
+        return el.model === model && el.action === action;
+      }
+    })(model, action);
+    
+    const foundValue = openUrls.find(finder);
+
+   
+
+    return foundValue ? false : true;
+
   }
 } // end class
 

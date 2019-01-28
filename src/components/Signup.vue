@@ -193,7 +193,7 @@ export default {
 
 <style scoped>
 .login-header {
-  font-size: 36px;
+  font-size: 2em;
 }
 
 .login-subheader {
