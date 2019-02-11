@@ -3,7 +3,7 @@
     <div class="panel-top">
       <v-layout row wrap>
         <v-flex d-flex xs12 sm6 md4>
-          <tm-index-balance-total v-bind:totalBalance="this.balanceTotal"></tm-index-balance-total>
+          <tm-index-balance-card></tm-index-balance-card>
         </v-flex>
 
         <v-flex d-flex xs12 sm6 md4>

@@ -15,7 +15,7 @@ import '../src/assets/css/bootstrap-grid.css';
 import RoundedList from './components/Reusable/ListOfAmount.vue';
 
 import BalanceTotal from './components/IndexDashboard/BalanceTotal.vue';
-
+import BalanceCard from './components/IndexDashboard/BalanceCard.vue'
 import ExpenseTotal from './components/IndexDashboard/ExpenseTotal.vue';
 import IncomeTotal from './components/IndexDashboard/IncomeTotal.vue';
 import ExpensesList from './components/IndexDashboard/ExpensesList.vue';
@@ -37,7 +37,7 @@ Vue.use(Vuetify, {
 });
 Vue.use(VeeValidate);
 Vue.component('tm-list-rounded', RoundedList);
-
+Vue.component('tm-index-balance-card', BalanceCard);
 Vue.component('tm-index-balance-total', BalanceTotal);
 Vue.component('tm-index-expense-total', ExpenseTotal);
 Vue.component('tm-index-income-total', IncomeTotal);
