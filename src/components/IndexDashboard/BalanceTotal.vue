@@ -21,6 +21,7 @@
     </v-card>
   </v-hover>
 </template>
+<script>
 
 import { mapGetters, mapActions } from 'vuex';
 import Num from '../../helpers/Num';

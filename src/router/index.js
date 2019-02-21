@@ -22,6 +22,7 @@ import CurrencyClassificator from '@/components/CurrencyClassificator';
 Vue.use(Router);
 
 export default new Router({
+  mode: 'history',
   routes: [
     {
       path: '/wallets',
