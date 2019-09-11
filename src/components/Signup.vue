@@ -1,252 +1,335 @@
 <template>
+    <v-container d-flex align-center align-content-center class="appColor">
+        <v-flex xs12 sm8 offset-sm-2 md6 offset-md-3 lg6 offset-lg-3 xl6 offset-xl-3>
+            <div>
+                <div>
+                    <div class="mb-4">
+                        <div class="font-weight-regular appColor--text text-xs-center">
+                            <span class="login-header">PERSONAL FINANSES</span>
+                        </div>
+                        <div class="mt-3 grey--text text-xs-center font-weight-light mt-2">
+                            <span class="login-subheader">Welcome! Please create your account.</span>
+                        </div>
+                    </div>
 
-    <v-container d-flex align-center align-content-center>
-      <v-flex xs12 sm6 offset-sm-3 md6 offset-md-3 lg6 offset-lg-3 xl6 offset-xl-3>
-        <div>
-          <div class="mb-4">
-              <div class=" font-weight-regular appColor--text text-xs-center"><span class="login-header">PERSONAL FINANSES</span></div>
-              <div class="mt-3 grey--text text-xs-center font-weight-light mt-2"><span class="login-subheader">Please complete to create your account.</span></div>
-          </div>
+                    <div class="form" v-on:submit.prevent="sendData">
 
-          <v-card-text>
-            <v-text-field
-              label="Name"
-              placeholder="Ivan Ivanov"
-              v-model="name"
-              prepend-icon="face"
-              required
-              :error-messages="errors.collect('name')"
-              v-validate="'required|min:2'"
-              data-vv-name="name"
-              data-vv-validate-on="change"
-            ></v-text-field>
-            <v-text-field
-              label="E-mail"
-              placeholder="example@mail.com"
-              v-model="email"
-              prepend-icon="email"
-              required
-              :error-messages="errors.collect('email')"
-              v-validate="'required|email'"
-              data-vv-name="email"
-              data-vv-validate-on="change"
-            ></v-text-field>
-            <v-text-field
-              label="password"
-              v-model="password"
-              prepend-icon="https"
-              :append-icon="e3 ? 'visibility' : 'visibility_off'"
-              :append-icon-cb="() => (e3 = !e3)"
-              :type="e3 ? 'password' : 'text'"
-              required
-              :error-messages="errors.collect('password')"
-              v-validate="'required|min:3'"
-              data-vv-name="password"
-              data-vv-validate-on="change"
-            ></v-text-field>
-          </v-card-text>
+                        <form class="login-form">
+                            <input
+                                    v-model="name"
+                                    type="text"
+                                    placeholder="name"
+                                    :error-messages="errors.has('name')"
+                                    v-validate.disable="'required'"
+                                    data-vv-name="name"
+                                    class="form-input"
+                                    v-bind:class="{ 'input-error': errors.has('name')}"
+                            />
+                            <p
+                                    v-show="errors.has('name')"
+                                    class="text-sm-left red--text msg-error"
+                            >{{ errors.first('name') }}</p>
 
-          <v-card-actions>
-            <v-container fluid grid-list-md>
-              <v-layout row wrap>
-                <v-flex xs2 sm4 lg4 xl4></v-flex>
-                <v-flex xs8 sm4 lg4 xl4>
-                  <v-btn
-                    :loading="sending"
-                    :disabled="sending"
-                    color="appColor"
-                    dark
-                    block
-                    @click="sendData"
-                    >Signup</v-btn
-                  >
-                </v-flex>
-                <v-flex xs2 sm4 lg4 xl4></v-flex>
-              </v-layout>
-              
-              <v-layout row wrap d-flex justify-center>
-                
-                <v-flex xs2 sm2 lg2 xl2></v-flex>
-                <v-flex xs8 sm8 lg8 xl8>
-                <div class="link-login mt-2">
-                  <span><a class="appColor--text" href="/#/login">Already have account? Login</a></span>
+                            <input
+                                    v-model="email"
+                                    type="text"
+                                    placeholder="email"
+                                    class="form-input input-login"
+                                    :error-messages="errors.has('login')"
+                                    v-validate.disable="'required|email'"
+                                    data-vv-name="login"
+                                    v-bind:class="{ 'input-error': errors.has('login')}"
+                            />
+                            <p
+                                    v-show="errors.has('login')"
+                                    class="text-sm-left red--text msg-error"
+                            >{{ errors.first('login') }}</p>
+
+                            <input
+                                    v-model="password"
+                                    type="password"
+                                    placeholder="password"
+                                    class="form-input"
+                                    :error-messages="errors.has('password')"
+                                    v-validate.disable="'required|min:3'"
+                                    data-vv-name="password"
+                                    v-bind:class="{ 'input-error': errors.has('password')}"
+                            />
+                            <p
+                                    v-show="errors.has('password')"
+                                    class="text-sm-left red--text msg-error"
+                            >{{ errors.first('password') }}</p>
+                            <v-select
+                                    v-model="currency"
+                                    :items="currencyList"
+                                    placeholder="Choose currency"
+                                    menu-props="auto"
+                                    label="Select"
+                                    background-color="#f2f2f2"
+                                    hide-details
+                                    single-line
+                                    outline
+                                    color="#f2f2f2"
+                                    class="currency-select"
+
+                                    v-validate.disable="'required'"
+                                    data-vv-name="currency"
+                            ></v-select>
+                            <p
+                                    v-show="errors.has('currency')"
+                                    class="text-sm-left red--text msg-error"
+                            >{{ errors.first('currency') }}</p>
+                            <v-divider></v-divider>
+                            <button>Create account</button>
+                            <v-progress-linear v-show="this.sending"
+                                               :indeterminate="true"></v-progress-linear>
+                            <p class="message">
+                                Already registered?
+                                <a href="#/login">Login</a>
+                            </p>
+                        </form>
+                    </div>
                 </div>
-                </v-flex>
-                <v-flex xs2 sm2 lg2 xl2></v-flex>
-              </v-layout>
-            </v-container>
-          </v-card-actions>
+            </div>
+        </v-flex>
 
-        </div>
-      </v-flex>
-          <v-snackbar
-      :timeout="msgSettings.timeout"
-      :color="msgSettings.color"
-      :multi-line="msgSettings.mode === 'multi-line'"
-      :vertical="msgSettings.mode === 'vertical'"
-      v-model="msgSettings.show"
-    >
-      {{ msgSettings.msg }}
-      <v-btn dark flat @click.native="msgSettings.show = false">Close</v-btn>
-    </v-snackbar>
     </v-container>
-
- 
 </template>
 
 <script>
-import ModelClass from './Model';
-const Model = new ModelClass();
+    import ApiClass from "../api/api_laravel";
 
-export default {
-  name: 'Signup',
-  $_veeValidate: {
-    validator: 'new',
-  },
-  data() {
-    return {
-      name: '',
-      email: '',
-      password: '',
-      success: false,
+    const api = ApiClass();
 
-      sending: false,
-      showSnack: false,
-      resultMessage: '',
-      e3: true,
-      msgSettings: {
-        show: false,
-        color: 'light-green darken-3',
-        mode: 'vertical',
-        timeout: 6000,
-        msg: '',
-      },
-      dictionary: {
-        attributes: {
-          email: 'E-mail Address',
-          // custom attributes
+    export default {
+        name: "Signup",
+        $_veeValidate: {
+            validator: "new"
         },
-        custom: {
-          name: {
-            required: () => 'Name can not be empty',
-            max: 'The name field may not be greater than 10 characters',
-            // custom messages
-          },
+        data() {
+            return {
+                name: "",
+                email: "",
+                password: "",
+                currency: "",
+                success: false,
+                dialog: false,
+                currencyList: ["RUB", "CZK", "EUR"],
+                sending: false,
+
+            };
         },
-      },
-    };
-  },
-  beforeMount: function() {
-    this.$store.state.title = 'Signup';
-  },
+        beforeMount: function () {
+            this.$store.state.title = "Signup";
+        },
 
-  mounted() {
-    this.$validator.localize('en', this.dictionary);
-  },
+        mounted() {
+            this.$validator.localize("en", this.dictionary);
+        },
 
-  methods: {
-    sendData() {
-      this.sending = true; //block the sending button;
+        methods: {
+            sendData() {
 
-      this.$validator.validateAll().then(result => {
-        if (!result) {
-          this.sending = false;
-          return;
+                this.$validator.validateAll().then(result => {
+                    if (!result) {
+                        this.sending = false;
+                        return;
+                    }
+
+                    this.sending = true;
+
+                    let userData = {
+                        name: this.name,
+                        login: this.email,
+                        password: this.password,
+                        currency: this.currency
+                    };
+
+                    let res = api.signup(userData)
+                        .then(res => {
+                            console.log('ok');
+                            this.$router.push({path: 'login'});
+
+                        })
+                        .catch(err => {
+
+                            if (err.errors instanceof Object) {
+
+                                for (let field in err.errors) {
+
+                                    this.errors.add({
+                                        field: field,
+                                        msg: err.errors[field][0]
+                                    });
+
+
+                                }
+                            }
+
+                            this.sending = false;
+
+                        });
+                });
+            },
         }
-
-        let userData = {
-          name: this.name,
-          login: this.email,
-          password: this.password,
-        };
-
-        this.showSnack = false;
-
-        Model.signUp(userData)
-          .then(response => {
-            this.$router.push({ path: 'login' });
-          })
-          .catch(e => {
-            let msg = this.getErrorMsg(e);
-            this.sending = false;
-            this.msgSettings.color = 'orange darken-4';
-            this.msgSettings.msg = msg;
-            this.msgSettings.show = true;
-          });
-      });
-    },
-
-    getErrorMsg(e) {
-      let res = e.response.data;
-
-      if (res.code == -1) {
-        return 'Server error. Please try again';
-      } else if (res.code == 2) {
-        return 'Inputed data is invalid!';
-      } else if (res.code == 3) {
-        return `User with e-mail ${this.email} is exists!`;
-      }
-    },
-  },
-};
+    };
 </script>
 
 <style scoped>
-.login-header {
-  font-size: 2em;
-}
+    body, html {
+        background-color: #43425D;
+    }
 
-.login-subheader {
-  font-size: 18px;
-}
-.btn-signup {
-  background-color: #ffa701;
-}
+    .login-header {
+        font-size: 2em;
+    }
 
-.link-login {
-  display: flex;
-  flex-direction: row;
-  justify-content: center;
-}
+    .login-subheader {
+        font-size: 18px;
+    }
 
-.formheader {
-  text-align: center;
-}
+    .btn-signup {
+        background-color: #ffa701;
+    }
 
-.custom-loader {
-  animation: loader 1s infinite;
-  display: flex;
-}
-@-moz-keyframes loader {
-  from {
-    transform: rotate(0);
-  }
-  to {
-    transform: rotate(360deg);
-  }
-}
-@-webkit-keyframes loader {
-  from {
-    transform: rotate(0);
-  }
-  to {
-    transform: rotate(360deg);
-  }
-}
-@-o-keyframes loader {
-  from {
-    transform: rotate(0);
-  }
-  to {
-    transform: rotate(360deg);
-  }
-}
-@keyframes loader {
-  from {
-    transform: rotate(0);
-  }
-  to {
-    transform: rotate(360deg);
-  }
-}
+    .link-login {
+        display: flex;
+        flex-direction: row;
+        justify-content: center;
+    }
+
+    .formheader {
+        text-align: center;
+    }
+
+    .custom-loader {
+        animation: loader 1s infinite;
+        display: flex;
+    }
+
+    @-moz-keyframes loader {
+        from {
+            transform: rotate(0);
+        }
+        to {
+            transform: rotate(360deg);
+        }
+    }
+
+    @-webkit-keyframes loader {
+        from {
+            transform: rotate(0);
+        }
+        to {
+            transform: rotate(360deg);
+        }
+    }
+
+    @-o-keyframes loader {
+        from {
+            transform: rotate(0);
+        }
+        to {
+            transform: rotate(360deg);
+        }
+    }
+
+    @keyframes loader {
+        from {
+            transform: rotate(0);
+        }
+        to {
+            transform: rotate(360deg);
+        }
+    }
+
+    .login-page {
+        width: 460px;
+        padding: 8% 0 0;
+        margin: auto;
+        background-color: #ffffff;
+    }
+
+    .form {
+        position: relative;
+        z-index: 1;
+        /* background-color:hsla(0,0%,100%,0.1); */
+
+        max-width: 480px;
+        margin: 0 auto 100px;
+        padding: 45px;
+        text-align: center;
+        /* box-shadow: 0 0 20px 0 rgba(0, 0, 0, 0.2), 0 5px 5px 0 rgba(0, 0, 0, 0.24); */
+    }
+
+    .form-input {
+        font-family: "Roboto", sans-serif;
+        outline: 0;
+        background: #f2f2f2;
+        width: 100%;
+        border: 0;
+        margin: 0 0 10px;
+        padding: 15px;
+        box-sizing: border-box;
+        font-size: 14px;
+    }
+
+    .input-login {
+        text-transform: lowercase;
+    }
+    .input-error {
+        border: 2px solid red;
+    }
+
+    .msg-error {
+        margin-top: -5px;
+    }
+
+    .form button {
+        font-family: "Roboto", sans-serif;
+        text-transform: uppercase;
+        outline: 0;
+        background: #4caf50;
+        width: 100%;
+        border: 0;
+        padding: 15px;
+        color: #ffffff;
+        font-size: 14px;
+        -webkit-transition: all 0.3 ease;
+        transition: all 0.3 ease;
+        cursor: pointer;
+        margin-top: 30px;
+    }
+
+    .form button:hover,
+    .form button:active,
+    .form button:focus {
+        background: #43a047;
+    }
+
+    .form .message {
+        margin: 15px 0 0;
+        color: #b3b3b3;
+        font-size: 12px;
+    }
+
+    .form .message a {
+        color: #4caf50;
+        text-decoration: none;
+    }
+
+    .form .register-form {
+        display: none;
+    }
+
+    .form button:hover,
+    .form button:active,
+    .form button:focus {
+        background: #43a047;
+    }
+
+    .currency-select {
+        background: #f2f2f2;
+        margin-bottom: 15px;
+    }
 </style>

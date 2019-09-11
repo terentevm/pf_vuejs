@@ -7,24 +7,26 @@ import incomeItems from './modules/incomeitems';
 import reports from './modules/reports';
 import settings from './modules/settings';
 import expenses from './modules/expenses';
+import dashboard from './modules/dashboard';
 
 Vue.use(Vuex);
 
 export default new Vuex.Store({
-  state: {
-    auth: false,
-    title: '',
-    iconTitle: '',
-    componentMenu: [],
-  },
-  modules: {
-    wallets,
-    currencies,
-    expenseItems,
-    incomeItems,
-    reports,
-    settings,
-    expenses,
-  },
-  mutations: {},
+    state: {
+        auth: false,
+        title: '',
+        iconTitle: '',
+        componentMenu: [],
+    },
+    modules: {
+        wallets,
+        currencies,
+        expenseItems,
+        incomeItems,
+        reports,
+        settings,
+        expenses,
+        dashboard
+    },
+    mutations: {},
 });

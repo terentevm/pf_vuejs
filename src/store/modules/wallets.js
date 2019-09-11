@@ -1,94 +1,71 @@
-import ApiClass from '../../components/Api';
-const Api = new ApiClass();
-// initial state
+import ApiClass from '../../api/api_laravel';
+
+const api = new ApiClass();
+
 const state = {
-  all: [],
-  allList: [],
-  balanceAll: [],
-  balanceTotal: 0,
-  loading: false,
+    all: [],
+    allList: [],
+    balanceAll: [],
+    balanceTotal: 0,
+    loading: false,
 };
 
 // getters
 const getters = {
-  allWallets: state => state.all,
-  allWalletsList: state => state.allList,
-  balanceAll: state => state.balanceAll,
-  balanceTotal: state => state.balanceTotal,
-  loading: state => state.loading,
+    allWallets: state => state.all,
+    allWalletsList: state => state.allList,
+    loading: state => state.loading,
 };
 
 // actions
 const actions = {
-  getAllWallets({ commit }) {
-    Api.index({ model: 'wallets' })
-      .then(wallets => {
-        commit('setWallets', wallets);
-      })
-      .catch(() => {
-        commit('setWallets', []);
-      });
-  },
+    getAllWallets({commit}) {
+        api.index('wallets')
+            .then(wallets => {
 
-  getAllWalletsList({ commit }) {
-    Api.index({ model: 'wallets' })
-      .then(wallets => {
-        for (let wallet of wallets) {
-          wallet.currencyName = wallet.Currency.name;
-        }
+                wallets.forEach(wallet => {
+                    wallet.active = true;
+                });
+                commit('setWallets', wallets);
+            })
+            .catch(() => {
+                commit('setWallets', []);
+            });
+    },
 
-        commit('setWalletsList', wallets);
-      })
-      .catch(error => {
-        console.log(error);
-        commit('setWalletsList', []);
-      });
-  },
+    getAllWalletsList({commit}) {
+        api.index('wallets')
+            .then(wallets => {
 
-  getBalanceAll({ commit }) {
-    const params = {
-      model: 'wallets',
-      action: 'BalanceAll',
-    };
-    state.loading = true;
-    Api.post(params)
-      .then(wallets => {
-        console.log(wallets);
-        commit('setBalanceAll', wallets.data);
-        state.loading = false;
-      })
-      .catch(error => {
-        console.log(error);
-        commit('setBalanceAll', []);
-        state.loading = false;
-      });
-  },
+                wallets.forEach(wallet => {
+                    wallet.currencyName = wallet.currency.name;
+                    wallet.active = true;
+                });
+
+                commit('setWalletsList', wallets);
+            })
+            .catch(error => {
+                console.log(error);
+                commit('setWalletsList', []);
+            });
+    }
 };
 
 // mutations
 const mutations = {
-  setWallets(state, wallets) {
-    state.all = wallets;
-  },
-  setWalletsList(state, wallets) {
-    state.allList = wallets;
-  },
 
-  setBalanceAll(state, wallets) {
-    let total = 0;
+    setWallets(state, wallets) {
+        state.all = wallets;
+    },
 
-    for (let balanceData of wallets) {
-      total += balanceData.convertedAmount;
-    }
-
-    state.balanceAll = wallets;
-    state.balanceTotal = total;
-  },
+    setWalletsList(state, wallets) {
+        state.allList = wallets;
+    },
 };
 
 export default {
-  state,
-  getters,
-  actions,
-  mutations,
+    state,
+    getters,
+    actions,
+    mutations,
 };

@@ -1,6 +1,4 @@
-// The Vue build version to load with the `import` command
-// (runtime-only or standalone) has been set in webpack.base.conf with an alias.
-
+import 'babel-polyfill';
 import Vue from 'vue';
 import App from './App';
 import Vuex from 'vuex';
@@ -8,11 +6,10 @@ import router from './router';
 
 import Vuetify from 'vuetify';
 import VeeValidate from 'vee-validate';
-import 'vuetify/dist/vuetify.min.css';
-import '../src/assets/css/bootstrap-grid.css';
 
 //my custom list
 import RoundedList from './components/Reusable/ListOfAmount.vue';
+import TMDataTable from './components/Reusable/TMDataTable/TMDataTable';
 
 import BalanceTotal from './components/IndexDashboard/BalanceTotal.vue';
 import BalanceCard from './components/IndexDashboard/BalanceCard.vue'
@@ -25,10 +22,18 @@ import TM_FormActionPanel from './components/tmFormElements/TM_FormActionPanel.v
 import TM_WalletsSelectForm from './components/SelectsForms/WalletsSelectForm.vue';
 
 import store from './store';
-import 'babel-polyfill';
-import { format } from 'url';
 
-const mainColor = '#43425D';
+//style imports
+import 'vuetify/dist/vuetify.min.css';
+import '../src/assets/css/bootstrap-grid.css';
+import "../src/assets/css/sprite.css";
+import './style/pf.css';
+import 'bootstrap/dist/css/bootstrap.min.css';
+
+
+// const mainColor = '#43425D';
+const mainColor = '#435d7d'
+const backgroundColor = '#'
 
 Vue.use(Vuetify, {
   theme: {
@@ -36,6 +41,7 @@ Vue.use(Vuetify, {
   },
 });
 Vue.use(VeeValidate);
+Vue.component('tm-table', TMDataTable);
 Vue.component('tm-list-rounded', RoundedList);
 Vue.component('tm-index-balance-card', BalanceCard);
 Vue.component('tm-index-balance-total', BalanceTotal);
@@ -49,6 +55,18 @@ Vue.component('tm-wallets-select-form', TM_WalletsSelectForm);
 
 Vue.config.productionTip = false;
 
+
+Vue.mixin({
+    methods: {
+        copyObject(objDest, objSource) {
+            for (let propName in objDest) {
+                if (objSource.hasOwnProperty(propName)) {
+                    objDest[propName] = objSource[propName];
+                }
+            }
+        },
+    }
+});
 /* eslint-disable no-new */
 
 router.beforeEach((to, from, next) => {

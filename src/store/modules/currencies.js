@@ -1,69 +1,73 @@
-import ApiClass from '../../components/Api';
-const Api = new ApiClass();
+import ApiClass from '../../api/api_laravel';
+const api = new ApiClass();
+
 // initial state
 const state = {
-  all: [],
-  withRates: [],
-  classificator: [],
+    all: [],
+    withRates: [],
+    classificator: [],
 };
 
 // getters
 const getters = {
-  allCurrencies: state => state.all,
-  allCurrenciesWithRates: state => state.withRates,
-  currencyClassificator: state => state.classificator,
+
+    allCurrencies: state => state.all,
+    allCurrenciesWithRates: state => state.withRates,
+    currencyClassificator: state => state.classificator,
 };
 
 // actions
 const actions = {
-  getAllCurrencies({ commit }) {
-    Api.index({ model: 'currency' })
-      .then(currencies => {
-        commit('setCurrencies', currencies);
-      })
-      .catch(() => {
-        commit('setCurrencies', []);
-      });
-  },
+    getAllCurrencies({ commit }) {
+        api.index('currencies')
+            .then(currencies => {
+                commit('setCurrencies', currencies);
+            })
+            .catch(err => {
+                console.dir(err);
+                commit('setCurrencies', []);
+            });
+    },
 
-  getAllCurrenciesWithRates({ commit }) {
-    Api.index({ model: 'currency', conditions: { withRates: 1 } })
-      .then(currencies => {
-        commit('setCurrenciesWithRates', currencies);
-      })
-      .catch(() => {
-        commit('setCurrenciesWithRates', []);
-      });
-  },
+    getAllCurrenciesWithRates({ commit }) {
+        api.index('currencies', { withRates: 1 } )
+            .then(currencies => {
+                commit('setCurrenciesWithRates', currencies);
+            })
+            .catch(() => {
+                commit('setCurrenciesWithRates', []);
+            });
+    },
 
-  getCurrencyClassificator({ commit }) {
-    Api.get({ model: 'settings', action: 'currencyclassificator' })
-      .then(classificator => {
-        commit('setClassificator', classificator);
-      })
-      .catch(() => {
-        commit('setClassificator', []);
-      });
-  },
+    getCurrencyClassificator({ commit }) {
+        api.get('/static/data/eur_currencies.json')
+            .then(classificator => {
+                commit('setClassificator', classificator);
+            })
+            .catch(() => {
+                commit('setClassificator', []);
+            });
+    },
 };
 
 // mutations
 const mutations = {
-  setCurrencies(state, currencies) {
-    state.all = currencies;
-  },
-  setCurrenciesWithRates(state, currencies) {
-    state.withRates = currencies;
-  },
+    setCurrencies(state, currencies) {
+        state.all = currencies;
+    },
+    setCurrenciesWithRates(state, currencies) {
+        state.withRates = currencies;
+    },
 
-  setClassificator(state, classificator) {
-    state.classificator = classificator;
-  },
+    setClassificator(state, classificator) {
+        state.classificator = classificator;
+    },
+
 };
 
 export default {
-  state,
-  getters,
-  actions,
-  mutations,
+    state,
+    getters,
+    actions,
+    mutations,
 };

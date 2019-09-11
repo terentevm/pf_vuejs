@@ -2,15 +2,13 @@
   <div class="col-12 col-sm-12 col-md-12 col-lg-12">
     <div class="row groupheader">
       <div class="col-12 col-sm-12 col-md-12 col-lg-12">
-        <p class="caption ">Load rates in period</p>
+        <p class="caption ">Load rates in period </p>
       </div>
     </div>
     <div class="row myinputRow">
       <div class="col-12 col-sm-12 col-md-12 col-lg-12">
         <v-menu
-          ref="menu1"
-          :close-on-content-click="false"
-          v-model="menu1"
+          :close-on-content-click="true"
           :nudge-right="40"
           lazy
           transition="scale-transition"
@@ -34,9 +32,7 @@
     <div class="row myinputRow">
       <div class="col-12 col-sm-12 col-md-12 col-lg-12">
         <v-menu
-          ref="menu1"
-          :close-on-content-click="false"
-          v-model="menu1"
+          :close-on-content-click="true"
           :nudge-right="40"
           lazy
           transition="scale-transition"
@@ -78,10 +74,10 @@
                   >The rate isn't loaded</v-list-tile-action-text
                 >
                 <v-list-tile-action-text v-if="item.rate !== null && item.mult == 1"
-                  >{{ item.rate }} CZK</v-list-tile-action-text
+                  >{{ item.rate }} {{mainCurrency.short_name}}</v-list-tile-action-text
                 >
                 <v-list-tile-action-text v-if="item.rate !== null && item.mult > 1"
-                  >{{ item.rate }} CZK for {{ item.mult }}
+                  >{{ item.rate }} {{mainCurrency.short_name}} for {{ item.mult }}
                   {{ item.short_name }}</v-list-tile-action-text
                 >
                 <v-list-tile-action>
@@ -118,6 +114,7 @@ export default {
     },
     ...mapGetters({
       currencies: 'allCurrenciesWithRates',
+      mainCurrency: 'sysCurrency'
     }),
   },
 
@@ -128,6 +125,7 @@ export default {
   },
   beforeMount: function() {
     this.$store.state.title = 'Load rates';
+    this.$store.dispatch('getSettings');
     this.$store.dispatch('getAllCurrenciesWithRates');
     this.$store.state.componentMenu = [];
 

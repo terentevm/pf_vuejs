@@ -1,5 +1,5 @@
-import ApiClass from '../../components/Api';
-const API = new ApiClass();
+import ApiClass from '../../api/api_laravel';
+const api = new ApiClass();
 
 const state = {
   expenseTotalAmount: 0,
@@ -41,6 +41,7 @@ const actions = {
 
     API.post(params)
       .then(response => {
+        console.dir(response.data);
         commit('setIncomes', response.data);
       })
       .catch(error => {

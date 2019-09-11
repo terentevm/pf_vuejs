@@ -214,7 +214,7 @@
 <script>
 import ApiClass from './Api';
 const Api = new ApiClass();
-var moment = require('moment');
+const moment = require('moment');
 import { mapGetters, mapActions } from 'vuex';
 
 export default {

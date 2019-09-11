@@ -1,5 +1,5 @@
 const config = {
-  host: 'http://pf/app',
+  host: 'http://localhost:8080/app',
 };
 
 export default config;

@@ -1,28 +1,27 @@
-import Vue from 'vue';
-import Router from 'vue-router';
-import Wallets from '@/components/Wallets';
-import Signup from '@/components/Signup';
-import Login from '@/components/Login';
-import Index from '@/components/Index';
-import CurrenciesList from '@/components/CurrenciesList';
-import ItemsExpenditure from '@/components/ItemsExpenditure';
-import ItemsIncome from '@/components/ItemsIncome';
-import DocExpends from '@/components/DocExpends';
-import DocIncomes from '@/components/DocIncomes';
-import Income from '@/components/Income';
-//import ExpendElement from '@/components/ExpendElement'
-import ExpendElement from '@/components/ExpencePCForm.vue';
-import NewSettings from '@/components/NewSettings';
-import Settings from '@/components/Settings';
-import TransfersList from '@/components/TransfersList';
-import Transfer from '@/components/Transfer';
-import LoadRates from '@/components/LoadRates';
-import CurrencyClassificator from '@/components/CurrencyClassificator';
+import Vue from "vue";
+import Router from "vue-router";
+import Wallets from "@/components/Wallets/WalletsList";
+import Signup from "@/components/Signup";
+import Login from "@/components/Login2";
+import Index from "@/components/Index";
+import CurrenciesList from "@/components/Currencies/CurrenciesList";
+import ItemsExpenditure from "@/components/ItemsExpenditure";
+import ItemsIncome from "@/components/ItemsIncome";
+import DocExpends from "@/components/DocExpends";
+import DocIncomes from "@/components/DocIncomes";
+import Income from "@/components/Income";
+
+import ExpendElement from "@/components/ExpencePCForm.vue";
+import NewSettings from "@/components/NewSettings";
+import Settings from "@/components/Settings";
+import TransfersList from "@/components/TransfersList";
+import Transfer from "@/components/Transfer";
+import LoadRates from "@/components/LoadRates";
+import CurrencyClassificator from "@/components/CurrencyClassificator";
 
 Vue.use(Router);
 
 export default new Router({
-  mode: 'history',
   routes: [
     {
       path: '/wallets',
@@ -116,14 +115,7 @@ export default new Router({
       props: true,
       meta: { requiresAuth: true },
     },
-    // ,
-    // {
-    //   path: '/expend',
-    //   name: 'ExpendElement',
-    //   component: ExpendElement,
-    //   props: true ,
-    //   meta: { requiresAuth: true }
-    // }
+
     {
       path: '/income/:docId',
       name: 'Income',

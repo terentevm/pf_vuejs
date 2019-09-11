@@ -21,6 +21,7 @@ class Api {
     //this.host = 'http://localhost:3000/app';
   }
 
+
   /**
    * Sends post request to server
    * @param {Object} params
@@ -59,6 +60,8 @@ class Api {
         url: fullUrl,
       });
 
+      console.log(res);
+
       if (typeof res.data == 'object') {
         if (this.isCorrectResponse(res.data)) {
           if (res.data.success === true) {
@@ -82,6 +85,7 @@ class Api {
         return { success: false };
       }
     } catch (err) {
+      console.dir(err);
       if (this.isCorrectResponse(err.response.data)) {
         this.toConsole(err.response.data.msg);
       }
@@ -232,27 +236,9 @@ class Api {
         url: fullUrl,
       });
 
-      if (typeof res.data == 'object') {
-        if (this.isCorrectResponse(res.data)) {
-          if (res.data.success === true) {
-            return res.data.data; //return result from server to model for rendering
-          } else {
-            this.toConsole('error');
-            this.toConsole(res.data.msg);
-
-            return false;
-          }
-        } else {
-          console.log(res.data);
-          return false;
-        }
+      if (res.status === 200) {
+        return res.data;
       } else {
-        if (res.data === null) {
-          this.toConsole('Response data is null');
-        } else {
-          this.toConsole(res.data.toString());
-        }
-
         return false;
       }
     } catch (err) {
@@ -353,27 +339,23 @@ class Api {
     }
   }
 
-  isAuthRequiered({model, action}) {
+  isAuthRequiered({ model, action }) {
     const openUrls = [
-      {model:'user', action: 'login'},
-      {model:'user', action: 'signup'},
-      {model:'app', action: 'index'},
-      {model:'app', action: 'logout'},
+      { model: 'user', action: 'login' },
+      { model: 'user', action: 'signup' },
+      { model: 'app', action: 'index' },
+      { model: 'app', action: 'logout' },
     ];
-    
+
     const finder = (function(model, action) {
-      
       return function(el) {
         return el.model === model && el.action === action;
-      }
+      };
     })(model, action);
-    
+
     const foundValue = openUrls.find(finder);
 
-   
-
     return foundValue ? false : true;
-
   }
 } // end class
 
