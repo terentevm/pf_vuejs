@@ -2,9 +2,14 @@
     <v-container px-0 mx-0>
         <v-layout>
             <v-flex xs12 sm12 md12 lg12>
-                <v-dialog v-if="dialog" v-model="dialog" max-width="500px" persistent>
+                <v-dialog
+                        v-if="dialog"
+                        v-model="dialog"
+                        max-width="500px"
+                        persistent
+                        :fullscreen="$vuetify.breakpoint.xsOnly">
                     <currency-element
-                            v-bind:item="this.editedItem"
+                            v-bind:item="this.formData"
                             @cancel="dialog = false"
                             @stored="dialog = false; update()"
                     ></currency-element>
@@ -70,7 +75,8 @@
 
                                 <v-flex xs2 sm2 md2 lg1>
                                     <div class="cell-actions justify-content-end">
-                                        <a class="delete" data-toggle="modal" v-on:click.stop.prevent="showDeleteConfirm(item)">
+                                        <a class="delete" data-toggle="modal"
+                                           v-on:click.stop.prevent="showDeleteConfirm(item)">
 
                                             <v-icon color="#F44336">delete</v-icon>
                                         </a>
@@ -103,11 +109,10 @@
     import ApiClass from '../../api/api_laravel';
 
     import currencyElement from './CurrencyElement';
+    import {mapGetters} from 'vuex';
+    import TMTableModalDelete from '../Reusable/TMDataTable/TMTableModalDelete'
 
     const api = ApiClass();
-
-    import {mapGetters, mapActions} from 'vuex';
-    import TMTableModalDelete from '../Reusable/TMDataTable/TMTableModalDelete'
 
     export default {
         data: () => ({
@@ -134,7 +139,12 @@
             ],
 
             editedIndex: -1,
-
+            formData: {
+                id: null,
+                name: '',
+                code: '',
+                short_name: '',
+            },
             msgSettings: {
                 show: false,
                 color: 'light-green darken-3',
@@ -151,8 +161,8 @@
             items: 'allCurrencies',
         }),
 
-        created: function() {
-            this.$store.state.componentMenu = this.getUpMenu();
+        created: function () {
+            this.$store.commit('setupToolbarMenu', this.getUpMenu());
         },
 
         beforeMount: function () {
@@ -162,35 +172,39 @@
         },
         methods: {
             getUpMenu() {
-                let menu = [];
-
-                const action1 = {
-                    title: 'add',
-                    icon: 'add',
-                    action: () => {
-                        this.add();
+                return {
+                    mainAction: {
+                        title: 'add',
+                        icon: 'add',
+                        action: () => {
+                            this.add();
+                        },
                     },
-                };
-                const action2 = {
-                    title: 'update',
-                    icon: 'update',
-                    action: () => {
-                        this.update();
-                    },
-                };
-                const action3 = {
-                    title: 'Load rates',
-                    icon: 'cloud_download',
-                    action: () => {
-                        this.$router.push({path: 'loadrates'});
-                    },
-                };
+                    menu: [
+                        {
+                            title: 'update',
+                            icon: 'update',
+                            action: () => {
+                                this.update();
+                            },
+                        },
+                        {
+                            title: 'Load rates',
+                            icon: 'cloud_download',
+                            action: () => {
+                                this.$router.push({path: 'loadrates'});
+                            },
+                        },
+                        {
+                            title: 'add from classifier',
+                            icon: 'cloud_download',
+                            action: () => {
+                                this.$router.push({path: 'loadcurrency'});
+                            },
+                        }
+                    ]
+                }
 
-                menu.push(action1);
-                menu.push(action2);
-                menu.push(action3);
-
-                return menu;
             },
 
             update() {
@@ -204,21 +218,28 @@
 
 
             edit(item) {
-                console.dir(item);
 
                 this.id = item.id;
                 this.editedIndex = this.items.indexOf(item);
-                this.editedItem = Object.assign({}, item);
+                this.formData = Object.assign({}, item);
 
                 this.dialog = true;
             },
 
             add() {
                 this.id = null;
+
+                this.formData = {
+                    id: null,
+                    name: '',
+                    code: '',
+                    short_name: '',
+                };
+
                 this.dialog = true;
             },
 
-            showDeleteConfirm(item){
+            showDeleteConfirm(item) {
                 this.itemForDel = item;
                 this.showDeleteConfirmation = true;
             },

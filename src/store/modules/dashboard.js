@@ -15,13 +15,42 @@ function getDashboardSettingsFromLocalStorage(settings) {
     }
 }
 
+function getPeriod(periodicity) {
+
+    const period = {
+        end: moment().format('YYYY-MM-DD')
+    };
+
+    switch (periodicity) {
+        case 'year':
+            period.begin = moment().startOf('year').format('YYYY-MM-DD');
+            break;
+        case 'month':
+            period.begin = moment().startOf('month').format('YYYY-MM-DD');
+            break;
+        case 'week':
+            period.begin = moment().startOf('week').format('YYYY-MM-DD');
+            break;
+        default:
+            period.begin = moment().startOf('month').format('YYYY-MM-DD');
+    }
+
+    return period;
+}
+
 const state = {
     balanceTotal: 0,
     balanceTotalCurrency: '',
     balanceByWallets: [],
+
+    balanceByPeriodsData: [],
+    balanceByPeriodsCurrency: null,
+    balanceByPeriodsChartData: {},
+
     expensesTotal: 0,
     expensesTotalCurrency: '',
     expensesDetails: [],
+
     incomesTotal: 0,
     incomesTotalCurrency: '',
     incomesDetails: [],
@@ -57,6 +86,8 @@ const getters = {
     balanceTotal: state => state.balanceTotal,
     balanceTotalCurrency: state => state.balanceTotalCurrency,
     balanceByWallets: state => state.balanceByWallets,
+    balanceByPeriodsChartData: state => state.balanceByPeriodsChartData,
+    balanceByPeriodsCurrency: state => state.balanceByPeriodsCurrency,
 
     expensesTotal: state => state.expensesTotal,
     expensesTotalCurrency: state => state.expensesTotalCurrency,
@@ -64,7 +95,9 @@ const getters = {
 
     incomesTotal: state => state.incomesTotal,
     incomesTotalCurrency: state => state.incomesTotalCurrency,
-    incomesDetails: state => state.incomesDetails
+    incomesDetails: state => state.incomesDetails,
+
+
 };
 
 // actions
@@ -79,21 +112,26 @@ const actions = {
 
         commit('setBalanceTotal', srvData.data.total);
         commit('setBalanceTotalCurrency', srvData.reportCurrency);
-        commit('setBalanceByWallets', srvData.data.byWallets)
-        console.dir(srvData);
+        commit('setBalanceByWallets', srvData.data.byWallets);
 
     },
 
     async getExpensesWithDetails({commit}) {
 
-        const params = {
+        let params = {
             "byPeriod": false,
             "details": true
         };
 
+        if (!state.dashboardSettings.periodicity) {
+            this.dispatch('initializeDashboardSettings');
+        }
+
+        params = Object.assign(params, getPeriod(state.dashboardSettings.periodicity.period))
+
+
         try {
             const report = await api.post('/api/reports/expenses', params);
-            console.dir(report);
             commit('setExpensesCurrency', report.reportCurrency);
             commit('setExpensesTotal', report.data.total);
             commit('setExpensesDetails', report.data.rows);
@@ -107,14 +145,19 @@ const actions = {
 
     async getIncomesWithDetails({commit}) {
 
-        const params = {
+        let params = {
             "byPeriod": false,
             "details": true
         };
 
+        if (!state.dashboardSettings.periodicity) {
+            this.dispatch('initializeDashboardSettings');
+        }
+
+        params = Object.assign(params, getPeriod(state.dashboardSettings.periodicity.period))
+
         try {
             const report = await api.post('/api/reports/incomes', params);
-            console.dir(report);
             commit('setIncomesCurrency', report.reportCurrency);
             commit('setIncomesTotal', report.data.total);
             commit('setIncomesDetails', report.data.rows);
@@ -126,7 +169,49 @@ const actions = {
 
     },
 
-    initializeDashboardSettings({ commit }) {
+    async getBalanceByPeriods({commit}) {
+
+        if (!state.dashboardSettings.periodicity) {
+            this.dispatch('initializeDashboardSettings');
+        }
+
+        let params = getPeriod(state.dashboardSettings.periodicity.period);
+        params.periodicity = "month";
+
+        try {
+            const res = await api.post("/api/reports/balance-by-periods", params);
+
+            const labels = [];
+            const data = [];
+
+            res.data.forEach(balanceData => {
+                labels.push(moment(balanceData.period).format('MMM YY'));
+                data.push(Number(balanceData.sum));
+            })
+
+            const chartData = {
+                labels: labels,
+                datasets: [{
+                    label: 'Balance by months',
+                    backgroundColor: '#2fc418',
+                    data: data
+                }]
+            };
+
+            commit('setBalanceByPeriodsCurrency', res.reportCurrency);
+            commit('setBalanceByPeriodsData', res.data);
+            commit('setBalanceByPeriodsChartData', chartData);
+        }
+        catch (err) {
+            commit('setBalanceByPeriodsData', []);
+
+            console.log('error occurred during request to /api/reports/balance-by-periods');
+            console.dir(err);
+        }
+
+    },
+
+    initializeDashboardSettings({commit}) {
         const storedSettings = getDashboardSettingsFromLocalStorage();
         console.dir(storedSettings);
         if (storedSettings) {
@@ -183,6 +268,18 @@ const mutations = {
     setPeriodicity(state, periodicity) {
         state.dashboardSettings.periodicity = periodicity;
         storeDashboardSettingsToLocalStorage(state.dashboardSettings);
+    },
+
+    setBalanceByPeriodsCurrency(state, currency) {
+        state.balanceByPeriodsCurrency = currency;
+    },
+
+    setBalanceByPeriodsData(state, data) {
+        state.balanceByPeriodsData = data;
+    },
+
+    setBalanceByPeriodsChartData(state, chartData) {
+        state.balanceByPeriodsChartData = chartData;
     }
 };
 

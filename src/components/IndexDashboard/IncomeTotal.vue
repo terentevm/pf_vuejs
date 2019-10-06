@@ -1,16 +1,17 @@
 <template>
-  <v-card class="mx-1 mt-2">
-    <v-card-title>
-      <div><span class="grey--text">Incomes</span><br /></div>
+    <v-card class="mx-1">
+        <v-card-title class="dash-card-header-title">
+            Incomes
     </v-card-title>
 
     <v-divider light></v-divider>
 
     <v-layout>
       <v-flex xs7>
-        <v-card-title primary-title>
+          <v-card-title>
           <div>
-            <div class="headline">{{ incomesRounded }} CZK</div>
+              <div class="headline">{{ incomesRounded }}</div>
+              <div class="grey--text">{{ totalIncomesCurrency.short_name }}</div>
           </div>
         </v-card-title>
       </v-flex>
@@ -23,15 +24,14 @@
 </template>
 
 <script>
-import { mapGetters, mapActions } from 'vuex';
-import Num from '../../helpers/Num';
+    import Mynum from '../../helpers/MyNum';
 
-export default {
-  props: ['totalIncomes'],
+    export default {
+        props: ['totalIncomes', 'totalIncomesCurrency'],
 
   computed: {
     incomesRounded: function() {
-      return Num.round2(this.totalIncomes);
+        return Mynum.round2(this.totalIncomes);
     },
   },
 };

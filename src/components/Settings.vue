@@ -1,5 +1,5 @@
 <template>
-    <v-container px-0 mx-0>
+    <v-container>
         <v-layout row>
             <v-flex xs12>
                 <div class="table-wrapper">
@@ -91,7 +91,6 @@
     export default {
         data: () => ({
             formModified: false,
-
             processing: false,
             showAlert: false,
             alertType: 'success',
@@ -108,7 +107,7 @@
 
             currencyReports: {
                 get() {
-                    return this.$store.state.settings.currencyReports;
+                    return this.$store.state.settings.reportcurrency;
                 }
                 ,
                 set(currency) {
@@ -138,7 +137,7 @@
 
         beforeMount() {
             this.$store.state.title = 'Settings';
-
+            this.$store.commit('setupToolbarMenu', {});
             this.$store.dispatch('initializeDashboardSettings');
             this.$store.dispatch('getAllWallets');
             this.$store.dispatch('getAllCurrencies');

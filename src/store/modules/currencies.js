@@ -1,11 +1,12 @@
 import ApiClass from '../../api/api_laravel';
+
 const api = new ApiClass();
 
 // initial state
 const state = {
     all: [],
     withRates: [],
-    classificator: [],
+    classifier: [],
 };
 
 // getters
@@ -13,7 +14,7 @@ const getters = {
 
     allCurrencies: state => state.all,
     allCurrenciesWithRates: state => state.withRates,
-    currencyClassificator: state => state.classificator,
+    classifier: state => state.classifier,
 };
 
 // actions
@@ -30,7 +31,7 @@ const actions = {
     },
 
     getAllCurrenciesWithRates({ commit }) {
-        api.index('currencies', { withRates: 1 } )
+        api.index('currencies', {withRates: true})
             .then(currencies => {
                 commit('setCurrenciesWithRates', currencies);
             })
@@ -39,15 +40,26 @@ const actions = {
             });
     },
 
-    getCurrencyClassificator({ commit }) {
-        api.get('/static/data/eur_currencies.json')
-            .then(classificator => {
-                commit('setClassificator', classificator);
+    getCurrencyClassifier({commit}) {
+        api.get('/currencies.json')
+            .then(data => {
+                commit('setClassifier', data);
             })
             .catch(() => {
-                commit('setClassificator', []);
+                commit('setClassifier', []);
             });
     },
+
+    async storeCurrency({commit}, currency) {
+        try {
+            let res = await api.store('currencies', currency);
+            return res;
+        }
+        catch (error) {
+            throw error;
+        }
+
+    }
 };
 
 // mutations
@@ -59,8 +71,25 @@ const mutations = {
         state.withRates = currencies;
     },
 
-    setClassificator(state, classificator) {
-        state.classificator = classificator;
+    setClassifier(state, data) {
+
+        data.map(item => {
+            item.selected = false;
+        })
+
+        data.sort(function (a, b) {
+            let x = a.name.toLowerCase();
+            let y = b.name.toLowerCase();
+            if (x < y) {
+                return -1;
+            }
+            if (x > y) {
+                return 1;
+            }
+            return 0;
+        });
+
+        state.classifier = data;
     },
 
 };

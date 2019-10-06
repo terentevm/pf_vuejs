@@ -1,13 +1,11 @@
 import ApiClass from '../../api/api_laravel';
 
-import moment from 'moment';
-
 const api = new ApiClass();
 
 const state = {
     currency: null,
     wallet: null,
-    currencyReports: null,
+    reportcurrency: null,
     newUser: false,
     hasCurrencies: true,
 };
@@ -15,7 +13,7 @@ const state = {
 const getters = {
     currency: state => state.currency,
     wallet: state => state.wallet,
-    currencyReports: state => state.currencyReports,
+    reportcurrency: state => state.reportcurrency,
     sysCurrency: state => state.currency,
     dashboardSettings: state => state.dashboardSettings
 };
@@ -51,8 +49,8 @@ const actions = {
             body.currency_id = state.currency.id;
         }
 
-        if (state.currencyReports instanceof Object && state.currencyReports.hasOwnProperty('id')) {
-            body.report_currency = state.currencyReports.id;
+        if (state.reportcurrency instanceof Object && state.reportcurrency.hasOwnProperty('id')) {
+            body.report_currency = state.reportcurrency.id;
         }
 
         if (state.wallet instanceof Object && state.wallet.hasOwnProperty('id')) {
@@ -71,9 +69,10 @@ const mutations = {
     },
 
     setSettings(state, settings) {
+
         this.commit('setCurrency', settings.currency);
         this.commit('setWallet', settings.wallet);
-        this.commit('setCurrencyReports', settings.currencyReports);
+        this.commit('setCurrencyReports', settings.reportcurrency);
 
         //this settings setup only after getting data from server
         state.newUser = settings.newUser;
@@ -89,7 +88,7 @@ const mutations = {
     },
 
     setCurrencyReports(state, currency) {
-        state.currencyReports = currency;
+        state.reportcurrency = currency;
     }
 };
 

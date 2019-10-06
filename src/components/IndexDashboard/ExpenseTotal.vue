@@ -25,13 +25,13 @@
 
 <script>
 
-    import Num from '../../helpers/Num';
+    import Mynum from '../../helpers/MyNum';
 
     export default {
         props: ['totalExpenses', 'expenseCurrency'],
         computed: {
             expensesRounded: function () {
-                return Num.round2(this.totalExpenses);
+                return Mynum.round2(this.totalExpenses);
             },
         },
     };

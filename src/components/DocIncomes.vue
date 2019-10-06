@@ -1,207 +1,253 @@
 <template>
-  <v-flex xs12 sm12 md12 lg12>
-    <v-data-table
-      :headers="headers"
-      :items="items"
-      :loading="updating"
-      hide-actions
-      class="elevation-1"
-    >
-      <template slot="items" slot-scope="props">
-        <td style="padding: 0 10px;" v-show="showDel">
-          <v-btn icon class="mx-0" @click="deleteItem(props.item)">
-            <v-icon color="pink">delete</v-icon>
-          </v-btn>
-        </td>
-        <td class="d-none">{{ props.item.id }}</td>
+    <v-container mx-0>
+        <v-layout row>
+            <v-flex xs12 sm12 md12 lg12>
+                <div class="table-wrapper">
 
-        <td style="padding: 0 10px;" @click="editItem(props.item)">
-          <v-icon color="success">add</v-icon> {{ props.item.dateShow }}
-        </td>
+                    <ul class="list-group list-group-flush">
+                        <li
+                                class="list-group-item list-header"
+                        >
+                            <v-layout row ml-3>
+                                <v-flex xs10 sm10 md10 lg11 class="cell">
+                                    <v-layout row>
+                                        <v-flex xs8 sm8md10 lg10 class="cell">
+                                            <v-layout row d-flex class="flex-column flex-md-row">
+                                                <v-flex xs4>
+                                                    <span>Date</span>
+                                                </v-flex>
+                                                <v-flex xs8>
+                                                    <span>Wallet</span>
+                                                </v-flex>
 
-        <!-- <td style="padding: 0 5px;" @click="editItem(props.item)">{{ props.item.walletName }}</td> -->
-        <td style="padding: 0 5px;" @click="editItem(props.item)">{{ props.item.sum }}</td>
-      </template>
+                                            </v-layout>
+                                        </v-flex>
+                                        <v-flex xs4 sm4 md2 lg2>
 
-      <template slot="no-data"> </template>
-    </v-data-table>
+                                            <div class="d-flex justify-content-end">
+                                                <span>Sum</span>
+                                            </div>
 
-    <div class="text-xs-center pt-2">
-      <v-btn outline color="success" :loading="updating" :disabled="updating" @click="addDocs"
-        >more</v-btn
-      >
-    </div>
 
-    <v-fab-transition>
-      <v-btn fab fixed bottom right dark @click="add()" color="primary">
-        <v-icon>add</v-icon>
-      </v-btn>
-    </v-fab-transition>
-  </v-flex>
+                                        </v-flex>
+                                    </v-layout>
+                                </v-flex>
+
+                                <v-flex xs2 sm2 md2 lg1>
+                                    <div class="cell-actions justify-content-end">
+                                        <span>Act.</span>
+                                    </div>
+
+                                </v-flex>
+
+                            </v-layout>
+
+
+                        </li>
+                        <li v-for="item in items"
+                            class="list-group-item list-item"
+                            @click="editItem(item)"
+                        >
+                            <v-layout row ml-3>
+                                <v-flex xs10 sm10 md10 lg11 class="cell">
+                                    <v-layout row>
+                                        <v-flex xs8 sm8md10 lg10 class="cell">
+                                            <v-layout row d-flex class="flex-column flex-md-row">
+                                                <v-flex xs4>
+                                                    <span>{{ item.date}}</span>
+                                                </v-flex>
+                                                <v-flex xs8>
+                                                    <span>{{ item.walletName}}</span>
+                                                </v-flex>
+
+                                            </v-layout>
+                                        </v-flex>
+                                        <v-flex xs4 sm4 md2 lg2>
+
+                                            <div class="d-flex justify-content-end">
+                                                <span>{{ item.sum }}</span>
+                                            </div>
+
+
+                                        </v-flex>
+                                    </v-layout>
+                                </v-flex>
+
+                                <v-flex xs2 sm2 md2 lg1>
+                                    <div class="cell-actions justify-content-end">
+                                        <a class="delete" data-toggle="modal">
+
+                                            <v-icon color="#F44336">delete</v-icon>
+                                        </a>
+                                    </div>
+
+                                </v-flex>
+
+                            </v-layout>
+
+
+                        </li>
+
+                    </ul>
+                </div>
+            </v-flex>
+        </v-layout>
+    </v-container>
 </template>
 
+<style scoped>
+
+    li:nth-of-type(odd) {
+        background-color: #fcfcfc;
+    }
+
+    li:first-child {
+        background: #435d7d;
+    }
+
+    .list-header {
+
+        background: #435d7d;
+        color: #fff;
+        font-family: 'Varela Round', sans-serif;
+        font-size: 15px;
+        font-weight: bold;
+
+    }
+
+    .list-item {
+        color: rgb(86, 103, 135);;
+        font-family: 'Varela Round', sans-serif;
+        font-size: 15px;
+
+    }
+
+    .list-item:hover {
+        cursor: pointer;
+        background-color: rgb(245, 245, 245);
+
+    }
+
+    list-item:nth-of-type(odd) {
+        background-color: #fcfcfc;
+    }
+
+    list-item:hover {
+        background: #f5f5f5;
+    }
+
+    .cell-actions {
+        display: flex;
+        flex-direction: row;
+        justify-items: center;
+        max-width: 60px;
+    }
+</style>
+
 <script>
-import ModelClass from './Model';
-const Model = new ModelClass();
+    import ApiClass from '../api/api_laravel';
 
-import ApiClass from './Api';
-const Api = new ApiClass();
+    const api = new ApiClass();
 
-var moment = require('moment');
-export default {
-  data: () => ({
-    items: [],
-    offsetTop: 0,
-    offset: 0,
-    updating: false,
-    showDel: false,
-    headers: [
-      { text: 'id', value: 'id', class: 'd-none' },
-      { text: 'Date', value: 'date', class: 'xs4 sm4 md4' },
-      //{ text: "Wallet", value: "wallet" },
-      { text: 'Sum', value: 'sum' },
-    ],
-  }),
+    const moment = require('moment');
+    export default {
+        data: () => ({
+            items: [],
+            title: "Incomes",
+            processing: false,
+            offsetTop: 0,
+            offset: 0,
+            page: 0,
+            updating: false,
+            showDel: false,
+            pagination: {
+                sortBy: 'date',
+                descending: true,
+                rowsPerPage: -1,
+            },
 
-  beforeMount: function() {
-    this.$store.state.title = 'Incomes';
-    this.$store.state.componentMenu = this.getUpMenu();
-  },
+            headers: [
+                {text: 'id', value: 'id', classList: ['d-none']},
+                {text: 'Date', value: 'date', classList: ["col-xs-2 col-sm-2 col-lg-2"]},
+                {text: 'Wallet', value: 'walletName', classList: ["col-xs-2 col-sm-4 col-lg-4"]},
+                {text: 'Sum', value: 'sum', classList: ["col-xs-2 col-sm-4 col-lg-5"]},
+            ],
+        }),
 
-  created() {
-    this.initialize();
-  },
-
-  methods: {
-    initialize() {
-      var scrollHeight = Math.max(
-        document.body.scrollHeight,
-        document.documentElement.scrollHeight,
-        document.body.offsetHeight,
-        document.documentElement.offsetHeight,
-        document.body.clientHeight,
-        document.documentElement.clientHeight,
-      );
-
-      this.updating = true;
-      this.getDocs();
-    },
-
-    getUpMenu() {
-      let menu = [];
-
-      const action1 = {
-        title: 'Update',
-        icon: 'cached',
-        action: () => {
-          this.offset = 0;
-          this.getDocs();
+        beforeMount: function () {
+            this.$store.state.title = 'Incomes';
+            this.$store.commit('setupToolbarMenu', this.getUpMenu());
         },
-      };
 
-      const action2 = {
-        title: 'Delete',
-        icon: 'delete',
-        action: () => {
-          this.showDelBtn();
+        created() {
+            this.getDocs();
         },
-      };
 
-      menu.push(action1);
-      menu.push(action2);
+        methods: {
+            getUpMenu() {
+                return {
+                    mainAction: {
+                        title: 'add',
+                        icon: 'add',
+                        action: () => {
+                            this.add();
+                        },
+                    },
+                    menu: [
+                        {
+                            title: 'update',
+                            icon: 'update',
+                            action: () => {
+                                this.update();
+                            },
+                        }
+                    ]
+                };
 
-      return menu;
-    },
+            },
 
-    getDocs() {
-      if (!sessionStorage.getItem('jwt')) {
-        this.$router.push({ path: 'login' });
-        return false;
-      }
+            getDocs() {
+                api.index('incomes', {page: this.page})
+                    .then(paginationInfo => {
+                        paginationInfo.data.forEach(doc => {
+                            doc.walletName = doc.wallet.name;
+                            if (this.items.indexOf(doc) === -1) {
+                                this.items.push(doc);
+                            }
+                        })
+                    });
+            },
 
-      const settings = {
-        model: 'income',
-        conditions: {
-          limit: 50,
-          offset: this.offset,
+            editItem(item) {
+                let id = item.id;
+                this.$router.push({path: `income/${id}`});
+            },
+
+            add() {
+                this.$router.push({path: `income/new`});
+            },
+
+            addDocs() {
+                if (this.updating == true) {
+                    return;
+                }
+
+                this.offset += 50;
+                this.updating = true;
+                this.getDocs(this.offset);
+            },
+            showDelBtn() {
+                this.showDel = !this.showDel;
+            },
+            deleteItem(item) {
+                alert("Action doesn't support yet");
+            },
+
+            edit(doc) {
+                this.$router.push({path: `income/${doc.id}`})
+            }
         },
-      };
-
-      this.updating = true;
-
-      Api.index(settings).then(data => {
-        for (let elem of data) {
-          let day = moment(elem.date);
-          elem.dateShow = day.format('DD-MM-YYYY');
-          this.items.push(elem);
-        }
-
-        this.updating = false;
-      });
-    },
-    editItem(item) {
-      let id = item.id;
-      this.$router.push({ path: `income/${id}` });
-    },
-
-    add() {
-      this.$router.push({ path: `income` });
-    },
-
-    addDocs() {
-      if (this.updating == true) {
-        return;
-      }
-
-      this.offset += 50;
-      this.updating = true;
-      this.getDocs(this.offset);
-    },
-    showDelBtn() {
-      this.showDel = !this.showDel;
-    },
-    deleteItem(item) {
-      alert("Action doesn't support yet");
-    },
-  },
-};
+    };
 </script>
 
-<style scoped>
-.custom-loader {
-  animation: loader 1s infinite;
-  display: flex;
-}
-@-moz-keyframes loader {
-  from {
-    transform: rotate(0);
-  }
-  to {
-    transform: rotate(360deg);
-  }
-}
-@-webkit-keyframes loader {
-  from {
-    transform: rotate(0);
-  }
-  to {
-    transform: rotate(360deg);
-  }
-}
-@-o-keyframes loader {
-  from {
-    transform: rotate(0);
-  }
-  to {
-    transform: rotate(360deg);
-  }
-}
-@keyframes loader {
-  from {
-    transform: rotate(0);
-  }
-  to {
-    transform: rotate(360deg);
-  }
-}
-</style>
+

@@ -78,16 +78,67 @@
 
                 <span>{{ title }}</span>
             </v-toolbar-title>
+
             <v-spacer></v-spacer>
 
-            <template v-for="act in this.$store.state.componentMenu">
+            <!--SM AND UP  FOR BIG SCREENS-->
+            <template v-if="$vuetify.breakpoint.smAndUp">
+
                 <v-btn
-                        icon
-                        @click="act.action"
+                        v-if="this.showMainAction"
+                        flat
+                        @click="toolbarMenu.mainAction.action"
                 >
-                    <v-icon>{{act.icon}}</v-icon>
+                    <v-icon left>{{toolbarMenu.mainAction.icon}}</v-icon>
+                    {{toolbarMenu.mainAction.title }}
                 </v-btn>
+
+                <template v-for="act in this.$store.state.app.toolbarMenu.menu">
+                    <v-btn flat
+                           @click="act.action"
+                    >
+                        <v-icon left>{{act.icon}}</v-icon>
+                        {{act.title}}
+                    </v-btn>
+                </template>
+
             </template>
+            <!--SM AND UP  FOR BIG SCREENS-->
+
+            <!--SX ONLY  FOR SMALL SCREENS-->
+            <template v-if="$vuetify.breakpoint.xsOnly">
+
+                <v-btn
+                        v-if="this.showMainAction === true"
+                        icon
+                        @click="toolbarMenu.mainAction.action"
+                >
+                    <v-icon>{{toolbarMenu.mainAction.icon}}</v-icon>
+                </v-btn>
+
+                <v-bottom-sheet v-model="sheet" v-if="this.showActionsMenu == true">
+                    <template v-slot:activator>
+                        <v-btn icon>
+                            <v-icon>more_vert</v-icon>
+                        </v-btn>
+                    </template>
+                    <v-card>
+                        <template v-for="act in toolbarMenu.menu">
+                            <v-layout row>
+                                <v-flex xs12>
+                                    <v-btn outline color="grey" block @click="callAction(act)">
+                                        <v-icon left>{{act.icon}}</v-icon>
+                                        {{ act.title }}
+                                    </v-btn>
+                                </v-flex>
+                            </v-layout>
+                        </template>
+                    </v-card>
+                </v-bottom-sheet>
+
+            </template>
+
+
         </v-toolbar>
 
         <v-content>
@@ -95,6 +146,8 @@
                 <router-view></router-view>
             </v-container>
         </v-content>
+
+
     </v-app>
 </template>
 
@@ -114,14 +167,23 @@
             dialog: false,
             drawer: true,
             showMenu: false,
+            showActionMenu: false,
+            sheet: false,
+            tiles: [
+                {img: 'keep.png', title: 'Keep'},
+                {img: 'inbox.png', title: 'Inbox'},
+                {img: 'hangouts.png', title: 'Hangouts'},
+                {img: 'messenger.png', title: 'Messenger'},
+                {img: 'google.png', title: 'Google+'}
+            ],
             isOffline: false,
             items: [
-                {icon: 'home', text: 'Dashboard', link: '/index', avatar: imgReport},
+                {icon: 'home', text: 'Dashboard', link: '/', avatar: imgReport},
 
                 {
                     icon: 'keyboard_arrow_up',
                     'icon-alt': 'keyboard_arrow_down',
-                    text: 'References',
+                    text: 'Catalogs',
                     model: true,
                     children: [
                         {
@@ -181,14 +243,33 @@
             title() {
                 return this.$store.state.title == undefined ? 'Personal finances' : this.$store.state.title;
             },
-            componentMenu() {
-                return this.$store.state.componentMenu;
+            toolbarMenu() {
+                return this.$store.state.app.toolbarMenu;
+            },
+
+            showMainAction() {
+                return this.$store.state.app.toolbarMenu.mainAction && this.$store.state.app.toolbarMenu.mainAction.action
+                    ? true
+                    : false
+            },
+
+            showActionsMenu() {
+                return this.$store.state.app.toolbarMenu.menu
+                && this.$store.state.app.toolbarMenu.menu instanceof Array
+                && this.$store.state.app.toolbarMenu.menu.length > 0
+                    ? true
+                    : false
             },
         },
         props: {
             source: String,
         },
         methods: {
+            callAction(actionProps) {
+                this.sheet = false;
+                actionProps.action()
+            },
+
             logout() {
                 console.log('Log out...');
             },

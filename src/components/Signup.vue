@@ -1,98 +1,101 @@
 <template>
     <v-container d-flex align-center align-content-center class="appColor">
-        <v-flex xs12 sm8 offset-sm-2 md6 offset-md-3 lg6 offset-lg-3 xl6 offset-xl-3>
-            <div>
+        <v-layout row>
+            <v-flex xs12 sm3 md4 lg4 xl4></v-flex>
+            <v-flex xs12 sm6 md4 lg4 xl4>
                 <div>
-                    <div class="mb-4">
-                        <div class="font-weight-regular appColor--text text-xs-center">
-                            <span class="login-header">PERSONAL FINANSES</span>
+                    <div>
+                        <div class="mb-4">
+                            <div class="font-weight-regular appColor--text text-xs-center">
+                                <span class="login-header">PERSONAL FINANSES</span>
+                            </div>
+                            <div class="mt-3 grey--text text-xs-center font-weight-light mt-2">
+                                <span class="login-subheader">Welcome! Please create your account.</span>
+                            </div>
                         </div>
-                        <div class="mt-3 grey--text text-xs-center font-weight-light mt-2">
-                            <span class="login-subheader">Welcome! Please create your account.</span>
+
+                        <div class="form" v-on:submit.prevent="sendData">
+
+                            <form class="login-form">
+                                <input
+                                        v-model="name"
+                                        type="text"
+                                        placeholder="name"
+                                        :error-messages="errors.has('name')"
+                                        v-validate.disable="'required'"
+                                        data-vv-name="name"
+                                        class="form-input"
+                                        v-bind:class="{ 'input-error': errors.has('name')}"
+                                />
+                                <p
+                                        v-show="errors.has('name')"
+                                        class="text-sm-left red--text msg-error"
+                                >{{ errors.first('name') }}</p>
+
+                                <input
+                                        v-model="email"
+                                        type="text"
+                                        placeholder="email"
+                                        class="form-input input-login"
+                                        :error-messages="errors.has('login')"
+                                        v-validate.disable="'required|email'"
+                                        data-vv-name="login"
+                                        v-bind:class="{ 'input-error': errors.has('login')}"
+                                />
+                                <p
+                                        v-show="errors.has('login')"
+                                        class="text-sm-left red--text msg-error"
+                                >{{ errors.first('login') }}</p>
+
+                                <input
+                                        v-model="password"
+                                        type="password"
+                                        placeholder="password"
+                                        class="form-input"
+                                        :error-messages="errors.has('password')"
+                                        v-validate.disable="'required|min:3'"
+                                        data-vv-name="password"
+                                        v-bind:class="{ 'input-error': errors.has('password')}"
+                                />
+                                <p
+                                        v-show="errors.has('password')"
+                                        class="text-sm-left red--text msg-error"
+                                >{{ errors.first('password') }}</p>
+                                <v-select
+                                        v-model="currency"
+                                        :items="currencyList"
+                                        placeholder="Choose currency"
+                                        menu-props="auto"
+                                        label="Select"
+                                        background-color="#f2f2f2"
+                                        hide-details
+                                        single-line
+                                        outline
+                                        color="#f2f2f2"
+                                        class="currency-select"
+
+                                        v-validate.disable="'required'"
+                                        data-vv-name="currency"
+                                ></v-select>
+                                <p
+                                        v-show="errors.has('currency')"
+                                        class="text-sm-left red--text msg-error"
+                                >{{ errors.first('currency') }}</p>
+                                <v-divider></v-divider>
+                                <button>Create account</button>
+                                <v-progress-linear v-show="this.sending"
+                                                   :indeterminate="true"></v-progress-linear>
+                                <p class="message">
+                                    Already registered?
+                                    <a href="#/login">Login</a>
+                                </p>
+                            </form>
                         </div>
-                    </div>
-
-                    <div class="form" v-on:submit.prevent="sendData">
-
-                        <form class="login-form">
-                            <input
-                                    v-model="name"
-                                    type="text"
-                                    placeholder="name"
-                                    :error-messages="errors.has('name')"
-                                    v-validate.disable="'required'"
-                                    data-vv-name="name"
-                                    class="form-input"
-                                    v-bind:class="{ 'input-error': errors.has('name')}"
-                            />
-                            <p
-                                    v-show="errors.has('name')"
-                                    class="text-sm-left red--text msg-error"
-                            >{{ errors.first('name') }}</p>
-
-                            <input
-                                    v-model="email"
-                                    type="text"
-                                    placeholder="email"
-                                    class="form-input input-login"
-                                    :error-messages="errors.has('login')"
-                                    v-validate.disable="'required|email'"
-                                    data-vv-name="login"
-                                    v-bind:class="{ 'input-error': errors.has('login')}"
-                            />
-                            <p
-                                    v-show="errors.has('login')"
-                                    class="text-sm-left red--text msg-error"
-                            >{{ errors.first('login') }}</p>
-
-                            <input
-                                    v-model="password"
-                                    type="password"
-                                    placeholder="password"
-                                    class="form-input"
-                                    :error-messages="errors.has('password')"
-                                    v-validate.disable="'required|min:3'"
-                                    data-vv-name="password"
-                                    v-bind:class="{ 'input-error': errors.has('password')}"
-                            />
-                            <p
-                                    v-show="errors.has('password')"
-                                    class="text-sm-left red--text msg-error"
-                            >{{ errors.first('password') }}</p>
-                            <v-select
-                                    v-model="currency"
-                                    :items="currencyList"
-                                    placeholder="Choose currency"
-                                    menu-props="auto"
-                                    label="Select"
-                                    background-color="#f2f2f2"
-                                    hide-details
-                                    single-line
-                                    outline
-                                    color="#f2f2f2"
-                                    class="currency-select"
-
-                                    v-validate.disable="'required'"
-                                    data-vv-name="currency"
-                            ></v-select>
-                            <p
-                                    v-show="errors.has('currency')"
-                                    class="text-sm-left red--text msg-error"
-                            >{{ errors.first('currency') }}</p>
-                            <v-divider></v-divider>
-                            <button>Create account</button>
-                            <v-progress-linear v-show="this.sending"
-                                               :indeterminate="true"></v-progress-linear>
-                            <p class="message">
-                                Already registered?
-                                <a href="#/login">Login</a>
-                            </p>
-                        </form>
                     </div>
                 </div>
-            </div>
-        </v-flex>
-
+            </v-flex>
+            <v-flex xs12 sm3 md4 lg4 xl4></v-flex>
+        </v-layout>
     </v-container>
 </template>
 
@@ -243,12 +246,6 @@
         }
     }
 
-    .login-page {
-        width: 460px;
-        padding: 8% 0 0;
-        margin: auto;
-        background-color: #ffffff;
-    }
 
     .form {
         position: relative;
@@ -257,7 +254,7 @@
 
         max-width: 480px;
         margin: 0 auto 100px;
-        padding: 45px;
+
         text-align: center;
         /* box-shadow: 0 0 20px 0 rgba(0, 0, 0, 0.2), 0 5px 5px 0 rgba(0, 0, 0, 0.24); */
     }
@@ -277,6 +274,7 @@
     .input-login {
         text-transform: lowercase;
     }
+
     .input-error {
         border: 2px solid red;
     }

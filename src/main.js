@@ -1,12 +1,10 @@
 import 'babel-polyfill';
 import Vue from 'vue';
 import App from './App';
-import Vuex from 'vuex';
 import router from './router';
 
 import Vuetify from 'vuetify';
 import VeeValidate from 'vee-validate';
-
 //my custom list
 import RoundedList from './components/Reusable/ListOfAmount.vue';
 import TMDataTable from './components/Reusable/TMDataTable/TMDataTable';
@@ -22,23 +20,30 @@ import TM_FormActionPanel from './components/tmFormElements/TM_FormActionPanel.v
 import TM_WalletsSelectForm from './components/SelectsForms/WalletsSelectForm.vue';
 
 import store from './store';
-
 //style imports
+import '@fortawesome/fontawesome-free/css/all.css';
 import 'vuetify/dist/vuetify.min.css';
 import '../src/assets/css/bootstrap-grid.css';
 import "../src/assets/css/sprite.css";
 import './style/pf.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
-
+import globalFunctions from './mixins/GlobalFunctions';
 // const mainColor = '#43425D';
 const mainColor = '#435d7d'
 const backgroundColor = '#'
 
+const MY_ICONS = {
+    wallet: 'fa-wallet'
+};
+
 Vue.use(Vuetify, {
-  theme: {
-    appColor: mainColor,
-  },
+    theme: {
+        appColor: mainColor,
+    },
+    icons: {
+        values: MY_ICONS,
+    },
 });
 Vue.use(VeeValidate);
 Vue.component('tm-table', TMDataTable);
@@ -56,43 +61,34 @@ Vue.component('tm-wallets-select-form', TM_WalletsSelectForm);
 Vue.config.productionTip = false;
 
 
-Vue.mixin({
-    methods: {
-        copyObject(objDest, objSource) {
-            for (let propName in objDest) {
-                if (objSource.hasOwnProperty(propName)) {
-                    objDest[propName] = objSource[propName];
-                }
-            }
-        },
-    }
-});
+Vue.mixin(globalFunctions);
+
 /* eslint-disable no-new */
 
 router.beforeEach((to, from, next) => {
-  if (to.matched.some(record => record.meta.requiresAuth)) {
-    if (!sessionStorage.getItem('jwt')) {
-      next({
-        path: '/login',
-        query: { redirect: to.fullPath },
-      });
+    if (to.matched.some(record => record.meta.requiresAuth)) {
+        if (!sessionStorage.getItem('jwt')) {
+            next({
+                path: '/login',
+                query: {redirect: to.fullPath},
+            });
+        } else {
+            next();
+        }
     } else {
-      next();
+        next();
     }
-  } else {
-    next();
-  }
 });
 
 var vm = new Vue({
-  el: '#app',
-  router: router,
-  store,
-  data: {
-    visible: true,
-    message: 'Hello Vue!',
-    showMenu: true,
-  },
-  template: '<App/>',
-  components: { App },
+    el: '#app',
+    router: router,
+    store,
+    data: {
+        visible: true,
+        message: 'Hello Vue!',
+        showMenu: true,
+    },
+    template: '<App/>',
+    components: {App},
 });

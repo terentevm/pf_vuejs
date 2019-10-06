@@ -1,487 +1,431 @@
 <template>
-  <v-flex xs12 sm12 md12 lg12>
-    <v-card flat>
-      <v-card-text>
-        <div class="row myinputRow">
-          <div class="col-8 col-sm-8 col-md-8 col-lg-8">
-            <v-dialog
-              ref="dialog"
-              persistent
-              v-model="modal"
-              lazy
-              full-width
-              width="290px"
-              :return-value.sync="date"
-            >
-              <v-text-field
-                slot="activator"
-                label="Date"
-                v-model="date"
-                prepend-icon="event"
-                readonly
-              ></v-text-field>
-              <v-date-picker v-model="date" scrollable color="green darken-3">
-                <v-spacer></v-spacer>
-                <v-btn flat color="primary" @click="modal = false">Cancel</v-btn>
+    <v-form class="expense-from">
+        <v-container>
+            <v-progress-linear v-show="this.processing == true"
+                               :indeterminate="true"></v-progress-linear>
+            <!--Header start-->
+            <v-layout row>
+                <v-flex xs12 sm12 md12 lg12>
 
-                <v-btn flat color="primary" @click="$refs.dialog.save(date)">OK</v-btn>
-              </v-date-picker>
-            </v-dialog>
-          </div>
+                    <v-layout row>
+                        <v-flex xs12 sm12 md6 lg6>
+                            <v-menu
+                                    :close-on-content-click="false"
+                                    v-model="menu"
+                                    :nudge-right="40"
+                                    lazy
+                                    transition="scale-transition"
+                                    offset-y
+                                    full-width
+                                    min-width="290px"
+                            >
+                                <v-text-field
+                                        slot="activator"
+                                        :value="date"
+                                        @change="dateOnChange"
+                                        label="Date"
+                                        type="date"
+                                        dense
+                                        prepend-icon="event"
+                                        readonly
+                                ></v-text-field>
+                                <v-date-picker
+                                        :value="date"
+                                        @change="dateOnChange"
+                                        @input="menu = false"
+                                ></v-date-picker>
+                            </v-menu>
+                        </v-flex>
+                    </v-layout>
 
-          <div class="col-4 col-sm-4 col-md-4 col-lg-4">
-            <v-btn icon class="mx-0" @click="subDay()">
-              <v-icon color="green darken-3">remove_circle_outline</v-icon>
-            </v-btn>
-            <v-btn icon class="mx-0" @click="addDay()">
-              <v-icon color="green darken-3">add_circle_outline</v-icon>
-            </v-btn>
-          </div>
-        </div>
-      </v-card-text>
-    </v-card>
+                    <!--Wallet select start-->
+                    <v-layout row>
+                        <v-flex xs12 sm12 md6 lg6>
+                            <v-select
+                                    v-model="wallet"
+                                    :items="wallets"
+                                    :value="wallet"
+                                    menu-props="auto"
+                                    label="Wallet"
+                                    item-text="name"
+                                    item-value="id"
+                                    return-object
+                                    prepend-icon="account_balance_wallet"
+                                    append-outer-icon="pageview"
+                                    @click:append-outer="startWalletChoice"
+                            ></v-select>
+                        </v-flex>
+                    </v-layout>
+                    <tm-wallets-select-form
+                            v-bind:items="this.wallets"
+                            v-bind:showWalletSelection="this.showWalletSelection"
+                            @select-wallets-close="completeWalletSelectionHandler"
+                    ></tm-wallets-select-form>
+                    <!--Wallet select end-->
+                </v-flex>
+            </v-layout>
 
-    <div class="row">
-      <div class="col-12 col-sm-12 col-md-12 col-lg-12">
-        <v-tabs v-model="active" color="green darken-3" dark slider-color="yellow">
-          <v-tab :key="1">Edit</v-tab>
-          <v-tab :key="2">All rows</v-tab>
 
-          <v-tab-item :key="1">
-            <v-card flat>
-              <div class="col-12 col-sm-12 col-md-12 col-lg-12">
-                <div class="row mySmallRow">
-                  <div class="col-12 col-sm-12 col-md-12 col-lg-12">
-                    <v-text-field
-                      label="Sum"
-                      v-model="editRow.sum"
-                      class="text-right"
-                      clearable
-                      type="number"
-                      prepend-icon="functions"
-                    ></v-text-field>
-                  </div>
-                </div>
-                <div class="row mySmallRow">
-                  <div class="col-12 col-sm-12 col-md-12 col-lg-12">
-                    <v-select
-                      :items="wallets"
-                      v-model="editRow.wallet"
-                      prepend-icon="account_balance_wallet"
-                      auto
-                      cache-items
-                      clearable
-                      label="Wallet"
-                      single-line
-                      item-text="name"
-                      item-value="id"
-                      return-object
-                    ></v-select>
-                  </div>
-                </div>
-                <div class="row mySmallRow">
-                  <div class="col-12 col-sm-12 col-md-12 col-lg-12">
-                    <v-select
-                      label="Item"
-                      prepend-icon="add_shopping_cart"
-                      :items="items"
-                      v-model="editRow.item"
-                      autocomplete
-                      cache-items
-                      clearable
-                      auto
-                      single-line
-                      item-text="name"
-                      item-value="id"
-                      return-object
+            <!--Header end-->
+            <v-layout row>
+                <v-flex xs12 sm12 md12 lg12>
+                    <tm-editRow
+                            v-bind:items="items"
+                            v-bind:editRow="editRow"
+                            v-bind:dialog="dialog"
+
+                            @close="closeEditRowDialog"
+                            @done="saveRow"
                     >
-                    </v-select>
-                  </div>
-                </div>
-                <div class="row mySmallRow">
-                  <div class="col-12 col-sm-12 col-md-12 col-lg-12">
-                    <v-btn block outline small @click="openFormItems()">Show all items</v-btn>
-                  </div>
-                </div>
 
-                <div class="row myinputRow">
-                  <div class="col-12 col-sm-12 col-md-12 col-lg-12">
-                    <v-text-field
-                      label="Comment"
-                      v-model="editRow.comment"
-                      class="text-right"
-                      clearable
-                      type="text"
-                      prepend-icon="insert_comment"
-                    ></v-text-field>
-                  </div>
-                </div>
-              </div>
+                    </tm-editRow>
 
-              <div class="row myDevider"></div>
+                    <div class="from-table-wrapper">
+                        <v-toolbar
+                                color="appColor"
+                                dense
+                                dark
+                        >
+                            <v-toolbar-items>
+                                <v-btn flat dark @click="addNewLine()">
+                                    <v-icon left dark>add</v-icon>
+                                    Add
+                                </v-btn>
 
-              <v-toolbar dense height="40">
-                <v-btn icon class="mx-2" @click="addRow()">
-                  <v-icon large color="green darken-3">add</v-icon>
-                </v-btn>
-                <v-btn icon class="mx-2" :disabled="this.currentRow == 0" @click="prevRow()">
-                  <v-icon large color="green darken-3">arrow_back</v-icon>
-                </v-btn>
-                <v-btn
-                  icon
-                  class="mx-2"
-                  :disabled="this.currentRow == this.rows.length - 1"
-                  @click="nextRow()"
-                >
-                  <v-icon large color="green darken-3">arrow_forward</v-icon>
-                </v-btn>
+                                <v-btn
+                                        v-show="this.selected.length > 0"
+                                        flat
+                                        dark
+                                        @click="deleteSelected()"
+                                >
+                                    <v-icon>delete</v-icon>
+                                    Delete
+                                </v-btn>
 
-                <v-btn icon class="mx-2" @click="delRow()">
-                  <v-icon large color="green darken-3">delete</v-icon>
-                </v-btn>
-                <v-spacer></v-spacer>
-                <span>row {{ currentRow + 1 }} of {{ rows.length }}</span>
-              </v-toolbar>
-            </v-card>
-          </v-tab-item>
+                            </v-toolbar-items>
+                            <v-spacer></v-spacer>
 
-          <v-tab-item :key="2">
-            <v-card flat>
-              <v-data-table :headers="headers" :items="rows" hide-actions class="elevation-1">
-                <template slot="items" slot-scope="props">
-                  <td class="d-none">{{ props.item.item }}</td>
-                  <td class="d-none">{{ props.item.wallet }}</td>
-                  <td v-if="props.item.wallet !== null">{{ props.item.wallet.name }}</td>
-                  <td v-if="props.item.item !== null">{{ props.item.item.name }}</td>
-                  <td v-if="props.item.item == null">empty</td>
-                  <td>{{ props.item.sum }}</td>
-                </template>
-              </v-data-table>
-            </v-card>
-          </v-tab-item>
-        </v-tabs>
-      </div>
-    </div>
+                            <v-toolbar-title color="white">Total: {{ totalAmount }} ({{
+                                currency.short_name }})
+                            </v-toolbar-title>
+                        </v-toolbar>
 
-    <v-card-actions>
-      <v-btn :disabled="sending" color="blue darken-1" flat to="/expends">Cancel</v-btn>
-      <v-spacer></v-spacer>
-      <v-progress-circular
-        v-show="sending"
-        indeterminate
-        :width="3"
-        color="green"
-      ></v-progress-circular>
-      <v-spacer></v-spacer>
-      <v-btn :disabled="sending" color="green darken-3" flat @click="save">Save</v-btn>
-    </v-card-actions>
+                        <v-data-table
+                                select-all
+                                v-model="selected"
+                                :headers="headers"
+                                :items="rows"
+                                item-key="rowId"
+                                class="elevation-1"
+                                id="table-of-expenses"
+                        >
+                            <template slot="headers" slot-scope="props">
+                                <th>
+                                    <v-checkbox
+                                            :input-value="props.all"
+                                            :indeterminate="props.indeterminate"
+                                            primary
+                                            hide-details
+                                            @click="toggleAll"
+                                    ></v-checkbox>
+                                </th>
+                                <th
+                                        v-for="header in props.headers"
+                                        :key="header.text"
+                                        :align="header.align"
+                                        :class="header.class"
+                                >
+                                    {{ header.text }}
+                                </th>
+                            </template>
 
-    <v-dialog v-model="dialog" max-width="500px">
-      <v-card>
-        <v-toolbar color="green darken-3" dark>
-          <v-toolbar-title>Choose item</v-toolbar-title>
-          <v-spacer></v-spacer>
-          <v-btn icon>
-            <v-icon>add_shopping_cart</v-icon>
-          </v-btn>
-        </v-toolbar>
+                            <template slot="items" slot-scope="props"
+                                      class="table-of-expenses">
+                                <tr>
+                                    <td class="d-none">{{ props.item.item }}</td>
+                                    <td>
+                                        <v-checkbox v-model="props.selected" primary
+                                                    hide-details></v-checkbox>
+                                    </td>
 
-        <v-card-text>
-          <v-list>
-            <template v-for="(item, index) in items">
-              <v-list-tile v-model="item.active" :key="item.id" @click="chooseItem(item)">
-                <v-list-tile-avatar>
-                  <v-icon color="teal">beenhere</v-icon>
-                </v-list-tile-avatar>
-                <v-list-tile-content>
-                  <v-list-tile-title v-text="item.name"></v-list-tile-title>
-                </v-list-tile-content>
-              </v-list-tile>
-              <v-divider v-if="index + 1 < items.length" :key="`divider-${index}`"></v-divider>
-            </template>
-          </v-list>
-        </v-card-text>
-        <v-card-actions>
-          <v-spacer></v-spacer>
-          <v-btn color="blue darken-1" flat to="/expends">Cancel</v-btn>
-          <v-progress-circular indeterminate :width="3" color="green"></v-progress-circular>
-        </v-card-actions>
-      </v-card>
-    </v-dialog>
-  </v-flex>
+                                    <td class="text-xs-left"
+                                        @click="editCurrentRow(props.item)">
+                                        {{ props.item.item.name }}
+                                    </td>
+
+                                    <td class="text-xs-left"
+                                        @click="editCurrentRow(props.item)">
+                                        {{ props.item.sum }}
+                                    </td>
+
+                                    <td class="text-xs-left hidden-sm-and-down"
+                                        @click="editCurrentRow(props.item)">
+                                        {{ props.item.comment }}
+                                    </td>
+
+                                    <!-- <td class="justify-center layout px-0 hidden-xs-and-down" style="background-color: #FF6565">
+                                    <v-icon small @click="deleteRow(props.item)">delete</v-icon>
+                                    </td>-->
+                                </tr>
+                            </template>
+
+                            <template slot="no-data">
+                                <v-alert :value="true" type="info" icon="warning"
+                                >To add a new income, click "Add"
+                                </v-alert
+                                >
+                            </template>
+                        </v-data-table>
+                    </div>
+                </v-flex>
+            </v-layout>
+
+        </v-container>
+
+    </v-form>
 </template>
 
 <script>
-import ApiClass from './Api';
-const Api = new ApiClass();
-const moment = require('moment');
-import { mapGetters, mapActions } from 'vuex';
 
-export default {
-  props: ['docId'],
-  data: () => ({
-    id: null,
-    date: null,
-    toggle_multiple: [0, 1],
-    headers: [
-      { text: 'wallet', value: 'wallet' },
-      { text: 'item', value: 'item' },
-      { text: 'Sum', value: 'sum' },
-    ],
-    rows: [],
+    import EditRowDialog from './SelectsForms/EditRowForm';
+    import MyNum from '../helpers/MyNum';
+    import {mapGetters, mapState} from 'vuex';
 
-    countRows: 0,
-    currentRow: 0,
-    editRow: {
-      wallet: null,
-      item: null,
-      sum: 0,
-      comment: '',
-    },
+    export default {
+        props: ['docId'],
+        data: () => ({
+            menu: false,
+            toggle_multiple: [0, 1],
+            selected: [],
+            countRows: 0,
+            currentRow: 0,
+            editRow: {
+                index: null,
+                item: null,
+                sum: 0,
+                comment: '',
+            },
 
-    menu: false,
-    modal: false,
-    active: null,
-    dialog: false,
-    sending: false,
-  }),
-  computed: {
-    ...mapGetters({
-      wallets: 'allWallets',
-      items: 'allIncomeItems',
-    }),
-  },
-  beforeMount() {
-    this.$store.state.title = 'Income';
-    this.$store.dispatch('getAllWallets');
-    this.$store.dispatch('getAllIncomeItems');
-    this.id = this.docId;
-    if (this.id == null) {
-      let moment = require('moment');
-      let day = moment();
+            headers: [
+                {
+                    text: 'Category',
+                    align: 'left',
+                    sortable: true,
+                    value: 'item',
+                },
+                {text: 'Amount', value: 'sum', align: 'left'},
+                {
+                    text: 'Comment',
+                    value: 'comment',
+                    align: 'left',
+                    class: 'hidden-sm-and-down',
+                },
+            ],
+            //wallets: [],
+            menu: false,
+            modal: false,
+            active: null,
+            dialog: false,
+            showWalletSelection: false,
+            processing: false
+        }),
+        components: {
+            'tm-editRow': EditRowDialog
+        },
+        computed: {
+            wallet: {
+                get() {
+                    return this.$store.state.incomes.incomeObj.wallet
+                },
+                set(wallet) {
+                    this.$store.commit('incomeUpdateWallet', wallet);
+                }
+            },
+            ...mapState({
+                id: state => state.incomes.incomeObj.id,
+                date: state => state.incomes.incomeObj.date,
+                currency: state => state.incomes.incomeObj.currency,
+                rows: state => state.incomes.incomeObj.rows,
+                closeForm: state => state.incomes.closeForm,
+            }),
+            ...mapGetters({
+                wallets: 'allWallets',
+                items: 'allIncomeItems',
+            }),
+            totalAmount: function () {
+                const reducer = (accumulator, row) => accumulator + Number(row.sum);
+                let total = this.rows.reduce(reducer, 0);
+                return MyNum.round2(total);
+            },
+        },
+        beforeMount() {
+            this.$store.state.title = 'Income';
+            this.$store.commit('setupToolbarMenu', []);
+            this.$store.commit('setupToolbarMenu', this.getUpMenu());
 
-      this.date = day.format('YYYY-MM-DD');
+            this.$store.dispatch('getSettings');
+            this.$store.dispatch('getAllWallets');
+            this.$store.dispatch('getAllIncomeItems');
+            this.$store.dispatch('getIncome', this.docId);
+        },
 
-      this.rows.push({
-        wallet: null,
-        item: null,
-        sum: 0,
-        comment: '',
-      });
+        watch: {
 
-      this.editRow = this.rows[this.rows.length - 1];
-      this.currentRow = 0;
-    } else {
-      this.getData(this.id);
-    }
-  },
-  watch: {
-    dialog(val) {
-      val || this.close();
-    },
-  },
+            closeForm: function (val, oldVal) {
+                if (val === true) {
+                    this.$router.push({path: '/expends'});
+                }
+            },
+        },
+        methods: {
+            getUpMenu() {
+                return {
+                    mainAction: {
+                        title: 'Save',
+                        icon: 'done',
+                        action: () => {
+                            this.save();
+                        },
+                    },
+                    menu: [
+                        {
+                            title: 'Cancel',
+                            icon: 'exit_to_app',
+                            action: () => {
+                                this.cancel();
+                            },
+                        }
+                    ]
+                };
 
-  methods: {
-    addRow() {
-      this.rows.push({
-        wallet: null,
-        item: null,
-        sum: 0,
-        comment: '',
-      });
+            },
+            startWalletChoice() {
+                this.showWalletSelection = true;
+            },
 
-      this.editRow = this.rows[this.rows.length - 1];
-      this.currentRow = this.rows.length - 1;
-    },
-    prevRow() {
-      if (this.currentRow == 0) {
-        return;
-      }
+            completeWalletSelectionHandler(wallet) {
+                if (wallet !== undefined && typeof wallet === 'object') {
+                    this.walletOnChange(wallet);
+                }
 
-      let newNum = --this.currentRow;
-      this.currentRow = newNum >= 0 ? newNum : 0;
-      this.editRow = this.rows[newNum];
-    },
-    nextRow() {
-      let newNum = ++this.currentRow;
-      this.currentRow = newNum >= this.rows.length - 1 ? this.rows.length - 1 : newNum;
-      this.editRow = this.rows[newNum];
-    },
-    delRow() {
-      delete this.rows.splice(this.currentRow, 1);
+                this.showWalletSelection = false;
+            },
 
-      if (this.rows.length > 0) {
-        this.currentRow = 0;
-        this.editRow = this.rows[this.currentRow];
-      } else {
-        this.rows.push({
-          wallet: null,
-          item: null,
-          sum: 0,
-          comment: '',
-        });
+            deleteSelected() {
+                this.$store.commit('deleteSelected', this.selected);
+            },
 
-        this.editRow = this.rows[this.rows.length - 1];
-        this.currentRow = 0;
-      }
-    },
-    addDay() {
-      let day = moment(this.date);
-      day.add(1, 'days');
-      this.date = day.format('YYYY-MM-DD');
-    },
-    subDay() {
-      let day = moment(this.date);
-      day.add(-1, 'days');
-      this.date = day.format('YYYY-MM-DD');
-    },
-    openFormItems() {
-      this.dialog = true;
-    },
-    chooseItem(item) {
-      //console.log(JSON.stringify(item));
-      this.editRow.item = item;
-      this.dialog = false;
-    },
-    close() {
-      this.dialog = false;
+            toggleAll() {
+                if (this.selected.length) {
+                    this.selected = [];
+                } else {
+                    this.selected = this.rows.slice();
+                }
+            },
 
-      setTimeout(() => {}, 300);
-    },
+            dateOnChange(newDate) {
+                this.$store.commit('incomeUpdateDate', newDate);
+            },
 
-    getData(id) {
-      const params = {
-        model: 'income',
-        conditions: { id: this.id },
-      };
+            walletOnChange(wallet) {
+                this.$store.commit('incomeUpdateWallet', wallet);
+            },
 
-      Api.show(params).then(data => {
-        if (data === false) {
-          return;
-        }
-        let day = moment(data.date);
-        this.date = day.format('YYYY-MM-DD');
-        let temp_rows = [];
-        for (let line of data.rows.storage) {
-          let lineObj = {
-            //wallet: this.getWallet(line.wallet_id),
-            wallet: line.Wallet,
-            //item: this.getItem(line.item_id),
-            item: line.ItemIncome,
-            sum: line.sum,
-          };
+            editCurrentRow(row) {
+                this.editRow = Object.assign({}, row);
+                this.editRow.index = this.rows.indexOf(row);
+                this.dialog = true;
+            },
 
-          temp_rows.push(lineObj);
-        }
+            addNewLine() {
+                this.tempRow = null;
 
-        this.rows = temp_rows;
-      });
-    },
-    getItems() {
-      if (this.items.length > 0) {
-        return true;
-      }
+                (this.editRow = {
+                    index: null,
+                    item: null,
+                    sum: 0,
+                    comment: '',
+                }),
+                    (this.dialog = true);
+            },
 
-      if (!sessionStorage.getItem('jwt')) {
-        this.$router.push({ path: 'login' });
-        return false;
-      }
+            closeEditRowDialog() {
+                this.dialog = false;
+            },
 
-      const conditions = { list: 1 };
-      Api.index({ model: 'incomeitems', conditions: conditions }).then(items => {
-        this.items = items;
-      });
-    },
+            saveRow(row) {
+                this.dialog = false;
 
-    getItem(id) {
-      console.log(id);
-      console.log(JSON.stringify(this.items));
-      for (let item of this.items) {
-        if (item.id == id) {
-          return item;
-        }
-      }
-    },
+                if (!row.item) return;
 
-    getWallet(id) {
-      for (let wallet of this.wallets) {
-        if (wallet.id == id) {
-          return wallet;
-        }
-      }
-    },
+                if (row.index === null) {
+                    let maxRowId = this.maxRowId();
+                    row.rowId = ++maxRowId;
 
-    getWallets() {
-      Api.index({ model: 'wallets' }).then(wallets => {
-        this.wallets = wallets;
-      });
-    },
+                }
 
-    save() {
-      this.sending = true;
+                this.$store.commit('incomeEditRow', row);
 
-      let rows = this.getRowsUpload();
-      let doc = {
-        id: this.id,
-        date: this.date,
-        rows: rows,
-      };
+                this.editRow = {
+                    index: null,
+                    item: null,
+                    sum: 0,
+                    comment: '',
+                };
 
-      const params = {
-        isUpdate: this.id !== null,
-        model: 'income',
-        data: doc,
-      };
 
-      Api.save(params).then(success => {
-        if (success === true) {
-          this.$router.push({ path: '/incomes' });
-        } else {
-          this.sending = false;
-        }
-      });
-    },
+            },
 
-    getRowsUpload() {
-      let arr_rows = [];
-      for (let row of this.rows) {
-        if (row.item === null || row.wallet === null) {
-          continue;
-        }
+            maxRowId() {
+                if (this.rows.length == 0) {
+                    return 0;
+                }
 
-        arr_rows.push({
-          item_id: row.item.id,
-          wallet_id: row.wallet.id,
-          sum: row.sum,
-          comment: row.comment,
-        });
-      }
+                const reducer = function (accumulator, row) {
+                    return Math.max(accumulator, row.rowId);
+                };
 
-      return arr_rows;
-    },
-  },
-};
+                let maxRowId = this.rows.reduce(reducer, 0);
+
+                return maxRowId;
+            },
+
+            deleteRow(row) {
+                this.$store.commit('incomeDeleteRow', row);
+            },
+
+            openFormItems() {
+                this.dialog = true;
+            },
+
+            chooseItem(item) {
+                this.editRow.item = item;
+                this.dialog = false;
+            },
+
+            save() {
+                this.processing = true;
+                this.$store.dispatch('saveIncome').then(() => {
+                    this.processing = false;
+                    this.$router.push({path: '/incomes'});
+                }).catch(err => {
+                    this.processing = false;
+                });
+            },
+
+            cancel() {
+                this.$router.push({path: '/incomes'});
+            },
+        },
+    };
 </script>
 
-<style scoped>
-.line {
-  margin: 0px;
-}
+<style lang="scss" scoped>
 
-.myinput {
-  height: 40px;
-  margin: 0 auto;
-}
 
-.myinputRow {
-  height: 50px;
-}
+    .select-td {
+        width: 20px;
+    }
 
-.mySmallRow {
-  height: 6%;
-}
 
-.myDevider {
-  height: 10px;
-}
 </style>

@@ -1,227 +1,276 @@
 <template>
-  <div class="col-12 col-sm-12 col-md-12 col-lg-12">
-    <div class="row">
-      <div class="col-8 col-sm-8 col-md-8 col-lg-8">
-        <v-dialog
-          ref="dialog"
-          persistent
-          v-model="modal"
-          lazy
-          full-width
-          width="290px"
-          :return-value.sync="date"
-        >
-          <v-text-field
-            slot="activator"
-            label="Date"
-            v-model="date"
-            prepend-icon="event"
-            readonly
-          ></v-text-field>
-          <v-date-picker v-model="date" scrollable color="green darken-3">
-            <v-spacer></v-spacer>
-            <v-btn flat color="primary" @click="modal = false">Cancel</v-btn>
+    <v-form class="expense-from">
+        <v-container>
+            <v-progress-linear v-show="this.processing == true"
+                               :indeterminate="true"></v-progress-linear>
 
-            <v-btn flat color="primary" @click="$refs.dialog.save(date)">OK</v-btn>
-          </v-date-picker>
-        </v-dialog>
-      </div>
+            <v-layout row>
+                <v-flex xs12 sm12 md12 lg12>
+                    <v-layout row>
+                        <v-flex xs12 sm12 md6 lg6>
+                            <v-menu
+                                    :close-on-content-click="false"
+                                    v-model="menu"
+                                    :nudge-right="40"
+                                    lazy
+                                    transition="scale-transition"
+                                    offset-y
+                                    full-width
+                                    min-width="290px"
+                            >
+                                <v-text-field
+                                        slot="activator"
+                                        :value="date"
+                                        label="Date"
+                                        type="date"
+                                        dense
+                                        prepend-icon="event"
+                                        readonly
+                                ></v-text-field>
+                                <v-date-picker
+                                        :value="date"
+                                        @change="dateOnChange"
+                                        @input="menu = false"
+                                ></v-date-picker>
+                            </v-menu>
+                        </v-flex>
+                    </v-layout>
 
-      <div class="col-4 col-sm-4 col-md-4 col-lg-4">
-        <v-btn icon class="mx-0" @click="subDay()">
-          <v-icon color="green darken-3">remove_circle_outline</v-icon>
-        </v-btn>
-        <v-btn icon class="mx-0" @click="addDay()">
-          <v-icon color="green darken-3">add_circle_outline</v-icon>
-        </v-btn>
-      </div>
-    </div>
-    <div class="row">
-      <div class="col-12 col-sm-12 col-md-12 col-lg-12">
-        <span class="grey--text">From</span>
-      </div>
-    </div>
-    <div class="row">
-      <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
-        <v-select
-          label="From"
-          prepend-icon="account_balance_wallet"
-          :items="wallets"
-          v-model="WalletFrom"
-          autocomplete
-          cache-items
-          clearable
-          auto
-          single-line
-          item-text="name"
-          item-value="id"
-          return-object
-        >
-        </v-select>
-      </div>
+                    <!--Wallet select start-->
 
-      <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
-        <v-text-field
-          label="Sum"
-          v-model="sumFrom"
-          class="text-right"
-          clearable
-          type="number"
-          prepend-icon="functions"
-        ></v-text-field>
-      </div>
-    </div>
-    <v-divider></v-divider>
-    <div class="row">
-      <div class="col-12 col-sm-12 col-md-12 col-lg-12">
-        <span class="grey--text">To</span>
-      </div>
-    </div>
-    <div class="row">
-      <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
-        <v-select
-          label="To"
-          prepend-icon="account_balance_wallet"
-          :items="wallets"
-          v-model="WalletTo"
-          autocomplete
-          cache-items
-          clearable
-          auto
-          single-line
-          item-text="name"
-          item-value="id"
-          return-object
-        >
-        </v-select>
-      </div>
+                    <v-layout row>
+                        <v-flex xs12 sm12 md6 lg6>
+                            <v-autocomplete
+                                    v-model="walletFrom"
+                                    :items="wallets"
+                                    :value="walletFrom"
+                                    menu-props="auto"
+                                    label="From wallet"
+                                    item-text="name"
+                                    item-value="id"
+                                    return-object
+                                    append-outer-icon="pageview"
+                                    required
+                                    v-validate.disable="'required'"
+                                    data-vv-name="walletFrom"
+                                    :error-messages="errors.collect('walletFrom')"
+                                    @click:append-outer="startWalletChoice(1)"
+                            ></v-autocomplete>
+                        </v-flex>
+                    </v-layout>
 
-      <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
-        <v-text-field
-          label="Sum"
-          v-model="sumTo"
-          class="text-right"
-          clearable
-          type="number"
-          prepend-icon="functions"
-        ></v-text-field>
-      </div>
-    </div>
-    <v-card-actions>
-      <v-btn :disabled="processing" color="blue darken-1" flat to="/transfers">Cancel</v-btn>
-      <v-spacer></v-spacer>
-      <v-btn :disabled="processing" color="green darken-3" flat @click="save">Save</v-btn>
-    </v-card-actions>
-    <v-progress-linear v-show="processing" :indeterminate="true"></v-progress-linear>
-    <v-alert :value="true" color="error" v-show="showError" dismissible>
-      {{ msgError }}
-    </v-alert>
-  </div>
+                    <v-layout row>
+                        <v-flex xs12 sm12 md6 lg6>
+                            <v-text-field
+                                    type="number"
+                                    clearable
+                                    v-model.number.lazy="sumFrom"
+                                    label="Sum of expense"
+                                    required
+                            ></v-text-field>
+                        </v-flex>
+                    </v-layout>
+
+                    <v-layout row>
+                        <v-flex xs12 sm12 md6 lg6>
+                            <v-autocomplete
+                                    v-model="walletTo"
+                                    :items="wallets"
+                                    :value="walletTo"
+                                    menu-props="auto"
+                                    label="To Wallet"
+                                    item-text="name"
+                                    item-value="id"
+                                    return-object
+                                    append-outer-icon="pageview"
+                                    required
+                                    v-validate.disable="'required'"
+                                    data-vv-name="walletTo"
+                                    :error-messages="errors.collect('walletTo')"
+                                    @click:append-outer="startWalletChoice(2)"
+                            ></v-autocomplete>
+                        </v-flex>
+                    </v-layout>
+                    <v-layout row>
+                        <v-flex xs12 sm12 md6 lg6>
+
+                            <v-text-field
+                                    type="number"
+                                    clearable
+                                    v-model.number.lazy="sumTo"
+                                    label="Sum of income"
+                            ></v-text-field>
+                        </v-flex>
+                    </v-layout>
+
+
+                </v-flex>
+            </v-layout>
+
+            <tm-wallets-select-form
+                    v-bind:items="this.wallets"
+                    v-bind:showWalletSelection="this.showWalletSelection"
+                    @select-wallets-close="completeWalletSelectionHandler"
+            ></tm-wallets-select-form>
+            <!--Header end-->
+        </v-container>
+    </v-form>
 </template>
 
 <script>
-var moment = require('moment');
-import { mapGetters, mapActions } from 'vuex';
+    import {mapGetters} from 'vuex';
+    import MyNum from '../helpers/MyNum';
 
-import ModelClass from './Model';
-const Model = new ModelClass();
+    export default {
+        props: ['docId'],
+        data: () => ({
+            processing: false,
+            showWalletSelection: false,
+            typeWalletEdit: -1,
+            menu: false,
+            $_veeValidate: {
+                validator: "new"
+            },
+            dictionary: {
+                attributes: {
+                    walletFrom: "Wallet from",
+                    walletTo: "wallet to"
+                },
+                custom: {
+                    name: {
+                        required: () => "Name can not be empty",
+                        max: "The name field may not be greater than 10 characters"
+                        // custom messages
+                    }
+                }
+            }
+        }),
 
-import ApiClass from './Api';
-const Api = new ApiClass();
+        computed: {
+            date: {
+                get() {
+                    return this.$store.state.transfers.formData.date;
+                },
 
-export default {
-  props: ['docId'],
-  data: () => ({
-    id: null,
-    date: null,
-    WalletFrom: null,
-    WalletTo: null,
+                set(date) {
+                    this.$store.commit('setTransferDate', date);
+                }
+            },
 
-    wallet_id_from: null,
-    wallet_id_to: null,
-    sumFrom: 0,
-    sumTo: 0,
-    processing: false,
-    showError: false,
-    msgError: '',
-  }),
-  computed: mapGetters({
-    wallets: 'allWallets',
-  }),
+            walletFrom: {
+                get() {
+                    return this.$store.state.transfers.formData.walletFrom;
+                },
+                set(wallet) {
+                    this.$store.commit('setWalletFrom', wallet);
+                }
+            },
+            walletTo: {
+                get() {
+                    return this.$store.state.transfers.formData.walletTo;
+                },
+                set(wallet) {
+                    this.$store.commit('setWalletTo', wallet);
+                }
+            },
+            sumFrom: {
+                get() {
+                    return this.$store.state.transfers.formData.sumFrom;
+                },
+                set(sum) {
+                    this.$store.commit('setSumFrom', MyNum.round2(Number(sum)));
+                }
+            },
+            sumTo: {
+                get() {
+                    return this.$store.state.transfers.formData.sumTo;
+                },
+                set(sum) {
+                    this.$store.commit('setSumTo', MyNum.round2(Number(sum)));
+                }
+            },
+            ...mapGetters({
+                wallets: 'allWallets'
+            }),
+        },
 
-  beforeMount: function() {
-    this.$store.dispatch('getAllWallets');
-    this.$store.state.title = 'Transfer money';
-    this.id = this.docId;
+        beforeMount() {
 
-    if (this.id == null) {
-      //new doc
-      let day = moment();
-      this.date = day.format('YYYY-MM-DD');
-    } else {
-      this.processing = true;
-      const param = {
-        model: 'transfer',
-        conditions: { id: this.id },
-      };
+            this.$store.state.title = 'Transfer';
+            this.$store.commit('setupToolbarMenu', {});
+            this.$store.commit('setupToolbarMenu', this.getUpMenu());
+            this.$store.dispatch('getAllWallets');
+            this.$store.dispatch('getTransfer', this.docId);
+        },
 
-      Api.show(param).then(obj => {
-        let day = moment();
-        this.date = day.format(obj.date);
-        this.WalletFrom = obj.wallet_id_from;
-        this.WalletTo = obj.wallet_id_to;
-        this.sumFrom = obj.sumFrom;
-        this.sumTo = obj.sumTo;
-        this.processing = false;
-      });
+        methods: {
+            getUpMenu() {
+                return {
+                    mainAction: {
+                        title: 'Save',
+                        icon: 'done',
+                        action: () => {
+                            this.save();
+                        },
+                    },
+                    menu: [
+                        {
+                            title: 'Cancel',
+                            icon: 'exit_to_app',
+                            action: () => {
+                                this.cancel();
+                            },
+                        }
+                    ]
+                }
+            },
+
+            dateOnChange(newDate) {
+                this.$store.commit('setTransferDate', newDate);
+            },
+
+            startWalletChoice(walletType) {
+                this.typeWalletEdit = walletType;
+                this.showWalletSelection = true;
+            },
+
+            completeWalletSelectionHandler(wallet) {
+
+                if (wallet !== undefined && typeof wallet === 'object') {
+
+                    if (this.typeWalletEdit == 1) {
+                        this.walletFrom = wallet;
+                    }
+                    else if (this.typeWalletEdit == 2) {
+                        this.walletTo = wallet;
+                    }
+                }
+
+                this.showWalletSelection = false;
+            },
+
+            save() {
+                this.$validator.validateAll().then(result => {
+                    if (!result) {
+                        return;
+                    }
+
+                    this.processing = true;
+
+                    this.$store.dispatch('saveTransfer').then(() => {
+                        this.processing = false;
+                        this.$router.push({path: '/transfers'});
+                    }).catch(err => {
+                        this.processing = false;
+                    });
+                });
+
+            },
+
+            cancel() {
+                this.$router.push({path: '/transfers'});
+            }
+        }
     }
-  },
 
-  watch: {
-    dialog(val) {
-      val || this.close();
-    },
-  },
-
-  methods: {
-    addDay() {
-      let day = moment(this.date);
-      day.add(1, 'days');
-      this.date = day.format('YYYY-MM-DD');
-    },
-    subDay() {
-      let day = moment(this.date);
-      day.add(-1, 'days');
-      this.date = day.format('YYYY-MM-DD');
-    },
-
-    save() {
-      let updateMode = false;
-      if (this.id !== null) {
-        updateMode = true;
-      }
-
-      const elem = {
-        id: this.id,
-        date: this.date,
-        wallet_id_from: this.WalletFrom === null ? null : this.WalletFrom.id,
-        wallet_id_to: this.WalletTo === null ? null : this.WalletTo.id,
-        sumFrom: this.sumFrom,
-        sumTo: this.sumTo,
-      };
-      this.processing = true;
-
-      Model.saveTransfer(elem, updateMode)
-        .then(() => {
-          this.showError = false;
-          this.$router.push({ path: '/transfers' });
-        })
-        .catch(() => {
-          this.processing = false;
-          this.msgError = "Error. Document hasn't been saved!";
-          this.showError = true;
-        });
-    },
-  },
-};
 </script>

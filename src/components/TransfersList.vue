@@ -1,225 +1,228 @@
 <template>
-  <div class="col-12 col-sm-12 col-md-12 col-lg-12">
-    <v-data-table
-      :headers="headers"
-      :items="items"
-      :loading="updating"
-      hide-actions
-      class=" mytable"
-      id="MyTable"
-    >
-      <template slot="items" slot-scope="props">
-        <tr>
-          <td style="padding: 0 10px;" v-show="showSelect">
-            <v-btn icon class="mx-0" @click="deleteItem(props.item)">
-              <v-icon color="pink">delete</v-icon>
-            </v-btn>
-          </td>
-          <td class="d-none">{{ props.item.id }}</td>
-          <td style="padding: 0 5px;" @click="editDoc(props.item)">{{ props.item.dateShow }}</td>
+    <v-container mx-0>
+        <v-layout row>
+            <v-flex xs12 sm12 md12 lg12>
+                <div class="table-wrapper">
 
-          <td style="padding: 0 5px;" @click="editDoc(props.item)">
-            <tr>
-              {{
-                props.item.walletFromName
-              }}
-            </tr>
-            <tr>
-              {{
-                props.item.walletToName
-              }}
-            </tr>
-          </td>
+                    <ul class="list-group list-group-flush">
+                        <li
+                                class="list-group-item list-header"
+                        >
+                            <v-layout row ml-3>
+                                <v-flex xs10 sm10 md10 lg11 class="cell">
+                                    <v-layout row>
+                                        <v-flex xs8 sm8md10 lg10 class="cell">
+                                            <v-layout row d-flex class="flex-column flex-md-row">
+                                                <v-flex xs4>
+                                                    <span>Date</span>
+                                                </v-flex>
+                                                <v-flex xs8>
+                                                    <span>Wallets (sum)</span>
+                                                </v-flex>
 
-          <td style="padding: 0 5px;" @click="editDoc(props.item)">
-            <tr>
-              <v-icon color="red">remove</v-icon
-              >{{
-                props.item.sumFrom
-              }}
-            </tr>
-            <tr>
-              <v-icon color="green">add</v-icon
-              >{{
-                props.item.sumTo
-              }}
-            </tr>
-          </td>
-        </tr>
-      </template>
-    </v-data-table>
-    <div class="text-xs-center pt-2">
-      <v-btn outline color="success" :loading="updating" :disabled="updating" @click="addDocs"
-        >more</v-btn
-      >
-    </div>
+                                            </v-layout>
+                                        </v-flex>
 
-    <v-fab-transition>
-      <v-btn fab fixed bottom right dark to="/transfer" color="primary">
-        <v-icon>add</v-icon>
-      </v-btn>
-    </v-fab-transition>
-  </div>
+                                    </v-layout>
+                                </v-flex>
+
+                                <v-flex xs2 sm2 md2 lg1>
+                                    <div class="cell-actions justify-content-end">
+                                        <span>Act.</span>
+                                    </div>
+
+                                </v-flex>
+
+                            </v-layout>
+
+
+                        </li>
+                        <li v-for="item in items"
+                            class="list-group-item list-item"
+                            @click="editItem(item)"
+                        >
+                            <v-layout row ml-3>
+                                <v-flex xs10 sm10 md10 lg11 class="cell">
+                                    <v-layout row class="flex-column flex-md-row">
+
+
+                                        <v-flex xs12 sm12 md2 lg2>
+                                            <span>{{ item.date}}</span>
+                                        </v-flex>
+
+                                        <v-flex xs12 sm12 md10 lg10>
+                                            <v-flex xs10>
+                                                <span>from: {{ item.wallet_from.name}} ( - {{item.sum_from}})</span>
+                                            </v-flex>
+                                            <v-flex xs10>
+                                                <span>to: {{ item.wallet_to.name}} (+ {{item.sum_to}})</span>
+                                            </v-flex>
+
+                                        </v-flex>
+
+
+                                    </v-layout>
+                                </v-flex>
+
+                                <v-flex xs2 sm2 md2 lg1>
+                                    <div class="cell-actions justify-content-end">
+                                        <a class="delete" data-toggle="modal">
+                                            del
+                                            <!--<v-icon color="#F44336">delete</v-icon>-->
+                                        </a>
+                                    </div>
+
+                                </v-flex>
+
+                            </v-layout>
+
+
+                        </li>
+
+                    </ul>
+                </div>
+            </v-flex>
+        </v-layout>
+    </v-container>
 </template>
 
+<style scoped>
+
+    li:nth-of-type(odd) {
+        background-color: #fcfcfc;
+    }
+
+    li:first-child {
+        background: #435d7d;
+    }
+
+    .list-header {
+
+        background: #435d7d;
+        color: #fff;
+        font-family: 'Varela Round', sans-serif;
+        font-size: 15px;
+        font-weight: bold;
+
+    }
+
+    .list-item {
+        color: rgb(86, 103, 135);;
+        font-family: 'Varela Round', sans-serif;
+        font-size: 15px;
+
+    }
+
+    .list-item:hover {
+        cursor: pointer;
+        background-color: rgb(245, 245, 245);
+
+    }
+
+    list-item:nth-of-type(odd) {
+        background-color: #fcfcfc;
+    }
+
+    list-item:hover {
+        background: #f5f5f5;
+    }
+
+    .cell-actions {
+        display: flex;
+        flex-direction: row;
+        justify-items: center;
+        max-width: 60px;
+    }
+</style>
+
 <script>
-import ModelClass from './Model';
-const Model = new ModelClass();
+    import ApiClass from '../api/api_laravel';
+    import {mapGetters} from 'vuex';
 
-import ApiClass from './Api';
-const Api = new ApiClass();
+    const api = new ApiClass();
+    const moment = require('moment');
+    export default {
+        data: () => ({
+            title: "Transfers",
+            processing: false,
+            offsetTop: 0,
+            offset: 0,
+            page: 0,
+            updating: false,
+            showDel: false,
+            currentPage: 1,
 
-var moment = require('moment');
-export default {
-  data: () => ({
-    headers: [
-      { text: 'id', value: 'id', class: 'd-none' },
-      { text: 'Date', value: 'date', align: 'left', class: 'hdata' },
-      { text: 'Wallet', value: 'wallet', align: 'left', width: '50%' },
-      { text: 'Sum', value: 'sum', align: 'left', width: '30%' },
-    ],
-    selected: [],
-    items: [],
-    showSelect: false,
-    offset: 0,
-    updating: false,
-  }),
-
-  beforeMount: function() {
-    this.$store.state.title = 'Transfers money';
-    this.$store.state.componentMenu = this.getUpMenu();
-  },
-
-  created() {
-    this.getDocs();
-  },
-
-  methods: {
-    getUpMenu() {
-      let menu = [];
-
-      const action1 = {
-        title: 'Update',
-        icon: 'cached',
-        action: () => {
-          this.offset = 0;
-          this.getDocs();
+            headers: [
+                {text: 'id', value: 'id', classList: ['d-none']},
+                {text: 'Date', value: 'date', classList: ["col-xs-2 col-sm-2 col-lg-2"]},
+                {text: 'Wallet', value: 'walletName', classList: ["col-xs-2 col-sm-4 col-lg-4"]},
+                {text: 'Sum', value: 'sum', classList: ["col-xs-2 col-sm-4 col-lg-5"]},
+            ],
+        }),
+        computed: {
+            ...mapGetters({
+                items: 'items',
+            }),
         },
-      };
 
-      const action2 = {
-        title: 'Delete',
-        icon: 'delete',
-        action: () => {
-          this.update();
+        beforeMount: function () {
+            this.$store.state.title = 'Transfers';
+            this.$store.commit('setupToolbarMenu', this.getUpMenu());
+            this.$store.dispatch('getTransfers', this.currentPage);
         },
-      };
 
-      menu.push(action1);
-      menu.push(action2);
+        methods: {
+            getUpMenu() {
+                return {
+                    mainAction: {
+                        title: 'add',
+                        icon: 'add',
+                        action: () => {
+                            this.add();
+                        },
+                    },
+                    menu: [
+                        {
+                            title: 'update',
+                            icon: 'update',
+                            action: () => {
+                                this.update();
+                            },
+                        }
+                    ]
+                };
 
-      return menu;
-    },
-    getDocs() {
-      this.updating = true;
-      const settings = {
-        model: 'expenditure',
-        conditions: {
-          limit: 50,
-          offset: this.offset,
+            },
+
+            editItem(item) {
+                let id = item.id;
+
+                console.log(`edit transfer by id ${id}`);
+
+                this.$router.push({path: `transfers/${id}`});
+            },
+
+            add() {
+                this.$router.push({path: `transfers/new`});
+            },
+
+            addDocs() {
+                if (this.updating == true) {
+                    return;
+                }
+
+                this.offset += 50;
+                this.updating = true;
+
+            },
+            showDelBtn() {
+                this.showDel = !this.showDel;
+            },
+            deleteItem(item) {
+                alert("Action doesn't support yet");
+            },
         },
-      };
-      Api.index({ model: 'transfer' }).then(data => {
-        for (let elem of data) {
-          elem.walletFromName = elem.WalletFrom.name;
-          elem.walletToName = elem.WalletTo.name;
-
-          let day = moment(elem.date);
-          elem.dateShow = day.format('DD-MM-YYYY');
-          this.items.push(elem);
-        }
-
-        this.updating = false;
-      });
-    }, // end getDocs
-
-    update() {
-      this.getDocs();
-    },
-    addDocs() {
-      if (this.updating == true) {
-        return;
-      }
-
-      this.offset += 20;
-      this.updating = true;
-      this.getDocs(this.offset);
-    },
-
-    addDoc() {
-      this.$router.push({ path: `transfer` });
-    },
-
-    editDoc(item) {
-      let id = item.id;
-      this.$router.push({ path: `transfer/${id}` });
-    },
-
-    showDelBtn() {
-      this.showSelect = !this.showSelect;
-    },
-    deleteItem(item) {
-      let id = item.id;
-      let url = `/transfer/delete?id=${id}`;
-      Model.delete(url)
-        .then(response => {
-          const index = this.items.indexOf(item);
-          this.items.splice(index, 1);
-          alert('Deleted');
-        })
-        .catch(e => {
-          alert('Not deleted!');
-        });
-    },
-  },
-};
+    };
 </script>
 
-<style scoped>
-.custom-loader {
-  animation: loader 1s infinite;
-  display: flex;
-}
-@-moz-keyframes loader {
-  from {
-    transform: rotate(0);
-  }
-  to {
-    transform: rotate(360deg);
-  }
-}
-@-webkit-keyframes loader {
-  from {
-    transform: rotate(0);
-  }
-  to {
-    transform: rotate(360deg);
-  }
-}
-@-o-keyframes loader {
-  from {
-    transform: rotate(0);
-  }
-  to {
-    transform: rotate(360deg);
-  }
-}
-@keyframes loader {
-  from {
-    transform: rotate(0);
-  }
-  to {
-    transform: rotate(360deg);
-  }
-}
-</style>
+

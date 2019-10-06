@@ -1,7 +1,7 @@
-class Num {
+class MyNum {
   round2(value) {
     return Math.round(value * 100) / 100;
   }
 }
 
-export default new Num();
+export default new MyNum();

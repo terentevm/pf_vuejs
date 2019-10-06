@@ -31,14 +31,14 @@
 
 <script>
 
-    import Num from '../../helpers/Num';
+    import MyNum from '../../helpers/MyNum';
 
     export default {
         props: ['totalBalance', 'balanceCurrency'],
 
         computed: {
             balanceRounded: function () {
-                return Num.round2(this.totalBalance);
+                return MyNum.round2(this.totalBalance);
             },
         },
     };

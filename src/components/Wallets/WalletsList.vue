@@ -3,7 +3,13 @@
         <v-layout>
             <v-flex xs12 sm12 md12 lg12>
 
-                <v-dialog v-if="showElementForm" v-model="showElementForm" max-width="500px" persistent>
+                <v-dialog
+                        v-if="showElementForm"
+                        v-model="showElementForm"
+                        max-width="500px"
+                        persistent
+                        :fullscreen="$vuetify.breakpoint.xsOnly"
+                >
                     <wallet-element
                             v-bind:item = "this.editedItem"
                             @cancel ="showElementForm = false"
@@ -94,9 +100,10 @@
 
 <script>
     import WalletElement from './WalletElement';
-    import {mapGetters, mapActions} from 'vuex';
+    import {mapGetters} from 'vuex';
     import ApiClass from '../../api/api_laravel';
     import TMTableModalDelete from '../Reusable/TMDataTable/TMTableModalDelete'
+
     const api = new ApiClass();
 
     export default {
@@ -160,32 +167,29 @@
             this.$store.state.title = 'Wallets';
             this.$store.dispatch('getAllWalletsList');
 
-            this.$store.state.componentMenu = this.getUpMenu();
+            this.$store.commit('setupToolbarMenu', this.getUpMenu());
         },
 
         methods: {
             getUpMenu() {
-                let menu = [];
-
-                const action1 = {
-                    title: 'add',
-                    icon: 'add',
-                    action: () => {
-                        this.add();
+                return {
+                    mainAction: {
+                        title: 'add',
+                        icon: 'add',
+                        action: () => {
+                            this.add();
+                        },
                     },
+                    menu: [
+                        {
+                            title: 'update',
+                            icon: 'update',
+                            action: () => {
+                                this.update();
+                            },
+                        }
+                    ]
                 };
-                const action2 = {
-                    title: 'update',
-                    icon: 'update',
-                    action: () => {
-                        this.update();
-                    },
-                };
-
-                menu.push(action1);
-                menu.push(action2);
-
-                return menu;
             },
 
             update() {

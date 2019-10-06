@@ -2,16 +2,11 @@
     <v-layout row justify-center>
 
         <v-dialog max-width="550px" v-model="dialog" persistant class="form-dialog-bottom form-dialog" :fullscreen="$vuetify.breakpoint.smAndDown">
-            <v-system-bar window color="appColor" class="form-dialog-top">
-                <v-toolbar-title>
-                    <span class="title" style="color:white;">New row</span>
-                </v-toolbar-title>
-
+            <v-toolbar dense color="appColor" class="form-dialog-top" dark>
+                <v-btn flat @click="close">Close</v-btn>
                 <v-spacer></v-spacer>
-                <a @click="close">
-                    <v-icon color="white" right>close</v-icon>
-                </a>
-            </v-system-bar>
+                <v-btn flat @click="saveRow(editRow)">Ok</v-btn>
+            </v-toolbar>
             <v-card class="form-dialog-bottom">
                 <v-card-text>
                     <v-container grid-list-md>
@@ -36,7 +31,7 @@
                                         outline
                                         type="number"
                                         clearable
-                                        v-model="editRow.sum"
+                                        v-model.number.lazy="amount"
                                         label="Amount"
                                 ></v-text-field>
                             </v-flex>
@@ -47,13 +42,6 @@
                         </v-layout>
                     </v-container>
                 </v-card-text>
-
-                <v-card-actions class="form-dialog-bottom">
-                    <v-spacer></v-spacer>
-                    <v-btn color="blue darken-1" flat @click="saveRow(editRow)">
-                        Save
-                    </v-btn>
-                </v-card-actions>
             </v-card>
         </v-dialog>
 
@@ -61,6 +49,9 @@
 </template>
 
 <script>
+
+    import myNum from '../../helpers/MyNum';
+
     export default {
         name: "AddRowFrom",
         props: {
@@ -80,6 +71,18 @@
             fullscreen: false
         }),
 
+        computed: {
+            amount: {
+                get() {
+                    return this.editRow.sum;
+                },
+
+                set(value) {
+
+                    this.editRow.sum = myNum.round2(Number(value));
+                }
+            }
+        },
 
         methods: {
             close() {

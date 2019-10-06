@@ -1,80 +1,86 @@
 <template>
-    <v-container fluid mt-0>
-        <v-card>
-            <v-toolbar dense flat color="white">
-                <v-btn flat color="appColor" @click="save">Save</v-btn>
-                <v-btn flat color="orange darken-2" @click="cancel">Cancel</v-btn>
-            </v-toolbar>
+    <v-form class="expense-from">
+        <v-container>
             <v-progress-linear v-show="this.processing == true"
                                :indeterminate="true"></v-progress-linear>
-            <div class="form-layout">
-                <v-layout row>
-                    <v-flex xs12 sm12 md6 lg6>
-                        <v-menu
-                                :close-on-content-click="false"
-                                v-model="menu"
-                                :nudge-right="40"
-                                lazy
-                                transition="scale-transition"
-                                offset-y
-                                full-width
-                                min-width="290px"
-                        >
-                            <v-text-field
-                                    slot="activator"
-                                    :value="date"
-                                    @change="dateOnChange"
-                                    label="Date"
-                                    type="date"
-                                    dense
-                                    prepend-icon="event"
-                                    readonly
-                            ></v-text-field>
-                            <v-date-picker
-                                    :value="date"
-                                    @change="dateOnChange"
-                                    @input="menu = false"
-                            ></v-date-picker>
-                        </v-menu>
-                    </v-flex>
-                </v-layout>
-                <!-- wallet input -->
-                <v-layout row>
-                    <v-flex xs12 sm12 md6 lg6>
-                        <v-select
-                                v-model="wallet"
-                                :items="wallets"
-                                :value="wallet"
-                                menu-props="auto"
-                                label="Wallet"
-                                item-text="name"
-                                item-value="id"
-                                return-object
-                                prepend-icon="account_balance_wallet"
-                                append-outer-icon="pageview"
-                                @click:append-outer="startWalletChoice"
-                        ></v-select>
-                    </v-flex>
-                </v-layout>
+            <!--Header start-->
+            <v-layout row>
+                <v-flex xs12 sm12 md12 lg12>
 
-                <tm-wallets-select-form
-                        v-bind:items="this.wallets"
-                        v-bind:showWalletSelection="this.showWalletSelection"
-                        @select-wallets-close="completeWalletSelectionHandler"
-                ></tm-wallets-select-form>
-                <!-- START TABLE OF ITEMS -->
-                <tm-editRow
-                        v-bind:items="items"
-                        v-bind:editRow="editRow"
-                        v-bind:dialog="dialog"
+                    <v-layout row>
+                        <v-flex xs12 sm12 md6 lg6>
+                            <v-menu
+                                    :close-on-content-click="false"
+                                    v-model="menu"
+                                    :nudge-right="40"
+                                    lazy
+                                    transition="scale-transition"
+                                    offset-y
+                                    full-width
+                                    min-width="290px"
+                            >
+                                <v-text-field
+                                        slot="activator"
+                                        :value="date"
+                                        @change="dateOnChange"
+                                        label="Date"
+                                        type="date"
+                                        dense
+                                        prepend-icon="event"
+                                        readonly
+                                ></v-text-field>
+                                <v-date-picker
+                                        :value="date"
+                                        @change="dateOnChange"
+                                        @input="menu = false"
+                                ></v-date-picker>
+                            </v-menu>
+                        </v-flex>
+                    </v-layout>
 
-                        @close="closeEditRowDialog"
-                        @done="saveRow"
-                >
+                    <!--Wallet select start-->
+                    <v-layout row>
+                        <v-flex xs12 sm12 md6 lg6>
+                            <v-select
+                                    v-model="wallet"
+                                    :items="wallets"
+                                    :value="wallet"
+                                    menu-props="auto"
+                                    label="Wallet"
+                                    item-text="name"
+                                    item-value="id"
+                                    return-object
+                                    prepend-icon="account_balance_wallet"
+                                    append-outer-icon="pageview"
+                                    @click:append-outer="startWalletChoice"
+                            ></v-select>
+                        </v-flex>
+                    </v-layout>
+                    <tm-wallets-select-form
+                            v-bind:items="this.wallets"
+                            v-bind:showWalletSelection="this.showWalletSelection"
+                            @select-wallets-close="completeWalletSelectionHandler"
+                    ></tm-wallets-select-form>
+                    <!--Wallet select end-->
+                </v-flex>
+            </v-layout>
 
-                </tm-editRow>
-                <v-layout row>
-                    <v-flex xs12 sm12 md12 lg12>
+
+            <!--Header end-->
+            <v-layout row>
+                <v-flex xs12 sm12 md12 lg12>
+                    <tm-editRow
+                            v-bind:items="items"
+                            v-bind:editRow="editRow"
+                            v-bind:dialog="dialog"
+
+                            @close="closeEditRowDialog"
+                            @done="saveRow"
+                    >
+
+                    </tm-editRow>
+
+                    <div class="from-table-wrapper">
                         <v-toolbar
                                 color="appColor"
                                 dense
@@ -133,7 +139,8 @@
                                 </th>
                             </template>
 
-                            <template slot="items" slot-scope="props" class="table-of-expenses">
+                            <template slot="items" slot-scope="props"
+                                      class="table-of-expenses">
                                 <tr>
                                     <td class="d-none">{{ props.item.item }}</td>
                                     <td>
@@ -169,21 +176,20 @@
                                 >
                             </template>
                         </v-data-table>
+                    </div>
+                </v-flex>
+            </v-layout>
 
-                    </v-flex>
-                </v-layout>
-            </div>
-        </v-card>
-    </v-container>
+        </v-container>
+
+    </v-form>
 </template>
 
 <script>
-    import ApiClass from './Api';
 
-    const Api = new ApiClass();
-    import EditRowDialog from './SelectsForms/EditRowFrom';
-    import Num from '../helpers/Num';
-    import {mapGetters, mapState, mapActions} from 'vuex';
+    import EditRowDialog from './SelectsForms/EditRowForm';
+    import MyNum from '../helpers/MyNum';
+    import {mapGetters, mapState} from 'vuex';
 
     export default {
         props: ['docId'],
@@ -249,11 +255,14 @@
             totalAmount: function () {
                 const reducer = (accumulator, row) => accumulator + Number(row.sum);
                 let total = this.rows.reduce(reducer, 0);
-                return Num.round2(total);
+                return MyNum.round2(total);
             },
         },
         beforeMount() {
             this.$store.state.title = 'Expense';
+            this.$store.commit('setupToolbarMenu', []);
+            this.$store.commit('setupToolbarMenu', this.getUpMenu());
+
             this.$store.dispatch('getSettings');
             this.$store.dispatch('getAllWallets');
             this.$store.dispatch('getAllExpenseItems');
@@ -269,6 +278,29 @@
             },
         },
         methods: {
+            getUpMenu() {
+
+                return {
+                    mainAction: {
+                        title: 'Save',
+                        icon: 'done',
+                        action: () => {
+                            this.save();
+                        },
+                    },
+
+                    menu: [
+                        {
+                            title: 'Cancel',
+                            icon: 'exit_to_app',
+                            action: () => {
+                                this.cancel();
+                            },
+                        }
+                    ]
+                };
+            },
+
             startWalletChoice() {
                 this.showWalletSelection = true;
             },
@@ -325,6 +357,9 @@
 
             saveRow(row) {
                 this.dialog = false;
+
+                if (!row.item) return;
+
                 if (row.index === null) {
                     let maxRowId = this.maxRowId();
                     row.rowId = ++maxRowId;
@@ -388,10 +423,7 @@
 </script>
 
 <style lang="scss" scoped>
-    .form-layout {
-        margin-left: 20px;
-        margin-right: 20px;
-    }
+
 
     .select-td {
         width: 20px;
