@@ -18,5 +18,11 @@
     "plugins": [
         "transform-vue-jsx",
         "transform-runtime",
+        ["transform-imports", {
+            "vuetify": {
+                "transform": "vuetify/lib/${member}",
+                "preventFullImport": true
+            }
+        }]
     ]
 }

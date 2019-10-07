@@ -1,0 +1,36 @@
+.svg-cz {
+	background: url("../flags.svg") 0 0 no-repeat;
+}
+
+.svg-cz-dims {
+	width: 48px;
+	height: 48px;
+}
+
+.svg-eu {
+	background: url("../flags.svg") 100% 0 no-repeat;
+}
+
+.svg-eu-dims {
+	width: 48px;
+	height: 48px;
+}
+
+.svg-us {
+	background: url("../flags.svg") 0 100% no-repeat;
+}
+
+.svg-us-dims {
+	width: 48px;
+	height: 48px;
+}
+
+.svg-ru {
+	background: url("../flags.svg") 100% 100% no-repeat;
+}
+
+.svg-ru-dims {
+	width: 48px;
+	height: 48px;
+}
+

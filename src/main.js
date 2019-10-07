@@ -2,9 +2,72 @@ import 'babel-polyfill';
 import Vue from 'vue';
 import App from './App';
 import router from './router';
+import Vuetify, {
+    VAlert,
+    VAvatar,
+    VApp,
+    VAutocomplete,
+    VBtn,
+    VCard,
+    VCardTitle,
+    VCardText,
+    VCardActions,
+    VCheckbox,
+    VChip,
+    VContainer,
+    VContent,
+    VDataTable,
+    VDatePicker,
+    VDialog,
+    VDivider,
+    VFlex,
+    VForm,
+    VHover,
+    VIcon,
+    VInput,
+    VItem,
+    VItemGroup,
+    VLabel,
+    VLayout,
+    VList,
+    VListTile,
+    VListTileAction,
+    VListTileActionText,
+    VListTileAvatar,
+    VListGroup,
+    VListTileContent,
+    VListTileSubTitle,
+    VListTileTitle,
+    VMenu,
+    VMessages,
+    VNavigationDrawer,
+    VProgressCircular,
+    VProgressLinear,
+    VSelect,
+    VSnackbar,
+    VSpacer,
+    VSubheader,
+    VSystemBar,
+    VTextarea,
+    VTextField,
+    VToolbar,
+    VToolbarItems,
+    VToolbarSideIcon,
+    VToolbarTitle,
+} from 'vuetify/lib';
 
-import Vuetify from 'vuetify';
-import VeeValidate from 'vee-validate';
+import { Validator, install as VeeValidate } from 'vee-validate/dist/vee-validate.minimal.esm.js';
+import { required, min, max, email } from 'vee-validate/dist/rules.esm.js';
+import veeEn from 'vee-validate/dist/locale/en';
+
+Validator.extend('required', required);
+Validator.extend('min', min);
+Validator.extend('max', max);
+Validator.extend('email', email);
+
+// Merge the messages.
+Validator.localize('en', veeEn);
+
 //my custom list
 import RoundedList from './components/Reusable/ListOfAmount.vue';
 import TMDataTable from './components/Reusable/TMDataTable/TMDataTable';
@@ -21,31 +84,81 @@ import TM_WalletsSelectForm from './components/SelectsForms/WalletsSelectForm.vu
 
 import store from './store';
 //style imports
-import '@fortawesome/fontawesome-free/css/all.css';
-import 'vuetify/dist/vuetify.min.css';
-import '../src/assets/css/bootstrap-grid.css';
+import 'vuetify/src/stylus/app.styl';
+
 import "../src/assets/css/sprite.css";
 import './style/pf.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 import globalFunctions from './mixins/GlobalFunctions';
+import vuetify from './plugins/vuetify';
 // const mainColor = '#43425D';
 const mainColor = '#435d7d'
-const backgroundColor = '#'
 
-const MY_ICONS = {
-    wallet: 'fa-wallet'
-};
+Vue.use(VeeValidate);
 
 Vue.use(Vuetify, {
     theme: {
         appColor: mainColor,
     },
-    icons: {
-        values: MY_ICONS,
-    },
+    components: {
+        VApp, // required
+        VAvatar,
+        VContainer,
+        VFlex,
+        VLayout,
+        VContent,
+        VAlert,
+        VAutocomplete,
+        VBtn,
+        VCard,
+        VCardTitle,
+        VCardText,
+        VCardActions,
+        VCheckbox,
+        VChip,
+        VDataTable,
+        VDatePicker,
+        VDialog,
+        VDivider,
+        VForm,
+        VHover,
+        VIcon,
+        VInput,
+        VItem,
+        VItemGroup,
+        VLabel,
+        VList,
+        VListTile,
+        VListTileAction,
+        VListTileActionText,
+        VListTileAvatar,
+        VListGroup,
+        VListTileContent,
+        VListTileSubTitle,
+        VListTileTitle,
+        VMenu,
+        VMessages,
+        VNavigationDrawer,
+        VProgressCircular,
+        VProgressLinear,
+        VSelect,
+        VSnackbar,
+        VSpacer,
+        VSubheader,
+        VSystemBar,
+        VTextarea,
+        VTextField,
+        VToolbar,
+        VToolbarSideIcon,
+        VToolbarTitle,
+        VToolbarItems,
+
+    }
 });
-Vue.use(VeeValidate);
+
+
+
 Vue.component('tm-table', TMDataTable);
 Vue.component('tm-list-rounded', RoundedList);
 Vue.component('tm-index-balance-card', BalanceCard);
@@ -80,15 +193,18 @@ router.beforeEach((to, from, next) => {
     }
 });
 
-var vm = new Vue({
+new Vue({
     el: '#app',
     router: router,
     store,
+
     data: {
         visible: true,
         message: 'Hello Vue!',
         showMenu: true,
     },
+
     template: '<App/>',
-    components: {App},
+    vuetify,
+    components: {App}
 });
