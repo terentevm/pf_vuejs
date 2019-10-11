@@ -2,21 +2,21 @@
     <v-container fluid grid-list-sm>
         <div class="panel-top">
             <v-layout row wrap>
-                <v-flex d-flex xs12 sm6 md4>
+                <v-flex d-flex xs12 sm4 md4>
                     <tm-index-balance-total
                             v-bind:totalBalance="this.balanceTotal"
                             v-bind:balanceCurrency="this.balanceTotalCurrency"
                     ></tm-index-balance-total>
                 </v-flex>
 
-                <v-flex d-flex xs12 sm6 md4>
+                <v-flex d-flex xs12 sm4 md4>
                     <tm-index-expense-total
                             v-bind:totalExpenses="this.expensesTotal"
                             v-bind:expenseCurrency="this.expensesTotalCurrency"
                     ></tm-index-expense-total>
                 </v-flex>
 
-                <v-flex d-flex xs12 sm6 md4>
+                <v-flex d-flex xs12 sm4 md4>
                     <tm-index-income-total
                             v-bind:totalIncomes="this.incomesTotal"
                             v-bind:total-incomes-currency="this.incomesTotalCurrency"

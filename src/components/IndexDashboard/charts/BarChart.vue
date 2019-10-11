@@ -1,11 +1,16 @@
+<template>
+    <div id="chart-bar">
+        <canvas v-bind:id="canvasId" v-bind:width="width" height="300">
+        </canvas>
+    </div>
+</template>
 <script>
-    import {Bar} from 'vue-chartjs/src/BaseCharts';
-    import mixins from 'vue-chartjs/src/mixins/index';
-    const {reactiveProp} = mixins;
+
+    import Chart from 'chart.js/dist/Chart.min.js';
 
     export default {
         name: "BarChart",
-        mixins: [reactiveProp],
+
         props: {
             chartData: {
                 type: Object,
@@ -21,28 +26,62 @@
                 type: String
             },
         },
-        extends: Bar,
-        mounted() {
-            let chart = document.getElementById('bar-chart');
-            let card = document.getElementById(this.parentName);
+        data: () => ({
+            canvasId: 'canvas_barchart',
+            bar: null,
 
-            if (card != undefined) {
-                chart.width = card.clientWidth - 10;
+        }),
+
+        watch: {
+            chartData: function (val) {
+                this.renderChart(this.chartData, this.options);
+            },
+            options: function (val) {
+                this.renderChart(this.chartData, this.options);
             }
+        },
+        computed: {
+            width: {
+                get() {
+                    let parent_card = document.getElementById(this.parentName);
 
-            console.dir(card);
+                    if (parent_card instanceof HTMLElement) {
 
-            console.log(`chart width is ${chart.width}`);
-            chart.height = this.chartHeight;
+                        return parent_card.clientWidth - 10;
+                    }
 
+                    return 500;
+                }
+            }
+        },
+        mounted() {
 
             this.renderChart(this.chartData, this.options);
 
+        },
+
+        methods: {
+
+            renderChart(data, options) {
+
+                let canvas = document.getElementById(this.canvasId);
+
+                Chart.defaults.global.responsive = true;
+
+                this.bar = new Chart(canvas, {
+                    type: 'bar',
+                    data: data,
+                    options: options
+                });
+            }
 
         }
     }
 </script>
 
 <style scoped>
+    .bar_chart {
+        height: inherit;
 
+    }
 </style>

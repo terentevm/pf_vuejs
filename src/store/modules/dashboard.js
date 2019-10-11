@@ -127,7 +127,9 @@ const actions = {
             this.dispatch('initializeDashboardSettings');
         }
 
-        params = Object.assign(params, getPeriod(state.dashboardSettings.periodicity.period))
+        params = state.dashboardSettings.periodicity
+            ? Object.assign(params, getPeriod(state.dashboardSettings.periodicity.period))
+            : Object.assign(params, getPeriod('year'));
 
 
         try {
@@ -154,7 +156,10 @@ const actions = {
             this.dispatch('initializeDashboardSettings');
         }
 
-        params = Object.assign(params, getPeriod(state.dashboardSettings.periodicity.period))
+        params = state.dashboardSettings.periodicity
+            ? Object.assign(params, getPeriod(state.dashboardSettings.periodicity.period))
+            : Object.assign(params, getPeriod('year'));
+
 
         try {
             const report = await api.post('/api/reports/incomes', params);
@@ -175,8 +180,17 @@ const actions = {
             this.dispatch('initializeDashboardSettings');
         }
 
-        let params = getPeriod(state.dashboardSettings.periodicity.period);
-        params.periodicity = "month";
+        let params = {};
+
+        if (state.dashboardSettings instanceof Object) {
+            params = state.dashboardSettings.periodicity instanceof Object
+                ? Object.assign({}, getPeriod(state.dashboardSettings.periodicity.period))
+                : Object.assign({}, getPeriod('year'));
+        }
+        else {
+            params = Object.assign({}, getPeriod('year'));
+        }
+
 
         try {
             const res = await api.post("/api/reports/balance-by-periods", params);
@@ -213,7 +227,7 @@ const actions = {
 
     initializeDashboardSettings({commit}) {
         const storedSettings = getDashboardSettingsFromLocalStorage();
-        console.dir(storedSettings);
+
         if (storedSettings) {
             commit('setPeriodicity', storedSettings.periodicity)
         }

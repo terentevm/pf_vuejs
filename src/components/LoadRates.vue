@@ -71,7 +71,7 @@
                         <v-flex xs12 sm12 md12 lg12>
                             <v-list two-line>
                                 <template v-for="(item, index) in currencies">
-                                    <v-list-tile :key="item.short_name" avatar ripple
+                                    <v-list-tile :key="item.id" avatar ripple
                                                  @click="toggle(item)">
                                         <v-list-tile-content>
                                             <v-list-tile-title>{{ item.short_name }}
@@ -112,6 +112,22 @@
 
                 </div>
             </v-flex>
+
+            <v-snackbar
+                    v-model="info.showMsg"
+                    :color="info.color"
+                    :timeout="2000"
+            >
+                {{ info.message }}
+                <v-btn
+                        dark
+                        flat
+                        @click="info.showMsg = false"
+                >
+                    Close
+                </v-btn>
+            </v-snackbar>
+
         </v-layout>
     </v-container>
 </template>
@@ -130,6 +146,12 @@
             dateFormatted: null,
             selected: [],
             processing: false,
+            info: {
+                showMsg: false,
+                color: 'success',
+                message: ''
+            }
+
         }),
 
         computed: {
@@ -205,6 +227,7 @@
                     currencies.push(item.id);
                 });
 
+                this.processing = true;
 
                 api.post(
                     '/api/tools/loadrates',
@@ -217,14 +240,21 @@
                     .then(res => {
                         this.processing = false;
                         this.$store.dispatch('getAllCurrenciesWithRates');
+                        this.showMessage(true, 'Rates was loaded successfully');
                     })
                     .catch(err => {
                         this.processing = false;
-                        alert('error');
+                        this.showMessage(true, 'Error occurred! Try again!');
                     });
 
 
             },
+
+            showMessage(success, message) {
+                this.info.color = success === true ? 'success' : 'error';
+                this.info.message = message;
+                this.info.showMsg = true;
+            }
         },
     };
 </script>

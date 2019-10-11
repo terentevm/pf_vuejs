@@ -2,21 +2,22 @@ import 'babel-polyfill';
 import Vue from 'vue';
 import App from './App';
 import router from './router';
+
 import Vuetify, {
     VAlert,
-    VAvatar,
     VApp,
     VAutocomplete,
+    VAvatar,
+    VBottomSheet,
     VBtn,
     VCard,
-    VCardTitle,
-    VCardText,
     VCardActions,
+    VCardText,
+    VCardTitle,
     VCheckbox,
     VChip,
     VContainer,
     VContent,
-    VDataTable,
     VDatePicker,
     VDialog,
     VDivider,
@@ -30,11 +31,11 @@ import Vuetify, {
     VLabel,
     VLayout,
     VList,
+    VListGroup,
     VListTile,
     VListTileAction,
     VListTileActionText,
     VListTileAvatar,
-    VListGroup,
     VListTileContent,
     VListTileSubTitle,
     VListTileTitle,
@@ -56,18 +57,9 @@ import Vuetify, {
     VToolbarTitle,
 } from 'vuetify/lib';
 
-import { Validator, install as VeeValidate } from 'vee-validate/dist/vee-validate.minimal.esm.js';
-import { required, min, max, email } from 'vee-validate/dist/rules.esm.js';
+import {install as VeeValidate, Validator} from 'vee-validate/dist/vee-validate.minimal.esm.js';
+import {email, max, min, required} from 'vee-validate/dist/rules.esm.js';
 import veeEn from 'vee-validate/dist/locale/en';
-
-Validator.extend('required', required);
-Validator.extend('min', min);
-Validator.extend('max', max);
-Validator.extend('email', email);
-
-// Merge the messages.
-Validator.localize('en', veeEn);
-
 //my custom list
 import RoundedList from './components/Reusable/ListOfAmount.vue';
 import TMDataTable from './components/Reusable/TMDataTable/TMDataTable';
@@ -83,15 +75,22 @@ import TM_FormActionPanel from './components/tmFormElements/TM_FormActionPanel.v
 import TM_WalletsSelectForm from './components/SelectsForms/WalletsSelectForm.vue';
 
 import store from './store';
-//style imports
-import 'vuetify/src/stylus/app.styl';
 
+import 'vuetify/src/stylus/app.styl'
 import "../src/assets/css/sprite.css";
 import './style/pf.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 import globalFunctions from './mixins/GlobalFunctions';
-import vuetify from './plugins/vuetify';
+
+Validator.extend('required', required);
+Validator.extend('min', min);
+Validator.extend('max', max);
+Validator.extend('email', email);
+
+// Merge the messages.
+Validator.localize('en', veeEn);
+
 // const mainColor = '#43425D';
 const mainColor = '#435d7d'
 
@@ -111,13 +110,13 @@ Vue.use(Vuetify, {
         VAlert,
         VAutocomplete,
         VBtn,
+        VBottomSheet,
         VCard,
         VCardTitle,
         VCardText,
         VCardActions,
         VCheckbox,
         VChip,
-        VDataTable,
         VDatePicker,
         VDialog,
         VDivider,
@@ -156,7 +155,6 @@ Vue.use(Vuetify, {
 
     }
 });
-
 
 
 Vue.component('tm-table', TMDataTable);
@@ -205,6 +203,6 @@ new Vue({
     },
 
     template: '<App/>',
-    vuetify,
+
     components: {App}
 });

@@ -41,7 +41,9 @@
             loaded: false,
             options: {
                 responsive: false,
-
+                maintainAspectRatio: true,
+                aspectRatio: 0.5,
+                
                 legend: {
                     display: false,
                     labels: {

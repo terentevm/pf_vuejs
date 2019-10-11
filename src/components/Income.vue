@@ -186,7 +186,7 @@
 </template>
 
 <script>
-
+    import {VDataTable} from 'vuetify/lib';
     import EditRowDialog from './SelectsForms/EditRowForm';
     import MyNum from '../helpers/MyNum';
     import {mapGetters, mapState} from 'vuex';
@@ -230,7 +230,8 @@
             processing: false
         }),
         components: {
-            'tm-editRow': EditRowDialog
+            'tm-editRow': EditRowDialog,
+            'v-data-table': VDataTable
         },
         computed: {
             wallet: {

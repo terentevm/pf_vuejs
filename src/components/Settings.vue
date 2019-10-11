@@ -9,6 +9,8 @@
                                 <h4 class="card-subtitle mt-3 mb-3 text-muted">General</h4>
                                 <v-form>
                                     <v-select
+
+                                            dense
                                             :value="currency"
                                             :items="currencies"
                                             label="System currency"
