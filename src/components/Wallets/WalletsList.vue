@@ -1,108 +1,109 @@
 <template>
-    <v-container px-0 mx-0>
-        <v-layout>
-            <v-flex xs12 sm12 md12 lg12>
 
-                <v-dialog
-                        v-if="showElementForm"
-                        v-model="showElementForm"
-                        max-width="500px"
-                        persistent
-                        :fullscreen="$vuetify.breakpoint.xsOnly"
+    <div class="row">
+
+        <v-dialog
+                v-if="showElementForm"
+                v-model="showElementForm"
+                max-width="500px"
+                persistent
+                :fullscreen="$vuetify.breakpoint.xsOnly"
+        >
+            <wallet-element
+                    v-bind:item="this.editedItem"
+                    @cancel="showElementForm = false"
+                    @stored="showElementForm = false; update()"
+            ></wallet-element>
+        </v-dialog>
+
+        <div class="table-wrapper">
+
+            <ul class="list-group list-group-flush">
+                <li
+                        class="list-group-item list-header"
                 >
-                    <wallet-element
-                            v-bind:item = "this.editedItem"
-                            @cancel ="showElementForm = false"
-                            @stored = "showElementForm = false; update()"
-                    ></wallet-element>
-                </v-dialog>
-
-                <div class="table-wrapper">
-
-                    <ul class="list-group list-group-flush">
-                        <li
-                                class="list-group-item list-header"
-                        >
-                            <v-layout row ml-3>
-                                <v-flex xs10 sm10 md10 lg11 class="cell">
-                                    <v-layout row>
+                    <v-layout row ml-3>
+                        <v-flex xs10 sm10 md10 lg11 class="cell">
+                            <v-layout row>
 
 
-                                        <v-flex xs6 sm6>
-                                            <span>Name</span>
-                                        </v-flex>
-                                        <v-flex xs3 sm3>
-                                            <span>Currency</span>
-                                        </v-flex>
-
-
-                                    </v-layout>
+                                <v-flex xs6 sm6>
+                                    <span>Name</span>
+                                </v-flex>
+                                <v-flex xs3 sm3>
+                                    <span>Currency</span>
                                 </v-flex>
 
-                                <v-flex xs2 sm2 md2 lg1>
-                                    <div class="cell-actions justify-content-end">
-                                        <span>Act.</span>
-                                    </div>
 
+                            </v-layout>
+                        </v-flex>
+
+                        <v-flex xs2 sm2 md2 lg1>
+                            <div class="cell-actions justify-content-end">
+                                <span>Act.</span>
+                            </div>
+
+                        </v-flex>
+
+                    </v-layout>
+
+
+                </li>
+                <li v-for="item in items"
+                    class="list-group-item list-item"
+                    @click="edit(item)"
+                >
+                    <v-layout row ml-3>
+                        <v-flex xs10 sm10 md10 lg11 class="cell">
+                            <v-layout row>
+
+
+                                <v-flex xs6 sm6>
+                                    <span>{{ item.name}}</span>
+                                </v-flex>
+
+                                <v-flex xs6 sm6>
+                                    <span>{{ item.currency.short_name}}</span>
                                 </v-flex>
 
                             </v-layout>
+                        </v-flex>
 
+                        <v-flex xs2 sm2 md2 lg1>
+                            <div class="cell-actions justify-content-end">
+                                <a class="delete" data-toggle="modal"
+                                   v-on:click.stop.prevent="showDeleteConfirm(item)">
 
-                        </li>
-                        <li v-for="item in items"
-                            class="list-group-item list-item"
-                            @click="edit(item)"
-                        >
-                            <v-layout row ml-3>
-                                <v-flex xs10 sm10 md10 lg11 class="cell">
-                                    <v-layout row>
+                                    <v-icon color="#F44336">delete</v-icon>
+                                </a>
+                            </div>
 
+                        </v-flex>
 
-                                        <v-flex xs6 sm6>
-                                            <span>{{ item.name}}</span>
-                                        </v-flex>
+                    </v-layout>
 
-                                        <v-flex xs6 sm6>
-                                            <span>{{ item.currency.short_name}}</span>
-                                        </v-flex>
+                </li>
 
-                                    </v-layout>
-                                </v-flex>
+            </ul>
+        </div>
+        <tm-modal-del
+                v-show="this.showDeleteConfirmation"
+                :dialog="this.showDeleteConfirmation"
+                :modelName="this.modelName"
+                @close="closeDeleteConfirmation()"
+                @confirm="deleteItem"
+        ></tm-modal-del>
 
-                                <v-flex xs2 sm2 md2 lg1>
-                                    <div class="cell-actions justify-content-end">
-                                        <a class="delete" data-toggle="modal" v-on:click.stop.prevent="showDeleteConfirm(item)">
+    </div>
 
-                                            <v-icon color="#F44336">delete</v-icon>
-                                        </a>
-                                    </div>
-
-                                </v-flex>
-
-                            </v-layout>
-
-                        </li>
-
-                    </ul>
-                </div>
-                <tm-modal-del
-                        v-show="this.showDeleteConfirmation"
-                        :dialog="this.showDeleteConfirmation"
-                        :modelName="this.modelName"
-                        @close="closeDeleteConfirmation()"
-                        @confirm="deleteItem"
-                ></tm-modal-del>
-            </v-flex>
-        </v-layout>
-    </v-container>
 </template>
 
 <script>
     import WalletElement from './WalletElement';
     import {mapGetters} from 'vuex';
     import ApiClass from '../../api/api_laravel';
-    import TMTableModalDelete from '../Reusable/TMDataTable/TMTableModalDelete'
+    import TMTableModalDelete from '../TMComponents/TMDataTable/TMTableModalDelete'
+    import moment from 'moment'
 
     const api = new ApiClass();
 
@@ -217,8 +218,6 @@
                     });
 
 
-
-
             },
 
             add() {
@@ -226,7 +225,7 @@
                 this.showElementForm = true;
             },
 
-            showDeleteConfirm(item){
+            showDeleteConfirm(item) {
                 this.itemForDel = item;
                 this.showDeleteConfirmation = true;
             },
@@ -240,12 +239,12 @@
                 this.processing = true;
 
                 api.delete('wallets', this.itemForDel.id)
-                    .then(result=>{
+                    .then(result => {
                         alert(`${this.itemForDel.name} was deleted!`);
                         this.$store.dispatch('getAllWalletsList');
 
                     })
-                    .catch(err =>{
+                    .catch(err => {
                         alert(`${this.itemForDel.name} wasn't deleted!`);
                     })
                     .finally(() => {
@@ -266,7 +265,7 @@
                 }
 
                 let diff = this.editedItem.newBalance - this.editedItem.currentBalance;
-                let moment = require('moment');
+
                 let day = moment();
 
                 const data = {
@@ -300,7 +299,6 @@
                     this.$set(this.editedItem, 'currentBalance', result.balance);
                 });
             },
-
 
 
             close() {
@@ -384,4 +382,4 @@
         justify-items: center;
         max-width: 60px;
     }
-    </style>
+</style>

@@ -1,5 +1,5 @@
 <template>
-    <v-app id="inspire" class="appColor">
+    <v-app v-bind:class="{appColor: !$store.state.auth}">
         <v-navigation-drawer
                 fixed
                 clipped
@@ -61,7 +61,40 @@
                         </v-list-tile-content>
                     </v-list-tile>
                 </template>
+                <v-divider></v-divider>
+
+                <v-list-tile :to="logoutMenu.link">
+                    <v-list-tile-avatar tile>
+                        <img :src="logoutMenu.avatar" height="32px" width="32px"/>
+                    </v-list-tile-avatar>
+
+                    <v-list-tile-content>
+                        <v-list-tile-title class="side-menu">
+                            {{ logoutMenu.text }}
+                        </v-list-tile-title>
+                    </v-list-tile-content>
+                </v-list-tile>
+
             </v-list>
+
+
+            <v-footer
+                    dark
+                    height="auto"
+                    color="appColor"
+                    inset
+                    fixed
+            >
+                <v-divider></v-divider>
+                <div class="col-12">
+                    <span class="white--text">Icons made by</span>
+                    <a href="https://www.flaticon.com/authors/freepik" title="Freepik">
+                        <span class="text-info">Freepik</span>
+                    </a>
+                    <span class="white--text">from</span>
+                    <a class="text-info" href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com</a>
+                </div>
+            </v-footer>
         </v-navigation-drawer>
 
         <v-toolbar
@@ -71,7 +104,7 @@
                 :clipped-left="this.$vuetify.breakpoint.lgAndUp"
                 fixed
                 height="50"
-                v-show="$store.state.auth"
+                v-if="$store.state.auth"
         >
             <v-toolbar-side-icon @click.stop="drawer = !drawer"></v-toolbar-side-icon>
             <v-toolbar-title fixed style="width: 300px" class="ml-0 pl-3">
@@ -147,12 +180,17 @@
             </v-container>
         </v-content>
 
-
     </v-app>
+
 </template>
 
 <script>
-    import imgReport from '@/assets/report.png';
+    import VApp from 'vuetify/lib/components/VApp';
+    import VBottomSheet from 'vuetify/lib/components/VBottomSheet';
+    import VNavigationDrawer from 'vuetify/lib/components/VNavigationDrawer';
+    import VFooter from 'vuetify/lib/components/VFooter';
+    import {VContent} from 'vuetify/lib/components/VGrid';
+    import imgReport from '@/assets/home.svg';
     import imgWallet from '@/assets/wallet.png';
     import imgCurrencies from '@/assets/currencies.svg';
     import imgExpensesItems from '@/assets/shopping-bags.svg';
@@ -169,13 +207,7 @@
             showMenu: false,
             showActionMenu: false,
             sheet: false,
-            tiles: [
-                {img: 'keep.png', title: 'Keep'},
-                {img: 'inbox.png', title: 'Inbox'},
-                {img: 'hangouts.png', title: 'Hangouts'},
-                {img: 'messenger.png', title: 'Messenger'},
-                {img: 'google.png', title: 'Google+'}
-            ],
+
             isOffline: false,
             items: [
                 {icon: 'home', text: 'Dashboard', link: '/', avatar: imgReport},
@@ -228,9 +260,19 @@
                     ],
                 },
                 {icon: 'settings', text: 'Settings', link: '/settings', avatar: imgSettings},
-                {icon: 'exit_to_app', text: 'Log out', link: '/login', avatar: imgLogout},
+
             ],
+            logoutMenu: {icon: 'exit_to_app', text: 'Log out', link: '/login', avatar: imgLogout},
         }),
+
+        components: {
+            VApp,
+            VBottomSheet,
+            VContent,
+            VNavigationDrawer,
+            VFooter
+        },
+
         mounted: function () {
             this.$store.state.auth = sessionStorage.getItem('jwt') === null ? false : true;
         },

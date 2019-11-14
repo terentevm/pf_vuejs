@@ -1,13 +1,11 @@
 <template>
 
-    <v-layout row>
+    <div class="row">
 
-        <div class="table-wrapper">
+            <div class="table-wrapper">
 
             <ul class="list-group list-group-flush">
-                <li
-                        class="list-group-item list-header"
-                >
+                <li class="list-group-item list-header">
                     <v-layout row ml-3>
                         <v-flex xs10 sm10 md10 lg11 class="cell">
                             <v-layout row>
@@ -17,12 +15,19 @@
                                             <span>Date</span>
                                         </v-flex>
                                         <v-flex xs8>
-                                            <span>Wallets (sum)</span>
+                                            <span>Wallet</span>
                                         </v-flex>
 
                                     </v-layout>
                                 </v-flex>
+                                <v-flex xs4 sm4 md2 lg2>
 
+                                    <div class="d-flex justify-content-end">
+                                        <span>Sum</span>
+                                    </div>
+
+
+                                </v-flex>
                             </v-layout>
                         </v-flex>
 
@@ -43,32 +48,35 @@
                 >
                     <v-layout row ml-3>
                         <v-flex xs10 sm10 md10 lg11 class="cell">
-                            <v-layout row class="flex-column flex-md-row">
+                            <v-layout row>
+                                <v-flex xs8 sm8md10 lg10 class="cell">
+                                    <v-layout row d-flex class="flex-column flex-md-row">
+                                        <v-flex xs4>
+                                            <span>{{ item.date}}</span>
+                                        </v-flex>
+                                        <v-flex xs8>
+                                            <span>{{ item.walletName}}</span>
+                                        </v-flex>
 
-
-                                <v-flex xs12 sm12 md2 lg2>
-                                    <span>{{ item.date}}</span>
+                                    </v-layout>
                                 </v-flex>
+                                <v-flex xs4 sm4 md2 lg2>
 
-                                <v-flex xs12 sm12 md10 lg10>
-                                    <v-flex xs10>
-                                        <span>from: {{ item.wallet_from.name}} ( - {{item.sum_from}})</span>
-                                    </v-flex>
-                                    <v-flex xs10>
-                                        <span>to: {{ item.wallet_to.name}} (+ {{item.sum_to}})</span>
-                                    </v-flex>
+                                    <div class="d-flex justify-content-end">
+                                        <span>{{ item.sum }}</span>
+                                    </div>
+
 
                                 </v-flex>
-
-
                             </v-layout>
                         </v-flex>
 
                         <v-flex xs2 sm2 md2 lg1>
                             <div class="cell-actions justify-content-end">
-                                <a class="delete" data-toggle="modal">
-                                    del
-                                    <!--<v-icon color="#F44336">delete</v-icon>-->
+                                <a class="delete" data-toggle="modal"
+                                   v-on:click.stop="showDeleteQuestion(item)">
+
+                                    <v-icon color="#F44336">delete</v-icon>
                                 </a>
                             </div>
 
@@ -76,16 +84,28 @@
 
                     </v-layout>
 
-
                 </li>
 
             </ul>
-        </div>
 
-    </v-layout>
+        </div>
+        <tm-modal-del
+                v-show="this.showDeleteConfirmation"
+                :dialog="this.showDeleteConfirmation"
+                :modelName="this.modelName"
+                @close="closeDeleteConfirmation"
+                @confirm="deleteItem"
+        ></tm-modal-del>
+    </div>
+
+
 </template>
 
-<style scoped>
+<style lang="scss" scoped>
+    @import "~bootstrap/scss/functions";
+    @import "~bootstrap/scss/variables";
+    @import "~bootstrap/scss/mixins";
+    @import "~bootstrap/scss/_list-group.scss";
 
     li:nth-of-type(odd) {
         background-color: #fcfcfc;
@@ -136,18 +156,26 @@
 
 <script>
 
-    import {mapGetters} from 'vuex';
+    import ApiClass from '../../api/api_laravel';
+    import TMTableModalDelete from '../TMComponents/TMDataTable/TMTableModalDelete'
+
+    const api = new ApiClass();
 
     export default {
         data: () => ({
-            title: "Transfers",
+            items: [],
+            title: "Expenses",
             processing: false,
             offsetTop: 0,
             offset: 0,
             page: 0,
             updating: false,
             showDel: false,
-            currentPage: 1,
+            pagination: {
+                sortBy: 'date',
+                descending: true,
+                rowsPerPage: -1,
+            },
 
             headers: [
                 {text: 'id', value: 'id', classList: ['d-none']},
@@ -155,21 +183,27 @@
                 {text: 'Wallet', value: 'walletName', classList: ["col-xs-2 col-sm-4 col-lg-4"]},
                 {text: 'Sum', value: 'sum', classList: ["col-xs-2 col-sm-4 col-lg-5"]},
             ],
+            showDeleteConfirmation: false,
+            modelName: 'expense',
+            itemForDelete: null
         }),
-        computed: {
-            ...mapGetters({
-                items: 'items',
-            }),
+
+        components: {
+            'tm-modal-del': TMTableModalDelete
         },
 
         beforeMount: function () {
-            this.$store.state.title = 'Transfers';
+            this.$store.state.title = 'Expenses';
             this.$store.commit('setupToolbarMenu', this.getUpMenu());
-            this.$store.dispatch('getTransfers', this.currentPage);
+        },
+
+        created() {
+            this.getDocs();
         },
 
         methods: {
             getUpMenu() {
+
                 return {
                     mainAction: {
                         title: 'add',
@@ -189,18 +223,28 @@
                     ]
                 };
 
+
+            },
+
+            getDocs() {
+                api.index('expenses', {page: this.page})
+                    .then(paginationInfo => {
+                        paginationInfo.data.forEach(doc => {
+                            doc.walletName = doc.wallet.name;
+                            if (this.items.indexOf(doc) === -1) {
+                                this.items.push(doc);
+                            }
+                        })
+                    });
             },
 
             editItem(item) {
                 let id = item.id;
-
-                console.log(`edit transfer by id ${id}`);
-
-                this.$router.push({path: `transfers/${id}`});
+                this.$router.push({path: `expend/${id}`});
             },
 
             add() {
-                this.$router.push({path: `transfers/new`});
+                this.$router.push({path: `expend/new`});
             },
 
             addDocs() {
@@ -210,14 +254,32 @@
 
                 this.offset += 50;
                 this.updating = true;
-
+                this.getDocs(this.offset);
             },
             showDelBtn() {
                 this.showDel = !this.showDel;
             },
-            deleteItem(item) {
-                alert("Action doesn't support yet");
+
+            showDeleteQuestion(item) {
+
+                this.itemForDelete = item;
+                this.showDeleteConfirmation = true;
             },
+
+            closeDeleteConfirmation() {
+                this.showDeleteConfirmation = false;
+                this.itemForDelete = null;
+            },
+
+            deleteItem() {
+                this.showDeleteConfirmation = false;
+
+                this.$store.dispatch('deleteExpense', this.itemForDelete).then(res => {
+                    this.update();
+                })
+
+            },
+
         },
     };
 </script>

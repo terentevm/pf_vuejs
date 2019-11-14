@@ -1,107 +1,107 @@
 <template>
-    <v-container px-0 mx-0>
-        <v-layout>
-            <v-flex xs12 sm12 md12 lg12>
-                <v-dialog
-                        v-if="dialog"
-                        v-model="dialog"
-                        max-width="500px"
-                        persistent
-                        :fullscreen="$vuetify.breakpoint.xsOnly">
-                    <currency-element
-                            v-bind:item="this.formData"
-                            @cancel="dialog = false"
-                            @stored="dialog = false; update()"
-                    ></currency-element>
-                </v-dialog>
-                <div class="table-wrapper">
 
-                    <ul class="list-group list-group-flush">
-                        <li
-                                class="list-group-item list-header"
-                        >
-                            <v-layout row ml-3>
-                                <v-flex xs10 sm10 md10 lg11 class="cell">
-                                    <v-layout row>
+    <div class="row">
+        <v-flex xs12 sm12 md12 lg12>
+            <v-dialog
+                    v-if="dialog"
+                    v-model="dialog"
+                    max-width="500px"
+                    persistent
+                    :fullscreen="$vuetify.breakpoint.xsOnly">
+                <currency-element
+                        v-bind:item="this.formData"
+                        @cancel="dialog = false"
+                        @stored="dialog = false; update()"
+                ></currency-element>
+            </v-dialog>
+            <div class="table-wrapper">
 
-
-                                        <v-flex xs6 sm6>
-                                            <span>Name</span>
-                                        </v-flex>
-                                        <v-flex xs3 sm3>
-                                            <span>Code</span>
-                                        </v-flex>
-                                        <v-flex xs12 sm3>
-                                            <span>Char code</span>
-                                        </v-flex>
+                <ul class="list-group list-group-flush">
+                    <li
+                            class="list-group-item list-header"
+                    >
+                        <v-layout row ml-3>
+                            <v-flex xs10 sm10 md10 lg11 class="cell">
+                                <v-layout row>
 
 
-                                    </v-layout>
-                                </v-flex>
-
-                                <v-flex xs2 sm2 md2 lg1>
-                                    <div class="cell-actions justify-content-end">
-                                        <span>Act.</span>
-                                    </div>
-
-                                </v-flex>
-
-                            </v-layout>
+                                    <v-flex xs6 sm6>
+                                        <span>Name</span>
+                                    </v-flex>
+                                    <v-flex xs3 sm3>
+                                        <span>Code</span>
+                                    </v-flex>
+                                    <v-flex xs12 sm3>
+                                        <span>Char code</span>
+                                    </v-flex>
 
 
-                        </li>
-                        <li v-for="item in items"
-                            class="list-group-item list-item"
-                            @click="edit(item)"
-                        >
-                            <v-layout row ml-3>
-                                <v-flex xs10 sm10 md10 lg11 class="cell">
-                                    <v-layout row>
+                                </v-layout>
+                            </v-flex>
+
+                            <v-flex xs2 sm2 md2 lg1>
+                                <div class="cell-actions justify-content-end">
+                                    <span>Act.</span>
+                                </div>
+
+                            </v-flex>
+
+                        </v-layout>
 
 
-                                        <v-flex xs6 sm6>
-                                            <span>{{ item.name}}</span>
-                                        </v-flex>
-                                        <v-flex xs3 sm3>
-                                            <span>{{ item.code}}</span>
-                                        </v-flex>
-                                        <v-flex xs12 sm3>
-                                            <span>{{ item.short_name}}</span>
-                                        </v-flex>
+                    </li>
+                    <li v-for="item in items"
+                        class="list-group-item list-item"
+                        @click="edit(item)"
+                    >
+                        <v-layout row ml-3>
+                            <v-flex xs10 sm10 md10 lg11 class="cell">
+                                <v-layout row>
 
 
-                                    </v-layout>
-                                </v-flex>
+                                    <v-flex xs6 sm6>
+                                        <span>{{ item.name}}</span>
+                                    </v-flex>
+                                    <v-flex xs3 sm3>
+                                        <span>{{ item.code}}</span>
+                                    </v-flex>
+                                    <v-flex xs12 sm3>
+                                        <span>{{ item.short_name}}</span>
+                                    </v-flex>
 
-                                <v-flex xs2 sm2 md2 lg1>
-                                    <div class="cell-actions justify-content-end">
-                                        <a class="delete" data-toggle="modal"
-                                           v-on:click.stop.prevent="showDeleteConfirm(item)">
 
-                                            <v-icon color="#F44336">delete</v-icon>
-                                        </a>
-                                    </div>
+                                </v-layout>
+                            </v-flex>
 
-                                </v-flex>
+                            <v-flex xs2 sm2 md2 lg1>
+                                <div class="cell-actions justify-content-end">
+                                    <a class="delete" data-toggle="modal"
+                                       v-on:click.stop.prevent="showDeleteConfirm(item)">
 
-                            </v-layout>
+                                        <v-icon color="#F44336">delete</v-icon>
+                                    </a>
+                                </div>
 
-                        </li>
+                            </v-flex>
 
-                    </ul>
-                </div>
-            </v-flex>
+                        </v-layout>
 
-            <tm-modal-del
-                    v-show="this.showDeleteConfirmation"
-                    :dialog="this.showDeleteConfirmation"
-                    :modelName="this.modelName"
-                    @close="closeDeleteConfirmation()"
-                    @confirm="deleteItem"
-            ></tm-modal-del>
+                    </li>
 
-        </v-layout>
-    </v-container>
+                </ul>
+            </div>
+        </v-flex>
+
+        <tm-modal-del
+                v-show="this.showDeleteConfirmation"
+                :dialog="this.showDeleteConfirmation"
+                :modelName="this.modelName"
+                @close="closeDeleteConfirmation()"
+                @confirm="deleteItem"
+        ></tm-modal-del>
+
+    </div>
+
 </template>
 
 <script>
@@ -110,7 +110,7 @@
 
     import currencyElement from './CurrencyElement';
     import {mapGetters} from 'vuex';
-    import TMTableModalDelete from '../Reusable/TMDataTable/TMTableModalDelete'
+    import TMTableModalDelete from '../TMComponents/TMDataTable/TMTableModalDelete'
 
     const api = ApiClass();
 

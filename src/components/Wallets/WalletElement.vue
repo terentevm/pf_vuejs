@@ -100,7 +100,9 @@
 </template>
 
 <script>
-
+    import { VChip } from 'vuetify/lib/components/VChip';
+    import { VSelect } from 'vuetify/lib/components/VSelect';
+    import VTextField from 'vuetify/lib/components/VTextField';
     import {mapGetters} from 'vuex';
     import ApiClass from '../../api/api_laravel';
 
@@ -138,6 +140,13 @@
 
             processing: false,
         }),
+
+        components: {
+            VChip,
+            VSelect,
+            VTextField
+        },
+
         computed: {
             ...mapGetters({
                 currencies: 'allCurrencies',

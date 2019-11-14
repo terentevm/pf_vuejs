@@ -1,53 +1,75 @@
 <template>
-    <v-container fluid grid-list-sm>
-        <div class="panel-top">
-            <v-layout row wrap>
-                <v-flex d-flex xs12 sm4 md4>
-                    <tm-index-balance-total
-                            v-bind:totalBalance="this.balanceTotal"
-                            v-bind:balanceCurrency="this.balanceTotalCurrency"
-                    ></tm-index-balance-total>
-                </v-flex>
+    <div class="container-fluid px-0">
 
-                <v-flex d-flex xs12 sm4 md4>
-                    <tm-index-expense-total
-                            v-bind:totalExpenses="this.expensesTotal"
-                            v-bind:expenseCurrency="this.expensesTotalCurrency"
-                    ></tm-index-expense-total>
-                </v-flex>
+        <div class="row">
+            <div class="col-xs-12 col-sm-4">
+                <tm-index-balance-total
+                        v-bind:totalBalance="this.balanceTotal"
+                        v-bind:balanceCurrency="this.balanceTotalCurrency"
+                ></tm-index-balance-total>
+            </div>
 
-                <v-flex d-flex xs12 sm4 md4>
-                    <tm-index-income-total
-                            v-bind:totalIncomes="this.incomesTotal"
-                            v-bind:total-incomes-currency="this.incomesTotalCurrency"
-                    ></tm-index-income-total>
-                </v-flex>
-            </v-layout>
+            <div class="col-xs-12 col-sm-4">
+                <tm-index-expense-total
+                        v-bind:totalExpenses="this.expensesTotal"
+                        v-bind:expenseCurrency="this.expensesTotalCurrency"
+                ></tm-index-expense-total>
+            </div>
+
+            <div class="col-xs-12 col-sm-4">
+                <tm-index-income-total
+                        v-bind:totalIncomes="this.incomesTotal"
+                        v-bind:total-incomes-currency="this.incomesTotalCurrency"
+                ></tm-index-income-total>
+            </div>
         </div>
 
-        <v-layout row wrap>
-            <v-flex d-flex xs12 sm6 md4 lg4>
+        <div class="row">
+            <div class="col-xs-12 col-sm-4">
                 <tm-index-balance-list v-bind:balanceAll="0"></tm-index-balance-list>
-            </v-flex>
+            </div>
 
-            <v-flex d-flex xs12 sm6 md8 lg8>
-                <balance-by-periods-chart
-                        v-bind:chart-data="this.balanceByPeriodsChartData"
-                        v-bind:currency-balance="this.balanceByPeriodsCurrency"
-                >
+            <div class="col-xs-12 col-sm-8">
+                <div class="row">
+                    <div class="container py-0 mt-1">
 
-                </balance-by-periods-chart>
-            </v-flex>
+                        <balance-by-periods-chart
+                                v-bind:chart-data="this.balanceByPeriodsChartData"
+                                v-bind:currency-balance="this.balanceByPeriodsCurrency"
+                        >
+
+                        </balance-by-periods-chart>
+
+                    </div>
+
+                </div>
+
+                <div class="row">
+                    <div class="container py-0 mt-1">
+
+                        <expenses-incomes-year></expenses-incomes-year>
+
+                    </div>
+
+                </div>
+
+            </div>
 
 
-        </v-layout>
-    </v-container>
+        </div>
+    </div>
 </template>
 
 <script>
 
     import {mapGetters} from 'vuex';
+
+    import BalanceTotal from './IndexDashboard/BalanceTotal.vue';
+    import ExpenseTotal from './IndexDashboard/ExpenseTotal.vue';
+    import IncomeTotal from './IndexDashboard/IncomeTotal.vue';
+    import BalanceByWallets from './IndexDashboard/BalanceByWallets.vue';
     import BalanceByPeriods from './IndexDashboard/BalanceByPeriods';
+    import ExpensesIncomesYear from './IndexDashboard/ExpensesIncomesYear';
 
     export default {
         computed: {
@@ -63,7 +85,12 @@
             ]),
         },
         components: {
-            'balance-by-periods-chart': BalanceByPeriods
+            'balance-by-periods-chart': BalanceByPeriods,
+            'expenses-incomes-year': ExpensesIncomesYear,
+            'tm-index-balance-total': BalanceTotal,
+            'tm-index-expense-total': ExpenseTotal,
+            'tm-index-income-total': IncomeTotal,
+            'tm-index-balance-list': BalanceByWallets
         },
         beforeMount: async function () {
             this.$store.state.title = 'Dashboard';

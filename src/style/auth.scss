@@ -1,0 +1,92 @@
+.login-header {
+  font-size: 2em;
+}
+
+.login-subheader {
+  font-size: 18px;
+}
+
+.form {
+  position: relative;
+  z-index: 1;
+  margin: 0 auto 100px;
+
+  text-align: center;
+
+}
+
+.form-input {
+  font-family: "Roboto", sans-serif;
+  outline: 0;
+  background: #f2f2f2;
+  width: 100%;
+  border: 0;
+  margin: 0 0 15px;
+  padding: 15px;
+  box-sizing: border-box;
+  font-size: 15px;
+  border-radius: 4px;
+}
+
+.input-login {
+  text-transform: lowercase;
+}
+
+.input-error {
+  border: 2px solid red;
+}
+
+.submit-button {
+  font-family: "Roboto", sans-serif;
+  text-transform: uppercase;
+  outline: 0;
+  background: #4caf50;
+  width: 100%;
+  border: 0;
+  border-radius: 4px;
+  padding: 15px;
+  color: #ffffff;
+  font-size: 14px;
+  -webkit-transition: all 0.3 ease;
+  transition: all 0.3 ease;
+  cursor: pointer;
+
+}
+
+.form .submit-button:hover,
+.form .submit-button:active,
+.form .submit-button:focus {
+  background: #43a047;
+}
+
+.form .message {
+  margin: 15px 0 0;
+  color: #b3b3b3;
+  font-size: 12px;
+}
+
+.form .message a {
+  color: #4caf50;
+  text-decoration: none;
+}
+
+.form .register-form {
+  display: none;
+}
+
+.form .submit-button:hover,
+.form .submit-button:active,
+.form .submit-button:focus {
+  background: #43a047;
+}
+
+.msg-error {
+  margin-top: -5px;
+}
+
+.currency-select {
+  border-radius: 4px;
+  background: #f2f2f2;
+  margin-bottom: 15px;
+}
+

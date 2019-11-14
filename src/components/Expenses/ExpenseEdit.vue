@@ -1,74 +1,54 @@
 <template>
-    <v-form class="expense-from">
-        <v-container>
-            <v-progress-linear v-show="this.processing == true"
-                               :indeterminate="true"></v-progress-linear>
-            <!--Header start-->
-            <v-layout row>
-                <v-flex xs12 sm12 md12 lg12>
 
-                    <v-layout row>
-                        <v-flex xs12 sm12 md6 lg6>
-                            <v-menu
-                                    :close-on-content-click="false"
-                                    v-model="menu"
-                                    :nudge-right="40"
-                                    lazy
-                                    transition="scale-transition"
-                                    offset-y
-                                    full-width
-                                    min-width="290px"
-                            >
-                                <v-text-field
-                                        slot="activator"
-                                        :value="date"
-                                        @change="dateOnChange"
-                                        label="Date"
-                                        type="date"
-                                        dense
-                                        prepend-icon="event"
-                                        readonly
-                                ></v-text-field>
-                                <v-date-picker
-                                        :value="date"
-                                        @change="dateOnChange"
-                                        @input="menu = false"
-                                ></v-date-picker>
-                            </v-menu>
-                        </v-flex>
-                    </v-layout>
+    <div class="row" id="expense-form-root">
 
-                    <!--Wallet select start-->
-                    <v-layout row>
-                        <v-flex xs12 sm12 md6 lg6>
-                            <v-select
-                                    v-model="wallet"
-                                    :items="wallets"
-                                    :value="wallet"
-                                    menu-props="auto"
-                                    label="Wallet"
-                                    item-text="name"
-                                    item-value="id"
-                                    return-object
-                                    prepend-icon="account_balance_wallet"
-                                    append-outer-icon="pageview"
-                                    @click:append-outer="startWalletChoice"
-                            ></v-select>
-                        </v-flex>
-                    </v-layout>
-                    <tm-wallets-select-form
-                            v-bind:items="this.wallets"
-                            v-bind:showWalletSelection="this.showWalletSelection"
-                            @select-wallets-close="completeWalletSelectionHandler"
-                    ></tm-wallets-select-form>
-                    <!--Wallet select end-->
-                </v-flex>
-            </v-layout>
+        <v-progress-linear v-show="this.processing == true"
+                           :indeterminate="true"></v-progress-linear>
+        <!--Header start-->
+        <form style="min-width: 100%">
+            <div class="edit_from_header">
+                <div class="row">
+                    <div class="col-xs-12 col-sm-6">
+                        <div class="form-group">
+                            <label for="expense_date_el"
+                                   class="tm-input-label">Date</label>
+                            <v-date-control :date="date"
+                                            @change="dateOnChange"></v-date-control>
+                        </div>
+                    </div>
+                </div>
 
+                <div class="row d-flex">
+                    <div class="col-xs-12 col-sm-6">
+                        <div class="d-flex flex-wrap">
+                            <div class="form-group">
+                                <label for="wallet_sel" class="tm-lable">Wallet:</label>
+
+                                <tm-select
+                                        id="wallet_sel"
+                                        v-model="wallet"
+                                        :options="wallets"
+                                        :title="'name'"
+                                        :clearable="true"
+                                        :select-btn="true"
+                                        :placeholder="'Select wallet'"
+                                        @open="startWalletChoice"
+                                ></tm-select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+            <tm-wallets-select-form
+                    v-bind:items="this.wallets"
+                    v-bind:showWalletSelection="this.showWalletSelection"
+                    @select-wallets-close="completeWalletSelectionHandler"
+            ></tm-wallets-select-form>
 
             <!--Header end-->
-            <v-layout row>
-                <v-flex xs12 sm12 md12 lg12>
+            <div class="row">
+                <div class="col-xs-12 col-sm-12">
                     <tm-editRow
                             v-bind:items="items"
                             v-bind:editRow="editRow"
@@ -163,9 +143,6 @@
                                         {{ props.item.comment }}
                                     </td>
 
-                                    <!-- <td class="justify-center layout px-0 hidden-xs-and-down" style="background-color: #FF6565">
-                                    <v-icon small @click="deleteRow(props.item)">delete</v-icon>
-                                    </td>-->
                                 </tr>
                             </template>
 
@@ -177,25 +154,31 @@
                             </template>
                         </v-data-table>
                     </div>
-                </v-flex>
-            </v-layout>
+                </div>
+            </div>
+        </form>
 
-        </v-container>
+    </div>
 
-    </v-form>
 </template>
 
 <script>
-    import {VDataTable} from 'vuetify/lib';
-    import EditRowDialog from './SelectsForms/EditRowForm';
-    import MyNum from '../helpers/MyNum';
+
+    import TMDateControl from '../TMComponents/TMDateControl/TMDateControl';
+    import TMSelect from './../TMComponents/TMSelect/TMSelect';
+
+    import {VDataTable} from 'vuetify/lib/components/VDataTable';
+    import VAlert from 'vuetify/lib/components/VAlert';
+
+    import EditRowDialog from '../SelectsForms/EditRowForm';
+    import MyNum from '../../helpers/MyNum';
     import {mapGetters, mapState} from 'vuex';
+
+    import '../../style/myselect.scss';
 
     export default {
         props: ['docId'],
         data: () => ({
-            menu: false,
-            toggle_multiple: [0, 1],
             selected: [],
             countRows: 0,
             currentRow: 0,
@@ -221,8 +204,7 @@
                     class: 'hidden-sm-and-down',
                 },
             ],
-            //wallets: [],
-            menu: false,
+
             modal: false,
             active: null,
             dialog: false,
@@ -230,10 +212,24 @@
             processing: false
         }),
         components: {
+
+            VAlert,
+            VDataTable,
+            'v-date-control': TMDateControl,
+            'tm-select': TMSelect,
             'tm-editRow': EditRowDialog,
-            'v-data-table': VDataTable
         },
         computed: {
+            date: {
+                get() {
+                    return this.$store.state.expenses.expenseObj.date;
+                },
+
+                set(value) {
+
+                    this.$store.commit('expenseUpdateDate', fDate);
+                }
+            },
             wallet: {
                 get() {
                     return this.$store.state.expenses.expenseObj.wallet
@@ -244,7 +240,6 @@
             },
             ...mapState({
                 id: state => state.expenses.expenseObj.id,
-                date: state => state.expenses.expenseObj.date,
                 currency: state => state.expenses.expenseObj.currency,
                 rows: state => state.expenses.expenseObj.rows,
                 closeForm: state => state.expenses.closeForm,
@@ -277,6 +272,7 @@
                     this.$router.push({path: '/expends'});
                 }
             },
+
         },
         methods: {
             getUpMenu() {
@@ -424,11 +420,43 @@
 </script>
 
 <style lang="scss" scoped>
+    .tm-input-label {
+        color: #566787;
+        font-family: 'Varela Round', sans-serif;
+        font-size: 15px;
+        font-weight: 700;
+    }
 
+    .date-input {
+        height: 36px;
+        min-width: 100%;
+        border: 1px solid #566787;
+        background: #dfe5fb;
+        text-transform: lowercase;
+        font-variant: small-caps;
+        border-radius: 4px;
+        line-height: 1.4;
+        font-size: 1em;
+
+        margin: 4px 0 0 0;
+        padding: 0 7px;
+
+    }
+
+    .select_with_icon {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+
+    }
+
+    .input-select-wrapper {
+        display: flex;
+        flex-basis: 400px;
+    }
 
     .select-td {
         width: 20px;
     }
-
 
 </style>

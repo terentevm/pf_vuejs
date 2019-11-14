@@ -1,26 +1,20 @@
 <template>
-    <v-card class="mx-1">
-        <v-card-title class="dash-card-header-title">
+    <div class="card mt-1">
+        <div class="card-header bg-transparent dash-card-header-title">
             Expenses
-        </v-card-title>
+        </div>
 
-        <v-divider light></v-divider>
+        <div class="card-body d-flex flex-row justify-content-between align-items-center">
+            <div>
+                <div class="headline">{{ expensesRounded }}</div>
+                <div class="grey--text">{{ expenseCurrency.short_name }}</div>
+            </div>
 
-        <v-layout>
-            <v-flex xs7>
-                <v-card-title>
-                    <div>
-                        <div class="headline">{{ expensesRounded }}</div>
-                        <div class="grey--text">{{ expenseCurrency.short_name }}</div>
-                    </div>
-                </v-card-title>
-            </v-flex>
+            <img src="../../assets/graph_expenses.svg" height="64px" width="64px">
 
-            <v-flex xs5 d-flex justify-space-around>
-                <img src="../../assets/graph_expenses.svg" height="64px" width="64px"/>
-            </v-flex>
-        </v-layout>
-    </v-card>
+        </div>
+
+    </div>
 </template>
 
 <script>

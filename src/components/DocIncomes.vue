@@ -1,5 +1,5 @@
 <template>
-    <v-container mx-0>
+
         <v-layout row>
             <v-flex xs12 sm12 md12 lg12>
                 <div class="table-wrapper">
@@ -92,7 +92,7 @@
                 </div>
             </v-flex>
         </v-layout>
-    </v-container>
+
 </template>
 
 <style scoped>
@@ -149,7 +149,6 @@
 
     const api = new ApiClass();
 
-    const moment = require('moment');
     export default {
         data: () => ({
             items: [],

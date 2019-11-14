@@ -133,10 +133,13 @@
 </template>
 
 <script>
+    import {VDatePicker} from 'vuetify/lib/components/VDatePicker';
+    import VMenu from 'vuetify/lib/components/VMenu';
+    import VTextField from 'vuetify/lib/components/VTextField';
     import {mapGetters} from 'vuex';
     import ApiClass from '../api/api_laravel';
 
-    const moment = require('moment');
+    import moment from 'moment'
     const api = new ApiClass();
 
     export default {
@@ -153,7 +156,11 @@
             }
 
         }),
-
+        components: {
+            VDatePicker,
+            VMenu,
+            VTextField
+        },
         computed: {
             computedDateFrom() {
                 return this.formatDate(this.dateFrom);

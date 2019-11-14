@@ -1,75 +1,91 @@
 <template>
-    <v-container>
-        <v-layout row>
-            <v-flex xs12 sm12 md12 lg12>
-                <v-dialog v-model="dialog" max-width="350" persistent>
-                    <v-card>
-                        <v-toolbar color="appColor" dark>
-                            <v-toolbar-title>{{ formTitle }}</v-toolbar-title>
-                            <v-spacer></v-spacer>
-                            <v-btn icon>
-                                <v-icon>shopping_basket</v-icon>
-                            </v-btn>
-                        </v-toolbar>
-                        <v-card-text>
-                            <v-container grid-list-md>
-                                <v-layout wrap>
-                                    <v-flex xs12 sm12 md12 d-none>
-                                        <v-text-field
-                                                label="id"
-                                                v-model="formData.id"></v-text-field>
-                                    </v-flex>
 
-                                    <v-flex xs12 sm12 md12>
-                                        <v-autocomplete
-                                                label="Parent"
-                                                :items="itemslist"
-                                                v-model="formData.parent_id"
-                                                :cache-items=true
-                                                item-text="name"
-                                                item-value="id"
-                                                :clearable=true
-                                        ></v-autocomplete>
+    <div class="row">
 
-                                    </v-flex>
-                                    <v-flex xs12 sm12 md12>
-                                        <v-text-field label="Name"
-                                                      v-model="formData.name"></v-text-field>
-                                    </v-flex>
-                                    <v-flex xs12 sm12 md12>
-                                        <v-checkbox
-                                                v-model="formData.active"
-                                                color="primary"
-                                                label="Active item"
-                                        ></v-checkbox>
+        <v-dialog v-model="dialog" max-width="500" persistent
+                  :fullscreen="$vuetify.breakpoint.smAndDown">
 
-                                    </v-flex>
-                                </v-layout>
-                            </v-container>
-                        </v-card-text>
-                        <v-card-actions>
-                            <v-btn color="blue darken-1" flat @click.native="close">Cancel
-                            </v-btn>
-                            <v-spacer></v-spacer>
-                            <v-btn color="green darken-3" flat @click.native="save">Save</v-btn>
-                        </v-card-actions>
-
-                        <v-progress-linear :indeterminate="true"
-                                           v-show="processing"></v-progress-linear>
-
-                    </v-card>
-                </v-dialog>
-
-                <div class="table-wrapper">
-                    <tm-tree
-                            :items="items"
-                            @itemclick="openFormElement"
-                    ></tm-tree>
+            <div class="card" style="height: 100%">
+                <div class="card-header appColor text-white">
+                    {{ formTitle }}
                 </div>
-            </v-flex>
 
-        </v-layout>
-    </v-container>
+                <div class="card-body">
+                    <div class="row d-flex">
+                        <div class="col-xs-12">
+                            <div class="d-flex">
+                                <div class="form-group mx-1">
+                                    <label for="parent_select" class="tm-lable">Parent:</label>
+
+                                    <tm-select
+                                            id="parent_select"
+                                            v-model="parent"
+                                            :options="itemslist"
+                                            :title="'name'"
+                                            :clearable="true"
+                                            :select-btn="false"
+                                            :placeholder="'Select parent'"
+                                    ></tm-select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row d-flex">
+                        <div class="col-xs-12">
+                            <div class="d-flex flex-wrap">
+                                <div class="form-group mx-1">
+                                    <label for="item_income_title" class="tm-lable">Title:</label>
+                                    <tm-input
+                                            v-model="formData.name"
+                                            :placeholder="'Title'"
+                                            :id="'item_income_title'"
+                                            :input-type="'text'"
+                                            :clearable="true"
+                                    ></tm-input>
+                                </div>
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                    <div class="row">
+
+                        <div class="form-group mx-1">
+                            <div class="d-flex justify-start">
+                                <tm-checkbox v-model="formData.active"></tm-checkbox>
+                                <p class="tm-lable ml-2">The item is active</p>
+                            </div>
+
+
+                        </div>
+
+                    </div>
+
+                </div>
+                <v-progress-linear v-show="this.processing" :indeterminate="true" class="my-0">
+                </v-progress-linear>
+                <div class="card-footer text-muted">
+                    <div class="row d-flex justify-content-between">
+                        <v-btn color="blue darken-1" flat @click.native="close">Cancel</v-btn>
+
+                        <v-btn color="green darken-3" flat @click.native="save">Save</v-btn>
+                    </div>
+
+                </div>
+            </div>
+        </v-dialog>
+
+        <div class="table-wrapper">
+            <tm-tree
+                    :items="items"
+                    @itemclick="openFormElement"
+            ></tm-tree>
+        </div>
+
+
+    </div>
 
 </template>
 
@@ -77,8 +93,9 @@
 
     import ApiClass from '../api/api_laravel';
     import {mapGetters} from 'vuex';
-    import TMTree from './Reusable/TMList/TMTree'
-
+    import TMTree from './TMComponents/TMList/TMTree'
+    import TMInput from './TMComponents/TMInput/TMInput';
+    import TMCheckbox from './TMComponents/TMCheckbox';
     const api = new ApiClass();
 
     export default {
@@ -100,6 +117,8 @@
 
         }),
         components: {
+            'tm-input': TMInput,
+            'tm-checkbox': TMCheckbox,
             'tm-tree': TMTree
         },
         computed: {
@@ -107,6 +126,31 @@
                 items: 'allExpenseItemsHierarchically',
                 itemslist: 'allExpenseItems'
             }),
+            parent: {
+                get() {
+
+                    if (this.formData.parent_id) {
+                        let parent = this.itemslist.find(item => {
+                            return item.id === this.formData.parent_id;
+                        });
+
+                        return parent != undefined ? parent : null;
+                    }
+
+                    return null;
+                },
+
+                set(parent) {
+
+                    if (parent instanceof Object && parent.hasOwnProperty('id')) {
+                        this.formData.parent_id = parent.id;
+                    }
+                    else {
+                        this.formData.parent_id = null;
+                    }
+
+                }
+            }
         },
 
         beforeMount: function () {

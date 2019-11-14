@@ -1,123 +1,105 @@
 <template>
-    <v-form class="expense-from">
-        <v-container>
-            <v-progress-linear v-show="this.processing == true"
-                               :indeterminate="true"></v-progress-linear>
+    <div class="container" id="transfer-form-root">
+        <v-progress-linear v-if="processing === true" :indeterminate="true">
+        </v-progress-linear>
 
-            <v-layout row>
-                <v-flex xs12 sm12 md12 lg12>
-                    <v-layout row>
-                        <v-flex xs12 sm12 md6 lg6>
-                            <v-menu
-                                    :close-on-content-click="false"
-                                    v-model="menu"
-                                    :nudge-right="40"
-                                    lazy
-                                    transition="scale-transition"
-                                    offset-y
-                                    full-width
-                                    min-width="290px"
-                            >
-                                <v-text-field
-                                        slot="activator"
-                                        :value="date"
-                                        label="Date"
-                                        type="date"
-                                        dense
-                                        prepend-icon="event"
-                                        readonly
-                                ></v-text-field>
-                                <v-date-picker
-                                        :value="date"
-                                        @change="dateOnChange"
-                                        @input="menu = false"
-                                ></v-date-picker>
-                            </v-menu>
-                        </v-flex>
-                    </v-layout>
-
-                    <!--Wallet select start-->
-
-                    <v-layout row>
-                        <v-flex xs12 sm12 md6 lg6>
-                            <v-autocomplete
-                                    v-model="walletFrom"
-                                    :items="wallets"
-                                    :value="walletFrom"
-                                    menu-props="auto"
-                                    label="From wallet"
-                                    item-text="name"
-                                    item-value="id"
-                                    return-object
-                                    append-outer-icon="pageview"
-                                    required
-                                    v-validate.disable="'required'"
-                                    data-vv-name="walletFrom"
-                                    :error-messages="errors.collect('walletFrom')"
-                                    @click:append-outer="startWalletChoice(1)"
-                            ></v-autocomplete>
-                        </v-flex>
-                    </v-layout>
-
-                    <v-layout row>
-                        <v-flex xs12 sm12 md6 lg6>
-                            <v-text-field
-                                    type="number"
-                                    clearable
-                                    v-model.number.lazy="sumFrom"
-                                    label="Sum of expense"
-                                    required
-                            ></v-text-field>
-                        </v-flex>
-                    </v-layout>
-
-                    <v-layout row>
-                        <v-flex xs12 sm12 md6 lg6>
-                            <v-autocomplete
-                                    v-model="walletTo"
-                                    :items="wallets"
-                                    :value="walletTo"
-                                    menu-props="auto"
-                                    label="To Wallet"
-                                    item-text="name"
-                                    item-value="id"
-                                    return-object
-                                    append-outer-icon="pageview"
-                                    required
-                                    v-validate.disable="'required'"
-                                    data-vv-name="walletTo"
-                                    :error-messages="errors.collect('walletTo')"
-                                    @click:append-outer="startWalletChoice(2)"
-                            ></v-autocomplete>
-                        </v-flex>
-                    </v-layout>
-                    <v-layout row>
-                        <v-flex xs12 sm12 md6 lg6>
-
-                            <v-text-field
-                                    type="number"
-                                    clearable
-                                    v-model.number.lazy="sumTo"
-                                    label="Sum of income"
-                            ></v-text-field>
-                        </v-flex>
-                    </v-layout>
+        <div class="row">
+            <div class="col-xs-12 col-sm-6">
+                <div class="row d-flex">
+                    <div class="form-group mx-1">
+                        <label for="expense_date_el" class="tm-lable">Date:</label>
+                        <v-date-control :date="date"
+                                        @change="dateOnChange"></v-date-control>
+                    </div>
+                </div>
+            </div>
+        </div>
 
 
-                </v-flex>
-            </v-layout>
+        <div class="row d-flex">
+            <div class="col-xs-12">
+                <div class="d-flex flex-wrap">
+                    <div class="form-group mx-1">
+                        <label for="wallet_from_el" class="tm-lable">From wallet:</label>
 
-            <tm-wallets-select-form
-                    v-bind:items="this.wallets"
-                    v-bind:showWalletSelection="this.showWalletSelection"
-                    @select-wallets-close="completeWalletSelectionHandler"
-            ></tm-wallets-select-form>
-            <!--Header end-->
-        </v-container>
-    </v-form>
+                        <tm-select
+                                id="wallet_from_el"
+                                v-model="walletFrom"
+                                :options="wallets"
+                                :title="'name'"
+                                :clearable="true"
+                                :select-btn="true"
+                                :placeholder="'Select wallet'"
+                                @open="startWalletChoice(1)"
+                        ></tm-select>
+                    </div>
+                    <div class="form-group mx-1">
+                        <label for="sum_from_el" class="tm-lable">Sum:</label>
+                        <tm-input
+                                v-model="sumFrom"
+                                :id="'sum_from_el'"
+                                :input-type="'number'"
+                                :clearable="true"
+                                :text-color="'#fc0303'"
+                        ></tm-input>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row d-flex">
+            <div class="tm_divider mx-1"></div>
+        </div>
+
+        <div class="row d-flex">
+            <div class="col-xs-12">
+                <div class="d-flex flex-wrap">
+                    <div class="form-group mx-1">
+                        <label for="wallet_to_input" class="tm-lable">To wallet:</label>
+
+                        <tm-select
+                                id="wallet_to_input"
+                                v-model="walletTo"
+                                :options="wallets"
+                                :title="'name'"
+                                :clearable="true"
+                                :select-btn="true"
+                                :placeholder="'Select wallet'"
+                                @open="startWalletChoice(2)"
+                        ></tm-select>
+                    </div>
+                    <div class="form-group mx-1">
+                        <label for="sum_to_input" class="tm-lable">Sum:</label>
+                        <tm-input
+                                v-model="sumTo"
+                                :id="'sum_to_input'"
+                                :input-type="'number'"
+                                :clearable="true"
+                                :read-only="sumToReadOnly"
+                                :text-color="'#08a816'"
+                        ></tm-input>
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+
+        <tm-wallets-select-form
+                v-bind:items="this.wallets"
+                v-bind:showWalletSelection="this.showWalletSelection"
+                @select-wallets-close="completeWalletSelectionHandler"
+        ></tm-wallets-select-form>
+
+
+    </div>
 </template>
 
 <script>
+    import TMSelect from './TMComponents/TMSelect/TMSelect';
+    import TMInput from './TMComponents/TMInput/TMInput';
+    import TMDateControl from './TMComponents/TMDateControl/TMDateControl';
+
     import {mapGetters} from 'vuex';
     import MyNum from '../helpers/MyNum';
 
@@ -128,9 +110,7 @@
             showWalletSelection: false,
             typeWalletEdit: -1,
             menu: false,
-            $_veeValidate: {
-                validator: "new"
-            },
+            sumToReadOnly: false,
             dictionary: {
                 attributes: {
                     walletFrom: "Wallet from",
@@ -145,6 +125,13 @@
                 }
             }
         }),
+
+        components: {
+            'v-date-control': TMDateControl,
+            'tm-input': TMInput,
+            TMSelect,
+
+        },
 
         computed: {
             date: {
@@ -163,6 +150,7 @@
                 },
                 set(wallet) {
                     this.$store.commit('setWalletFrom', wallet);
+                    this.walletsOnChange();
                 }
             },
             walletTo: {
@@ -171,6 +159,7 @@
                 },
                 set(wallet) {
                     this.$store.commit('setWalletTo', wallet);
+                    this.walletsOnChange();
                 }
             },
             sumFrom: {
@@ -179,6 +168,7 @@
                 },
                 set(sum) {
                     this.$store.commit('setSumFrom', MyNum.round2(Number(sum)));
+                    this.walletsOnChange();
                 }
             },
             sumTo: {
@@ -247,6 +237,24 @@
                 }
 
                 this.showWalletSelection = false;
+            },
+
+            walletsOnChange() {
+
+                if ((this.walletFrom instanceof Object && this.walletFrom.hasOwnProperty('currency'))
+                    && (this.walletTo instanceof Object && this.walletTo.hasOwnProperty('currency'))) {
+
+                    if (this.walletFrom.currency.id == this.walletTo.currency.id) {
+
+                        this.sumToReadOnly = true;
+                        this.sumTo = this.sumFrom;
+                    }
+                    else {
+                        this.sumToReadOnly = false;
+                    }
+
+                }
+
             },
 
             save() {

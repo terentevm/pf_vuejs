@@ -1,7 +1,7 @@
 import ApiClass from '../../api/api_laravel';
 
 const api = new ApiClass();
-import moment from 'moment';
+import moment from 'moment'
 
 const state = {
     expenseObj: {
@@ -44,6 +44,7 @@ const actions = {
 
         });
     },
+
     saveExpense({commit}) {
 
         const formData = {};
@@ -73,6 +74,17 @@ const actions = {
             ? api.store('expenses', formData)
             : api.update('expenses', state.expenseObj.id, formData);
 
+    },
+
+    async deleteExpense({commti}, expense) {
+
+        try {
+            const res = api.delete('expenses', expense.id);
+        }
+        catch (e) {
+            throw e;
+        }
+
     }
 };
 
@@ -82,6 +94,7 @@ const mutations = {
         state.expenseObj.id = null;
         state.expenseObj.date = moment().format('YYYY-MM-DD');
         state.expenseObj.wallet = this.state.settings.wallet;
+
 
         if (this.state.settings.wallet instanceof Object
             && this.state.settings.wallet.hasOwnProperty('currency')) {

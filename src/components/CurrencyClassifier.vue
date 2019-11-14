@@ -1,47 +1,54 @@
 <template>
-    <v-layout row>
-        <v-flex xs12 sm12 lg12>
-            <v-card>
-                <v-card-text>
-                    <v-layout row>
-                        <v-flex xs12 sm12 lg12>
-                            <v-text-field
-                                    v-model="search"
-                                    label="search"
-                                    outline
 
 
-                            >
-                            </v-text-field>
-                        </v-flex>
+    <form>
 
-                    </v-layout>
-                </v-card-text>
+        <div class="form-group">
+            <input
+                    v-model="search"
+                    type="search"
+                    class="form-control"
+                    id="searchCountryFilter"
+                    aria-describedby="search"
+                    placeholder="enter country name or char code"
+                    autofocus
+            >
+            <small v-if="selected > 0" id="tagCount" class="form-text text-muted">
+                Selected: <span>{{ selected }}</span>
+            </small>
+        </div>
+
+        <v-list
+                subheader
+                two-line
+        >
+
+            <v-list-tile
+                    v-for="(item, key) in filteredList"
+                    v-bind:key="item.id"
+                    @click="item.selected = !item.selected">
+                <v-list-tile-avatar tile>
+                    <svg class="lang lang-select-dropdown-item-flag" width="48px"
+                         height="48px">
+                        <use :xlink:href="getSvgId(item.short_name)"></use>
+                    </svg>
+                </v-list-tile-avatar>
 
 
-                <v-list
-                        subheader
-                        two-line
-                >
+                <v-list-tile-content>
+                    <v-list-tile-title>{{ item.name}}</v-list-tile-title>
+                    <v-list-tile-sub-title>{{ item.short_name }}</v-list-tile-sub-title>
+                </v-list-tile-content>
 
-                    <v-list-tile
-                            v-for="(item, key) in filteredList"
-                            v-bind:key="item.id"
-                            @click="item.selected = !item.selected">
-                        <v-list-tile-action>
-                            <v-checkbox :input-value="item.selected"></v-checkbox>
-                        </v-list-tile-action>
+                <v-list-tile-action>
+                    <v-checkbox :input-value="item.selected"></v-checkbox>
+                </v-list-tile-action>
+            </v-list-tile>
 
-                        <v-list-tile-content>
-                            <v-list-tile-title>{{ item.name}}</v-list-tile-title>
-                            <v-list-tile-sub-title>{{ item.short_name }}</v-list-tile-sub-title>
-                        </v-list-tile-content>
-                    </v-list-tile>
+        </v-list>
+    </form>
 
-                </v-list>
-            </v-card>
-        </v-flex>
-    </v-layout>
+
 </template>
 
 <script>
@@ -60,14 +67,26 @@
             }),
             filteredList() {
                 return this.$store.state.currencies.classifier.filter(currency => {
-                    console.dir(this.$store.state.currencies.all);
 
                     let existed = this.$store.state.currencies.all.find(item => {
                         return item.short_name == currency.short_name;
                     });
 
-                    return !existed && currency.name.toLowerCase().includes(this.search.toLowerCase())
+                    return !existed
+                        && (currency.name.toLowerCase().includes(this.search.toLowerCase())
+                            || currency.short_name.toLowerCase().includes(this.search.toLowerCase()))
                 });
+            },
+
+            selected() {
+                let total = 0;
+
+                return this.currencies.reduce((total, item) => {
+                    if (item.selected === true) total++;
+                    return total;
+                }, total);
+
+
             }
         },
 
@@ -97,6 +116,10 @@
                         }
                     ]
                 };
+            },
+
+            getSvgId(title) {
+                return `#${title.toLowerCase()}`;
             },
 
             save() {
@@ -136,6 +159,17 @@
 </script>
 
 <style>
+    .form-input-search {
+        font-family: "Roboto", sans-serif;
+
+        border: 0;
+
+        box-sizing: border-box;
+        font-size: 15px;
+        border: thin solid #CFD8DC;
+        border-radius: 4px;
+    }
+
     .custom-loader {
         animation: loader 1s infinite;
         display: flex;

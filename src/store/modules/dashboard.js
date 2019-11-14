@@ -1,5 +1,5 @@
 import ApiClass from '../../api/api_laravel';
-import moment from "moment";
+import moment from 'moment'
 
 const api = new ApiClass();
 
@@ -55,6 +55,10 @@ const state = {
     incomesTotalCurrency: '',
     incomesDetails: [],
 
+    expensesIncomeByYear: [],
+    expensesIncomeByYearCurrency: null,
+    expIncChartData: {},
+
     dashboardSettings: {
         'periodicity': null,
         'periodicityOptions': [
@@ -97,7 +101,9 @@ const getters = {
     incomesTotalCurrency: state => state.incomesTotalCurrency,
     incomesDetails: state => state.incomesDetails,
 
-
+    expensesIncomeByYear: state => state.expensesIncomeByYear,
+    expensesIncomeByYearCurrency: state => state.expensesIncomeByYearCurrency,
+    expIncChartData: state => state.expIncChartData
 };
 
 // actions
@@ -225,6 +231,63 @@ const actions = {
 
     },
 
+    async getExpensesIncomesByYear({commit}) {
+        const params = getPeriod('year');
+
+        try {
+            const result = await api.post('/api/reports/compare-expenses-incomes', params);
+
+            commit('setExpensesIncomeByYear', result.data);
+            commit('setExpensesIncomeByYearCurrency', result.reportCurrency);
+
+            const labels = [];
+            const expenses = [];
+            const incomes = []
+
+            result.data.forEach(balanceData => {
+
+                labels.push(moment(balanceData.period).format('MMM YY'));
+
+                expenses.push(Number(balanceData.expense));
+
+                incomes.push(Number(balanceData.income));
+            });
+
+            const chartData = {
+                labels: labels,
+                datasets: [
+                    {
+                        label: 'expenses',
+                        backgroundColor: '#fdce3e',
+                        borderColor: '#fdce3e',
+                        fill: false,
+                        data: expenses
+
+                    },
+                    {
+                        label: 'incomes',
+                        backgroundColor: '#2fc418',
+                        borderColor:'#2fc418',
+                        fill: false,
+                        data: incomes
+                    }]
+
+            };
+
+            commit('setExpIncChartData', chartData);
+
+        }
+        catch (e) {
+            commit('setExpensesIncomeByYear', []);
+            commit('setExpensesIncomeByYearCurrency', {
+                short_name: 'NULL',
+                code: 0,
+                name: 'UNDEFINED'
+            });
+        }
+
+    },
+
     initializeDashboardSettings({commit}) {
         const storedSettings = getDashboardSettingsFromLocalStorage();
 
@@ -294,7 +357,20 @@ const mutations = {
 
     setBalanceByPeriodsChartData(state, chartData) {
         state.balanceByPeriodsChartData = chartData;
+    },
+
+    setExpensesIncomeByYear(state, data) {
+        state.expensesIncomeByYear = data;
+    },
+
+    setExpensesIncomeByYearCurrency(state, currency) {
+        state.expensesIncomeByYearCurrency = currency;
+    },
+
+    setExpIncChartData(state, chartData) {
+        state.expIncChartData = chartData;
     }
+
 };
 
 export default {

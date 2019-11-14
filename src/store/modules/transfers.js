@@ -1,5 +1,5 @@
 import ApiClass from '../../api/api_laravel';
-import moment from 'moment';
+import moment from 'moment'
 
 const api = new ApiClass();
 

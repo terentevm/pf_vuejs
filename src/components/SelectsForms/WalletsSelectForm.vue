@@ -1,5 +1,10 @@
 <template>
-    <v-dialog v-model="showWalletSelection" width="400" scrollable persistent>
+
+    <v-dialog v-model="showWalletSelection"
+              scrollable
+              max-height="300px" max-width="400px"
+              persistent
+              :fullscreen="$vuetify.breakpoint.smAndDown">
         <v-card class="wallet-sel-dialog">
             <v-toolbar color="appColor" dark scroll-target="#scrolling-techniques">
                 <v-avatar tile :size="32">
@@ -11,18 +16,20 @@
                     <v-icon>close</v-icon>
                 </v-btn>
             </v-toolbar>
-            <tm-tree
-                    :items="items"
-                    @itemclick="close"
-            ></tm-tree>
-
+            <v-card-text>
+                <tm-tree
+                        :items="items"
+                        @itemclick="close"
+                ></tm-tree>
+            </v-card-text>
         </v-card>
     </v-dialog>
+
 </template>
 
 <script>
     import picElement from '@/assets/list_element.png';
-    import TMTree from '../Reusable/TMList/TMTree';
+    import TMTree from '../TMComponents/TMList/TMTree';
 
     export default {
         props: ['items', 'showWalletSelection'],
@@ -39,10 +46,3 @@
         },
     };
 </script>
-
-<style>
-    .wallet-sel-dialog {
-        background: #fff;
-        min-height: 100vh;
-    }
-</style>

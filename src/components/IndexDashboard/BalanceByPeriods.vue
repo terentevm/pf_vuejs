@@ -1,26 +1,16 @@
 <template>
-    <v-hover>
-        <v-card id="card-balance-by-periods" slot-scope="{ hover }" class=" mt-2 mx-1">
-            <v-layout row>
-                <v-flex xs12 sm12 md12 lg12>
-                    <div class="balance-chart">
-                        <bar-chart
-                                v-if="loaded"
-                                v-bind:chart-data="chartData"
-                                v-bind:options="options"
-                                v-bind:chart-height="chartHeight"
-                                v-bind:parent-name="'card-balance-by-periods'"
-                        >
+    <div class="card mt-1" style="min-height: 300px">
 
-                        </bar-chart>
-                    </div>
-                </v-flex>
+        <bar-chart
+                    v-if="loaded"
+                    :id="'canvas_balance_by_months'"
+                    v-bind:chart-data="chartData"
+                    v-bind:options="options"
+        >
 
-            </v-layout>
+        </bar-chart>
 
-
-        </v-card>
-    </v-hover>
+    </div>
 </template>
 
 <script>
@@ -40,10 +30,9 @@
             currencyBalance: null,
             loaded: false,
             options: {
-                responsive: false,
-                maintainAspectRatio: true,
-                aspectRatio: 0.5,
-                
+                responsive: true,
+                maintainAspectRatio: false,
+
                 legend: {
                     display: false,
                     labels: {
@@ -56,7 +45,7 @@
                 }
             },
             chartHeight: 300,
-            title: 'Balance by periods'
+            title: 'Balance by months'
         }),
 
         components: {
@@ -84,9 +73,5 @@
         height: 50px;
     }
 
-    .balance-chart {
-        height: 300px;
-
-    }
 
 </style>

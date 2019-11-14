@@ -1,41 +1,36 @@
 <template>
-    <v-card class="mx-1 mt-2">
-        <v-card-title>
-            <div><span class="grey--text">Balance </span><br/></div>
-        </v-card-title>
+    <div class="card mt-2">
 
-        <v-divider light></v-divider>
+        <div class="card-header bg-transparent dash-card-header-title">
+            Money in wallets
+        </div>
 
-        <v-layout row>
-            <v-flex xs12>
-                <ul class="list">
-                    <li v-for="item in balanceAll">
-                        <div class="list-row">
+        <ul class="list-group list-group-flush">
+            <li v-for="item in balanceAll" class="list-group-item pr-0">
+                <div class="list-row">
 
-                            <div class="list-column-content">
-                                <div class="list-row-content">
-                                    <span>{{ item.wallet_name }}</span>
-                                </div>
-                                <div class="list-row-content content-second">
-                                    <span>{{ item.currency_char_code }}</span>
-                                </div>
-                            </div>
-
-                            <div class="list-column-sum">
-                                <div class="list-row-sum">
-                                    <span>{{ item.reportBalance }}</span>
-                                </div>
-
-                                <div class="list-row-sum content-second">
-                                    <span>{{ item.balance }}</span>
-                                </div>
-                            </div>
+                    <div class="list-column-content">
+                        <div class="list-row-content">
+                            <span>{{ item.wallet_name }}</span>
                         </div>
-                    </li>
-                </ul>
-            </v-flex>
-        </v-layout>
-    </v-card>
+                        <div class="list-row-content content-second">
+                            <span>{{ item.currency_char_code }}</span>
+                        </div>
+                    </div>
+
+                    <div class="list-column-sum">
+                        <div class="list-row-sum">
+                            <span>{{ item.reportBalance }}</span>
+                        </div>
+
+                        <div class="list-row-sum content-second">
+                            <span>{{ item.balance }}</span>
+                        </div>
+                    </div>
+                </div>
+            </li>
+        </ul>
+    </div>
 </template>
 
 <script>
@@ -57,24 +52,19 @@
 </script>
 
 <style scoped>
-    .list {
-        list-style: none;
+    .header-title {
+        color: rgb(86, 103, 135);;
+        font-family: 'Varela Round', sans-serif;
+        font-size: 20px;
+        height: 30px;
     }
 
     .list-row {
         display: flex;
         flex-direction: row;
-        flex-grow: 5;
-        justify-content: flex-start;
-        height: 50px;
-        margin-top: 10px;
-        margin-bottom: 10px;
-        border-bottom: 1px solid #e0e0e0;
+        justify-content: space-between;
+        height: 40px;
 
-    }
-
-    .list-row:hover {
-        background-color: rgb(240, 240, 240);
     }
 
     .list-column-content {
@@ -88,8 +78,6 @@
         display: flex;
         flex-direction: row;
         align-items: center;
-
-        flex-grow: 3;
 
         font-family: 'Roboto';
         font-weight: 400;

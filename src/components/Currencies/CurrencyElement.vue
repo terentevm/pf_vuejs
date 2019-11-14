@@ -3,9 +3,9 @@
         <v-toolbar color="appColor" dark>
             <v-toolbar-title>Currency: {{ title }}</v-toolbar-title>
             <v-spacer></v-spacer>
-            <v-btn icon>
-                <v-icon>euro_symbol</v-icon>
-            </v-btn>
+            <svg class="lang lang-select-dropdown-item-flag" width="30px" height="30px">
+                <use :xlink:href="getSvgId(formData.short_name)"></use>
+            </svg>
         </v-toolbar>
         <v-card-text>
             <v-container grid-list-md>
@@ -42,6 +42,9 @@
 <script>
 import ApiClass from '../../api/api_laravel';
 const api = ApiClass();
+
+import VTextField from 'vuetify/lib/components/VTextField';
+
 export default {
     name: 'CurrencyElement',
     props: {
@@ -66,6 +69,10 @@ export default {
         },
         processing: false
     }),
+
+    components: {
+        VTextField
+    },
 
     created: function() {
         this.title = this.item === null ? 'New' : this.item.short_name;
@@ -102,6 +109,9 @@ export default {
                 });
         },
 
+        getSvgId(title) {
+            return `#${title.toLowerCase()}`;
+        },
     },
 };
 </script>

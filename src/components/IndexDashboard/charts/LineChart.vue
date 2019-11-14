@@ -1,6 +1,6 @@
 <template>
 
-    <canvas v-bind:id="id" height="300px"></canvas>
+    <canvas v-bind:id="id" height="350px"></canvas>
 
 </template>
 
@@ -9,7 +9,7 @@
     import Chart from 'chart.js/dist/Chart.min.js';
 
     export default {
-        name: "BarChart",
+        name: "LineChart",
 
         props: {
             id: {
@@ -22,11 +22,9 @@
             },
             options: {
                 type: Object
-            },
-
+            }
         },
         data: () => ({
-            bar: null,
             canvas: null
 
         }),
@@ -54,7 +52,7 @@
                 this.canvas = document.getElementById(this.id).getContext('2d');
 
                 this.bar = new Chart(this.canvas, {
-                    type: 'bar',
+                    type: 'line',
                     data: data,
                     options: options
                 });

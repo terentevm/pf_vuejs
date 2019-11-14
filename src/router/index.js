@@ -1,22 +1,7 @@
 import Vue from "vue";
 import Router from "vue-router";
-import Wallets from "@/components/Wallets/WalletsList";
-import Signup from "@/components/Signup";
-import Login from "@/components/Login";
-// import Index from "@/components/Index";
-import CurrenciesList from "@/components/Currencies/CurrenciesList";
-import ItemsExpenditure from "@/components/ItemsExpenditure";
-import ItemsIncome from "@/components/ItemsIncome";
-// import ExpendElement from "@/components/ExpencePCForm.vue";
-import Settings from "@/components/Settings";
-import TransfersList from "@/components/TransfersList";
-import Transfer from "@/components/Transfer";
-// import DocExpends from "@/components/DocExpends";
-// import DocIncomes from "@/components/DocIncomes";
-// import Income from "@/components/Income";
-// import LoadRates from "@/components/LoadRates";
-// import CurrencyClassificator from "@/components/CurrencyClassificator";
 
+import Login from '@/components/login';
 
 Vue.use(Router);
 
@@ -25,13 +10,19 @@ export default new Router({
         {
             path: '/wallets',
             name: 'Wallets',
-            component: Wallets,
+            component: () => import(
+                /* webpackChunkName: "wallets" */
+                '../components/Wallets/WalletsList'
+                ),
             meta: {requiresAuth: true},
         },
         {
             path: '/signup',
             name: 'Signup',
-            component: Signup,
+            component: () => import(
+                /* webpackChunkName: "signup" */
+                '../components/Signup'
+                ),
         },
         {
             path: '/login',
@@ -41,37 +32,45 @@ export default new Router({
         {
             path: '/',
             name: 'Index',
-            // component: Index,
-            component: () => import(/* webpackChunkName: "dashboard"*/ '../components/Index.vue'),
+            component: () => import(
+                /* webpackChunkName: "dashboard"*/
+                /* webpackPrefetch: true*/
+                '../components/Index.vue'),
             meta: {requiresAuth: true},
         },
 
         {
             path: '/currencies',
             name: 'Currencies',
-            component: CurrenciesList,
+            component: () => import(
+                /* webpackChunkName: "currencies" */
+                '../components/Currencies/CurrenciesList'),
             meta: {requiresAuth: true},
         },
         {
             path: '/loadcurrency',
             name: 'CurrencyClassificator',
-            // component: CurrencyClassificator,
             component: () =>
                 import(
-                    /* webpackChunkName: "currency-classifier"*/ '../components/CurrencyClassificator.vue'
+                    /* webpackChunkName: "currency-classifier"*/
+                    '../components/CurrencyClassifier.vue'
                     ),
             meta: {requiresAuth: true},
         },
         {
             path: '/itemsexpenditure',
             name: 'ItemsExpenditure',
-            component: ItemsExpenditure,
+            component: () => import(
+                /* webpackChunkName: "items-of-expenses" */
+                '../components/ItemsExpenditure'),
             meta: {requiresAuth: true},
         },
         {
             path: '/itemsincome',
             name: 'ItemsIncome',
-            component: ItemsIncome,
+            component: () => import(
+                /* webpackChunkName: "items-of-incomes" */
+                '../components/ItemsIncome'),
             meta: {requiresAuth: true},
         },
         {
@@ -79,7 +78,7 @@ export default new Router({
             name: 'DocExpends',
             // component: DocExpends,
             component: () =>
-                import(/* webpackChunkName: "expenses"*/ '../components/DocExpends.vue'),
+                import(/* webpackChunkName: "expenses-list"*/ '../components/Expenses/ExpensesList.vue'),
             meta: {requiresAuth: true},
         },
         {
@@ -87,20 +86,24 @@ export default new Router({
             name: 'DocIncomes',
             // component: DocIncomes,
             component: () =>
-                import(/* webpackChunkName: "incomes"*/ '../components/DocIncomes.vue'),
+                import(/* webpackChunkName: "incomes-list"*/ '../components/DocIncomes.vue'),
             meta: {requiresAuth: true},
         },
         {
             path: '/transfers',
             name: 'TransfersList',
-            component: TransfersList,
+            component: () => import(
+                /* webpackChunkName: "transfers-list" */
+                '../components/TransfersList'),
             meta: {requiresAuth: true},
         },
         ,
         {
             path: '/transfers/:docId',
             name: 'Transfer',
-            component: Transfer,
+            component: () => import(
+                /* webpackChunkName: "transfers-edit" */
+                '../components/Transfer'),
             props: true,
             meta: {requiresAuth: true},
         },
@@ -110,7 +113,7 @@ export default new Router({
             name: 'ExpendElement',
             // component: ExpendElement,
             component: () =>
-                import(/* webpackChunkName: "expense-form"*/ '../components/ExpencePCForm.vue'),
+                import(/* webpackChunkName: "expense-edit"*/ '../components/Expenses/ExpenseEdit.vue'),
 
             props: true,
             meta: {requiresAuth: true},
@@ -121,14 +124,17 @@ export default new Router({
             name: 'Income',
             // component: Income,
             component: () =>
-                import(/* webpackChunkName: "income-form" */ '../components/Income.vue'),
+                import(/* webpackChunkName: "income-edit" */
+                    '../components/Income.vue'),
             props: true,
             meta: {requiresAuth: true},
         },
         {
             path: '/settings',
             name: 'Settings',
-            component: Settings,
+            component: () => import(
+                /* webpackChunkName: "settings" */
+                '../components/Settings'),
             props: true,
             meta: {requiresAuth: true},
         },
@@ -137,8 +143,9 @@ export default new Router({
             name: 'LoadRates',
             component: () =>
                 import(
-                    /* webpackChunkName: "loadrates" */ /* webpackPrefetch: true*/ '../components/LoadRates.vue'
-                    ),
+                    /* webpackChunkName: "loadrates" */
+                    /* webpackPrefetch: true*/
+                    '../components/LoadRates.vue'),
             props: true,
             meta: {requiresAuth: false},
         },
