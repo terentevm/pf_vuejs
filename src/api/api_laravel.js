@@ -2,6 +2,8 @@ import axios from 'axios';
 import config_prod from './config_prod';
 import config_dev from './config_dev';
 
+import Error422 from './errors/Error422';
+
 let connection = null;
 
 const URL_SIGNUP = '/api/signup';
@@ -50,8 +52,12 @@ function errorHandler(error) {
 
     if (error.response) {
 
+        if (error.response.status === 422) {
+            return new Error422(error.response);
+        }
+
         err.status = error.response.status;
-        console.log(typeof error.response.data);
+
         if (error.response.data
             && error.response.data instanceof Object
             && error.response.data.hasOwnProperty('error')) {
@@ -117,6 +123,7 @@ class Connection {
             const res = await this._http.post(URL_SIGNUP, user);
             return res.data;
         } catch (e) {
+            console.dir(e);
             throw errorHandler(e);
         }
     }

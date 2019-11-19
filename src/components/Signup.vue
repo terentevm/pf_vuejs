@@ -62,7 +62,8 @@
                                 class="text-sm-left red--text msg-error"
                         >{{ errors.first('password') }}</p>
 
-                        <currency-select :id="'signup_currency_selection'" @change="currencyOnChange"></currency-select>
+                        <currency-select :id="'signup_currency_selection'"
+                                         @change="currencyOnChange"></currency-select>
 
 
                         <v-divider></v-divider>
@@ -80,17 +81,25 @@
 
         </div>
         <div class="col-xs-12 col-sm-3 col-lg-4"></div>
+        <v-snackbar
+                v-model="showAlert"
+                :color="'error'"
 
+        >
+            {{ messageError }}
+            <v-btn color="white" flat @click="showAlert = false">Close</v-btn>
+        </v-snackbar>
     </div>
 </template>
-
 
 
 <script>
     import ApiClass from "../api/api_laravel";
     import CurrencySelect from './TMComponents/CurrencySelect/CurencySelect';
-    const api = ApiClass();
+    import Error422 from './../api/errors/Error422';
     import '@/style/auth.scss';
+
+    const api = ApiClass();
     export default {
         name: "Signup",
         $_veeValidate: {
@@ -106,9 +115,12 @@
                 dialog: false,
                 currencyList: ["RUB", "CZK", "EUR"],
                 sending: false,
-
+                showAlert: false,
+                messageError: ''
             };
         },
+
+
         components: {
             'currency-select': CurrencySelect
         },
@@ -138,33 +150,54 @@
 
                     let userData = {
                         name: this.name,
-                        login: this.email,
+                        login: this.email.toLowerCase(),
                         password: this.password,
                         currency: this.currency
                     };
 
                     let res = api.signup(userData)
                         .then(res => {
-                            console.log('ok');
+                            this.sending = false;
                             this.$router.push({path: 'login'});
 
                         })
                         .catch(err => {
 
-                            if (err.errors instanceof Object) {
+                            this.sending = false;
 
-                                for (let field in err.errors) {
+                            if (err instanceof Error422) {
+                                for (let error of err.errors) {
 
                                     this.errors.add({
-                                        field: field,
-                                        msg: err.errors[field][0]
+                                        field: error.field,
+                                        msg: error.message
                                     });
 
 
                                 }
                             }
+                            else {
+                                let status = 'n/a';
+                                let errorText = 'Error';
 
-                            this.sending = false;
+                                if (err instanceof Object && err.hasOwnProperty('status')) {
+                                    status = err.status;
+                                }
+
+                                if (err instanceof Object && err.hasOwnProperty('data')) {
+                                    if (err.data.hasOwnProperty('error')) {
+                                        errorText = err.data.error;
+                                    }
+
+                                }
+
+                                this.$store.dispatch('showAppMsg', {
+                                    type: 'error',
+                                    messages: [`(${status}) ${errorText}`]
+                                });
+
+                            }
+
 
                         });
                 });

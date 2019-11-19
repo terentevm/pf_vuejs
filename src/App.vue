@@ -179,7 +179,18 @@
                 <router-view></router-view>
             </v-container>
         </v-content>
-
+        <v-snackbar
+                v-model="showMsg"
+                :color="msgType"
+                auto-height
+        >
+            <ul>
+                <li v-for="msg in appMessages">
+                    {{ msg }}
+                </li>
+            </ul>
+            <v-btn color="white" flat @click="showMsg = false">Close</v-btn>
+        </v-snackbar>
     </v-app>
 
 </template>
@@ -295,6 +306,25 @@
                     ? true
                     : false
             },
+
+            showMsg: {
+                get() {
+                    return this.$store.state.app.showMsg;
+                },
+
+                set(value) {
+                    this.$store.dispatch('destroyAppMsg');
+                }
+
+            },
+
+            msgType() {
+                return this.$store.state.app.msgType;
+            },
+
+            appMessages() {
+                return this.$store.state.app.appMessages;
+            }
         },
         props: {
             source: String,
