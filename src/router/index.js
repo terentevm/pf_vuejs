@@ -70,7 +70,7 @@ export default new Router({
             name: 'ItemsIncome',
             component: () => import(
                 /* webpackChunkName: "items-of-incomes" */
-                '../components/ItemsIncome'),
+                '../components/IncomeItems/ItemsList'),
             meta: {requiresAuth: true},
         },
         {

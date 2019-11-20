@@ -1,10 +1,13 @@
 <template>
-    <div class="row" @click="titleClickHandler">
+    <div class="row mx-0" @click="titleClickHandler">
+
         <div v-if="isGroup === true" class="list-elem">
-            <i v-if="this.item.collapsed == true" class="material-icons" v-bind:style="{color: colorApp}" @click="iconClickHandler">
+            <i v-if="this.item.collapsed == true" class="material-icons"
+               v-bind:style="{color: colorApp}" @click="iconClickHandler">
                 add_circle_outline
             </i>
-            <i v-if="this.item.collapsed == false" class="material-icons" v-bind:style="{color: colorApp}" @click="iconClickHandler">
+            <i v-if="this.item.collapsed == false" class="material-icons"
+               v-bind:style="{color: colorApp}" @click="iconClickHandler">
                 remove_circle_outline
             </i>
             <span class="list_item_title" @click="titleClickHandler">{{ this.title }}</span>
@@ -13,15 +16,17 @@
             <i class="material-icons" v-bind:style="{color: colorApp}">
                 remove_circle_outline
             </i>
-            <span class="list_item_title" v-bind:class="{ not_active: !this.item.active }" @click="titleClickHandler">{{ this.title }}</span>
+            <span class="list_item_title" v-bind:class="{ not_active: !this.item.active }"
+                  @click="titleClickHandler">{{ this.title }}</span>
         </div>
+
     </div>
 </template>
 
 <script>
     export default {
         name: "TMListElement",
-        props:{
+        props: {
             title: {
                 type: String,
                 default: ''
@@ -40,14 +45,14 @@
         beforeMount: function () {
             this.colorApp = this.$vuetify.theme.appColor;
         },
-        methods:{
+        methods: {
             iconClickHandler(e) {
                 e.stopPropagation();
                 this.item.collapsed = !this.item.collapsed;
             },
 
-            titleClickHandler()
-            {
+            titleClickHandler(e) {
+                e.stopPropagation();
                 this.$emit('itemclick', this.item);
             }
         }
@@ -59,8 +64,8 @@
         display: flex;
         flex-direction: row;
         align-items: center;
-        margin-left: 20px;
-        margin-right: 20px;
+        margin-left: 5px;
+        margin-right: 5px;
         width: 100%;
         height: 40px;
         border-bottom: 1px solid rgba(0, 0, 0, 0.125);

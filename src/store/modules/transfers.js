@@ -35,7 +35,7 @@ const actions = {
     },
 
     getTransfer({commit}, id) {
-        console.log(`receiving data by id ${id}`);
+
         if (id === 'new' || id === null || id === undefined) {
             commit('setFormData', {
                 id: null,
@@ -91,9 +91,11 @@ const mutations = {
     },
 
     addTransferToItems(state, transfer) {
-        if (state.items.indexOf(transfer) === -1) {
+
+        if (state.items.find(current => current.id === transfer.id) == undefined) {
             state.items.push(transfer);
         }
+
     },
 
     setTransferDate(state, date) {
@@ -109,12 +111,10 @@ const mutations = {
     },
 
     setSumFrom(state, sum) {
-        console.log(`sum from = ${sum}`);
         state.formData.sumFrom = Number(sum);
     },
 
     setSumTo(state, sum) {
-        console.log(`sum to = ${sum}`);
         state.formData.sumTo = Number(sum);
     }
 

@@ -1,6 +1,6 @@
 <template>
 
-    <div class="row" id="income-form-root">
+    <div class="row mx-0" id="income-form-root">
         <v-progress-linear v-show="this.processing == true"
                            :indeterminate="true"></v-progress-linear>
         <!--Header start-->
@@ -8,7 +8,7 @@
             <div class="edit_from_header">
 
                 <div class="row">
-                    <div class="col-xs-12 col-sm-6">
+                    <div class="col-xs-12 col-sm-6 px-0">
                         <div class="form-group">
                             <label for="expense_date_el"
                                    class="tm-input-label">Date</label>
@@ -19,7 +19,7 @@
                 </div>
 
                 <div class="row d-flex">
-                    <div class="col-xs-12 col-sm-6">
+                    <div class="col-xs-12 col-sm-6 px-0">
                         <div class="d-flex flex-wrap">
                             <div class="form-group">
                                 <label for="wallet_sel" class="tm-lable">Wallet:</label>
@@ -50,7 +50,7 @@
 
             <!--Header end-->
             <div class="row">
-                <div class="col-12">
+                <div class="col-12 px-0">
                     <tm-editRow
                             v-bind:items="items"
                             v-bind:editRow="editRow"

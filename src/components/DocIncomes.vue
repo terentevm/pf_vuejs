@@ -51,9 +51,9 @@
                             <v-layout row ml-3>
                                 <v-flex xs10 sm10 md10 lg11 class="cell">
                                     <v-layout row>
-                                        <v-flex xs8 sm8md10 lg10 class="cell">
+                                        <v-flex xs8 sm8 md10 lg10 class="cell">
                                             <v-layout row d-flex class="flex-column flex-md-row">
-                                                <v-flex xs4>
+                                                <v-flex xs8 sm4>
                                                     <span>{{ item.date}}</span>
                                                 </v-flex>
                                                 <v-flex xs8>
