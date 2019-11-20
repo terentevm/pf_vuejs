@@ -53,6 +53,7 @@
     "css-loader": "^0.28.11",
     "eslint": "^5.16.0",
     "eslint-plugin-vue": "^6.0.1",
+    "eslint-plugin-vuetify": "^1.0.0-beta.5",
     "extract-text-webpack-plugin": "^3.0.0",
     "file-loader": "^1.1.11",
     "friendly-errors-webpack-plugin": "^1.7.0",

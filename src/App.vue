@@ -1,4 +1,4 @@
-<template>
+<template lang="html">
     <v-app v-bind:class="{appColor: !$store.state.auth}">
         <v-navigation-drawer
                 fixed
@@ -149,7 +149,7 @@
                     <v-icon>{{toolbarMenu.mainAction.icon}}</v-icon>
                 </v-btn>
 
-                <v-bottom-sheet v-model="sheet" v-if="this.showActionsMenu == true">
+                <v-bottom-sheet v-model="sheet" v-if="this.showActionsMenu === true">
                     <template v-slot:activator>
                         <v-btn icon>
                             <v-icon>more_vert</v-icon>
@@ -285,11 +285,11 @@
         },
 
         mounted: function () {
-            this.$store.state.auth = sessionStorage.getItem('jwt') === null ? false : true;
+            this.$store.state.auth = sessionStorage.getItem('jwt') != null ? true : false;
         },
         computed: {
             title() {
-                return this.$store.state.title == undefined ? 'Personal finances' : this.$store.state.title;
+                return this.$store.state.title === undefined ? 'Personal finances' : this.$store.state.title;
             },
             toolbarMenu() {
                 return this.$store.state.app.toolbarMenu;
@@ -297,14 +297,12 @@
             showMainAction() {
                 return this.$store.state.app.toolbarMenu.mainAction && this.$store.state.app.toolbarMenu.mainAction.action
                     ? true
-                    : false
+                    : false;
             },
             showActionsMenu() {
-                return this.$store.state.app.toolbarMenu.menu
-                && this.$store.state.app.toolbarMenu.menu instanceof Array
-                && this.$store.state.app.toolbarMenu.menu.length > 0
-                    ? true
-                    : false
+                return !!(this.$store.state.app.toolbarMenu.menu
+                    && this.$store.state.app.toolbarMenu.menu instanceof Array
+                    && this.$store.state.app.toolbarMenu.menu.length > 0);
             },
 
             showMsg: {
@@ -312,7 +310,7 @@
                     return this.$store.state.app.showMsg;
                 },
 
-                set(value) {
+                set() {
                     this.$store.dispatch('destroyAppMsg');
                 }
 
@@ -333,10 +331,7 @@
             callAction(actionProps) {
                 this.sheet = false;
                 actionProps.action()
-            },
-            logout() {
-                console.log('Log out...');
-            },
+            }
         },
     };
 </script>

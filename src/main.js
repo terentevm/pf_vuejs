@@ -73,7 +73,7 @@ Validator.extend('email', email);
 Validator.localize('en', veeEn);
 
 // const mainColor = '#43425D';
-const mainColor = '#435d7d'
+const mainColor = '#435d7d';
 
 Vue.use(VeeValidate);
 
