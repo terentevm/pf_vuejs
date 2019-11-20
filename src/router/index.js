@@ -149,5 +149,14 @@ export default new Router({
             props: true,
             meta: {requiresAuth: false},
         },
+        {
+            path: '/contacts',
+            name: 'Contacts',
+            component: () => import(
+                /* webpackChunkName: "contacts" */
+                '../components/Contacts/ContactsList'
+                ),
+            meta: {requiresAuth: true},
+        },
     ],
 });

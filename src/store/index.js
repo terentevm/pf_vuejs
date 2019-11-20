@@ -11,6 +11,7 @@ import incomes from './modules/incomes';
 import dashboard from './modules/dashboard';
 import app from './modules/app';
 import transfers from './modules/transfers';
+import contacts from './modules/contacts';
 
 Vue.use(Vuex);
 
@@ -31,7 +32,8 @@ export default new Vuex.Store({
         expenses,
         incomes,
         dashboard,
-        transfers
+        transfers,
+        contacts
     },
     mutations: {},
 });

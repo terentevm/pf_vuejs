@@ -210,6 +210,7 @@
     import imgTransfers from '@/assets/exchange.svg';
     import imgSettings from '@/assets/settings.svg';
     import imgLogout from '@/assets/logout.svg';
+    import imgContacts from '@/assets/contacts.svg';
 
     export default {
         data: () => ({
@@ -248,9 +249,16 @@
                         },
                         {
                             icon: 'shopping_basket',
-                            text: 'Expenditure items',
+                            text: 'Expense items',
                             link: '/itemsexpenditure',
                             avatar: imgExpensesItems,
+                        },
+
+                        {
+                            icon: 'shopping_basket',
+                            text: 'Contacts',
+                            link: '/contacts',
+                            avatar: imgContacts,
                         },
                     ],
                 },

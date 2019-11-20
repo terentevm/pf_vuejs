@@ -11,6 +11,7 @@ const URL_LOGIN = '/api/login';
 const URL_SETTINGS = '/api/settings';
 const URL_CURRENCIES = '/api/currencies';
 const URL_WALLETS = '/api/wallets';
+const URL_CONTACTS = '/api/contacts';
 const URL_ITEMS_EXPENDITURE = '/api/itemsexpense';
 const URL_ITEMS_INCOME = '/api/itemsincome';
 const URL_DOC_EXPENSES = '/api/expenses';
@@ -27,6 +28,7 @@ routesMap.set('expenses', URL_DOC_EXPENSES);
 routesMap.set('incomes', URL_DOC_INCOMES);
 routesMap.set('transfers', URL_DOC_TRANSFERS);
 routesMap.set('settings', URL_SETTINGS);
+routesMap.set('contacts', URL_CONTACTS);
 
 const isProduction = process.env.NODE_ENV === 'production';
 
