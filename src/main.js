@@ -39,7 +39,7 @@ import VSnackbar from 'vuetify/lib/components/VSnackbar';
 import VSpacer from 'vuetify/lib/components/VGrid';
 import VSubheader from 'vuetify/lib/components/VSubheader';
 import VToolbar from 'vuetify/lib/components/VToolbar';
-import VToolbarItems  from 'vuetify/lib/components/VToolbar';
+import VToolbarItems from 'vuetify/lib/components/VToolbar';
 import VToolbarSideIcon from 'vuetify/lib/components/VToolbar';
 import VToolbarTitle from 'vuetify/lib/components/VToolbar';
 
@@ -50,15 +50,17 @@ import TM_WalletsSelectForm from './components/SelectsForms/WalletsSelectForm.vu
 import TMSelect from './components/TMComponents/TMSelect/TMSelect';
 //Import own components --
 
-import {install as VeeValidate, Validator} from 'vee-validate/dist/vee-validate.minimal.esm.js';
-import {email, max, min, required} from 'vee-validate/dist/rules.esm.js';
+import {
+    install as VeeValidate,
+    Validator
+} from 'vee-validate/dist/vee-validate.minimal.esm.js';
+import { email, max, min, required } from 'vee-validate/dist/rules.esm.js';
 import veeEn from 'vee-validate/dist/locale/en';
-
 
 //Import styles ++
 import 'bootstrap/dist/css/bootstrap.min.css';
-import 'vuetify/src/stylus/app.styl'
-import "../src/assets/css/sprite.css";
+import 'vuetify/src/stylus/app.styl';
+import '../src/assets/css/sprite.css';
 import './style/pf.css';
 //Import styles --
 
@@ -79,7 +81,7 @@ Vue.use(VeeValidate);
 
 Vue.use(Vuetify, {
     theme: {
-        appColor: mainColor,
+        appColor: mainColor
     },
     components: {
         VAvatar,
@@ -115,17 +117,14 @@ Vue.use(Vuetify, {
         VToolbar,
         VToolbarSideIcon,
         VToolbarTitle,
-        VToolbarItems,
+        VToolbarItems
     }
 });
-
 
 Vue.component('tm-wallets-select-form', TM_WalletsSelectForm);
 Vue.component('tm-select', TMSelect);
 
 Vue.config.productionTip = false;
-
-
 
 Vue.mixin(globalFunctions);
 
@@ -136,7 +135,7 @@ router.beforeEach((to, from, next) => {
         if (!sessionStorage.getItem('jwt')) {
             next({
                 path: '/login',
-                query: {redirect: to.fullPath},
+                query: { redirect: to.fullPath }
             });
         } else {
             next();
@@ -150,10 +149,10 @@ new Vue({
     el: '#app',
     router: router,
     store,
+    components: { App },
     data: {
         visible: true,
-        showMenu: true,
+        showMenu: true
     },
-    template: '<App/>',
-    components: {App}
+    template: '<App/>'
 });

@@ -1,33 +1,29 @@
 <template>
-    <div class="tm_select_wrapper" v-bind:class="{focused: inputFocused == true}">
-
-
+    <div class="tm_select_wrapper" :class="{focused: inputFocused === true}">
         <div class="tm_select_input_wrapper">
-
             <input
-                    v-bind="scope.search.attributes"
-                    class="tm_select_input"
-                    v-on="scope.search.events"
+                v-bind="scope.search.attributes"
+                class="tm_select_input"
+                v-on="scope.search.events"
             >
 
             <div class="tm_select_actions">
-                <div class="arrow_wrap" v-if="!readOnly" v-on:click="toogleList">
-
-                    <span v-if="showList == false" class="arrow_up_down">
-                        <component :is="childComponents.ArrowDown" class="tm_icon"/>
+                <div v-if="!readOnly" class="arrow_wrap" @click="toogleList">
+                    <span v-if="showList === false" class="arrow_up_down">
+                        <component :is="childComponents.ArrowDown" class="tm_icon"></component>
                     </span>
                     <span v-if="showList === true" class="arrow_up_down">
-                        <component :is="childComponents.ArrowUp" class="tm_icon"/>
+                        <component :is="childComponents.ArrowUp" class="tm_icon"></component>
                     </span>
                 </div>
                 <div v-if="clearable && !readOnly" class="tm_select_btn_wrapper">
-                    <button class="tm_select_btn" type="button" v-on:click="clear">
-                        <component :is="childComponents.Clear" class="tm_icon"/>
+                    <button class="tm_select_btn" type="button" @click="clear">
+                        <component :is="childComponents.Clear" class="tm_icon"></component>
                     </button>
                 </div>
                 <div v-if="selectBtn && !readOnly" class="tm_select_btn_wrapper">
-                    <button class="tm_select_btn" type="button" v-on:click="btnOpenOnClick">
-                        <component :is="childComponents.OpenIcon" class="tm_icon"/>
+                    <button class="tm_select_btn" type="button" @click="btnOpenOnClick">
+                        <component :is="childComponents.OpenIcon" class="tm_icon"></component>
                     </button>
                 </div>
             </div>
@@ -36,16 +32,14 @@
 
         <ul class="tm_select_dropdown" :class="{tm_select_dropdown_none: !showList}">
             <li
-                    class="tm_select_dropdown_item"
-                    v-for="item in filteredList"
-                    :key="item.id"
-                    @click="chooseItem(item)"
-
+                v-for="item in filteredList"
+                :key="item.id"
+                class="tm_select_dropdown_item"
+                @click="chooseItem(item)"
             >
                 <span class="tm_select_dropdown_item_title">{{ item[title] }}</span>
             </li>
         </ul>
-
     </div>
 </template>
 
@@ -53,8 +47,8 @@
     import childComponents from './childComponents';
 
     export default {
-        name: "TMSelect",
-
+        name: 'TMSelect',
+        components: {...childComponents},
         props: {
             id: {
                 type: String,
@@ -63,8 +57,8 @@
 
             options: {
                 type: Array,
-                reqired: true,
-                default: []
+                required: true,
+                default: () => []
             },
 
             objects: {
@@ -74,7 +68,7 @@
 
             title: {
                 type: String,
-                reqired: true
+                required: true
             },
 
             placeholder: {
@@ -83,7 +77,7 @@
             },
 
             value: {
-                reqired: true
+                required: true
             },
 
             autocomplete: {
@@ -113,8 +107,6 @@
             inputFocused: false,
         }),
 
-        components: {...childComponents},
-
         computed: {
             filteredList() {
                 return this.options.filter(value => {
@@ -122,14 +114,14 @@
                     if (value instanceof Object && value.hasOwnProperty(this.title)) {
 
                         return typeof this.search === 'string'
-                            ? value[this.title].toLowerCase().indexOf(this.search.toLowerCase()) != -1
+                            ? value[this.title].toLowerCase().indexOf(this.search.toLowerCase()) !== -1
                             : true;
 
 
                     }
                     else {
                         return typeof this.search === 'string'
-                            ? value.toString().toLowerCase().indexOf(this.search.toLowerCase()) != -1
+                            ? value.toString().toLowerCase().indexOf(this.search.toLowerCase()) !== -1
                             : true;
                     }
 
@@ -176,7 +168,7 @@
         },
 
         mounted() {
-            document.addEventListener('click', this.closeMenu)
+            document.addEventListener('click', this.closeMenu);
 
             this.setSearchFromValue(this.value);
             this.setCurrentValue(this.value);
@@ -187,11 +179,11 @@
         },
 
         methods: {
-            toogleList(e) {
+            toogleList() {
                 this.chooseItem(undefined, true);
             },
 
-            onFocus(e) {
+            onFocus() {
                 if (this.readOnly === true) {
                     return;
                 }
@@ -200,7 +192,7 @@
                 this.showList = true;
             },
 
-            inputBlur(e) {
+            inputBlur() {
                 this.inputFocused = false;
             },
 
@@ -278,12 +270,9 @@
 
                 if (item === undefined || clickOutside === true) {
 
-                    if (this.currentValue && this.currentValue !== undefined) {
+                    if (this.currentValue) {
                         item = Object.assign({}, {...this.currentValue});
                     }
-
-
-
                 }
 
                 this.setSearchFromValue(item);
@@ -305,7 +294,7 @@
 
             },
 
-            clear(e) {
+            clear() {
                 this.search = '';
 
                 if (this.showList === true) this.showList = false;
@@ -325,7 +314,7 @@
 
             },
 
-            btnOpenOnClick(e) {
+            btnOpenOnClick() {
                 this.$emit('open');
             }
         }

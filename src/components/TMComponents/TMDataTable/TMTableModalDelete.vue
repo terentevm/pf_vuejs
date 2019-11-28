@@ -1,31 +1,31 @@
 <template>
     <v-dialog v-model="dialog" persistent max-width="400">
+        <div class="modal-content">
+            <form>
+                <div class="modal-header">
+                    <h4 class="modal-title">
+                        Delete {{ modelName }}
+                    </h4>
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                        &times;
+                    </button>
+                </div>
 
-            <div class="modal-content">
-                <form>
-                    <div class="modal-header">
-                        <h4 class="modal-title">Delete {{ this.modelName }}</h4>
-                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                    </div>
-
-                    <div class="modal-body">
-                        <p>Are you sure you want to delete these Records?</p>
-                    </div>
-                    <div class="modal-footer">
-                        <input type="button" class="btn btn-default" data-dismiss="modal" value="Cancel" @click="$emit('close')">
-                        <input type="button" class="btn btn-danger" value="Delete" @click="$emit('confirm')">
-                    </div>
-
-                </form>
-            </div>
-
+                <div class="modal-body">
+                    <p>Are you sure you want to delete these Records?</p>
+                </div>
+                <div class="modal-footer">
+                    <input type="button" class="btn btn-default" data-dismiss="modal" value="Cancel" @click="$emit('close')">
+                    <input type="button" class="btn btn-danger" value="Delete" @click="$emit('confirm')">
+                </div>
+            </form>
+        </div>
     </v-dialog>
-
 </template>
 
 <script>
     export default {
-        name: "TMTableModalDelete",
+        name: 'TMTableModalDelete',
         props:['dialog', 'processing', 'modelName']
     }
 </script>

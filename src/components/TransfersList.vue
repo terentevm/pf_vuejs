@@ -1,12 +1,9 @@
 <template>
-
     <v-layout row>
-
         <div class="table-wrapper">
-
             <ul class="list-group list-group-flush">
                 <li
-                        class="list-group-item list-header"
+                    class="list-group-item list-header"
                 >
                     <v-layout row ml-3>
                         <v-flex xs10 sm10 md10 lg11 class="cell">
@@ -19,10 +16,8 @@
                                         <v-flex xs8>
                                             <span>Wallets (sum)</span>
                                         </v-flex>
-
                                     </v-layout>
                                 </v-flex>
-
                             </v-layout>
                         </v-flex>
 
@@ -30,37 +25,30 @@
                             <div class="cell-actions justify-content-end">
                                 <span>Act.</span>
                             </div>
-
                         </v-flex>
-
                     </v-layout>
-
-
                 </li>
-                <li v-for="item in items"
+                <li
+                    v-for="item in items"
+                    :key="item.id"
                     class="list-group-item list-item"
                     @click="editItem(item)"
                 >
                     <v-layout row ml-3>
                         <v-flex xs10 sm10 md10 lg11 class="cell">
                             <v-layout row class="flex-column flex-md-row">
-
-
                                 <v-flex xs12 sm12 md2 lg2>
-                                    <span>{{ item.date}}</span>
+                                    <span>{{ item.date }}</span>
                                 </v-flex>
 
                                 <v-flex xs12 sm12 md10 lg10>
                                     <v-flex xs10>
-                                        <span>from: {{ item.wallet_from.name}} ( - {{item.sum_from}})</span>
+                                        <span>from: {{ item.wallet_from.name }} ( - {{ item.sum_from }})</span>
                                     </v-flex>
                                     <v-flex xs10>
-                                        <span>to: {{ item.wallet_to.name}} (+ {{item.sum_to}})</span>
+                                        <span>to: {{ item.wallet_to.name }} (+ {{ item.sum_to }})</span>
                                     </v-flex>
-
                                 </v-flex>
-
-
                             </v-layout>
                         </v-flex>
 
@@ -71,17 +59,11 @@
                                     <!--<v-icon color="#F44336">delete</v-icon>-->
                                 </a>
                             </div>
-
                         </v-flex>
-
                     </v-layout>
-
-
                 </li>
-
             </ul>
         </div>
-
     </v-layout>
 </template>
 
@@ -140,7 +122,7 @@
 
     export default {
         data: () => ({
-            title: "Transfers",
+            title: 'Transfers',
             processing: false,
             offsetTop: 0,
             offset: 0,
@@ -151,9 +133,9 @@
 
             headers: [
                 {text: 'id', value: 'id', classList: ['d-none']},
-                {text: 'Date', value: 'date', classList: ["col-xs-2 col-sm-2 col-lg-2"]},
-                {text: 'Wallet', value: 'walletName', classList: ["col-xs-2 col-sm-4 col-lg-4"]},
-                {text: 'Sum', value: 'sum', classList: ["col-xs-2 col-sm-4 col-lg-5"]},
+                {text: 'Date', value: 'date', classList: ['col-xs-2 col-sm-2 col-lg-2']},
+                {text: 'Wallet', value: 'walletName', classList: ['col-xs-2 col-sm-4 col-lg-4']},
+                {text: 'Sum', value: 'sum', classList: ['col-xs-2 col-sm-4 col-lg-5']},
             ],
         }),
         computed: {
@@ -200,11 +182,11 @@
             },
 
             add() {
-                this.$router.push({path: `transfers/new`});
+                this.$router.push({path: 'transfers/new'});
             },
 
             addDocs() {
-                if (this.updating == true) {
+                if (this.updating === true) {
                     return;
                 }
 
@@ -216,7 +198,7 @@
                 this.showDel = !this.showDel;
             },
             deleteItem(item) {
-                alert("Action doesn't support yet");
+                alert('Action doesn\'t support yet');
             },
         },
     };

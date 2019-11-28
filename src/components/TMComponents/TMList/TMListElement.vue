@@ -1,31 +1,40 @@
 <template>
     <div class="row mx-0" @click="titleClickHandler">
-
         <div v-if="isGroup === true" class="list-elem">
-            <i v-if="this.item.collapsed == true" class="material-icons"
-               v-bind:style="{color: colorApp}" @click="iconClickHandler">
+            <i
+                v-if="item.collapsed === true"
+                class="material-icons"
+                :style="{color: colorApp}"
+                @click="iconClickHandler"
+            >
                 add_circle_outline
             </i>
-            <i v-if="this.item.collapsed == false" class="material-icons"
-               v-bind:style="{color: colorApp}" @click="iconClickHandler">
+            <i
+                v-if="item.collapsed === false"
+                class="material-icons"
+                :style="{color: colorApp}"
+                @click="iconClickHandler"
+            >
                 remove_circle_outline
             </i>
-            <span class="list_item_title" @click="titleClickHandler">{{ this.title }}</span>
+            <span class="list_item_title" @click="titleClickHandler">{{ title }}</span>
         </div>
         <div v-if="isGroup === false" class="list-elem">
-            <i class="material-icons" v-bind:style="{color: colorApp}">
+            <i class="material-icons" :style="{color: colorApp}">
                 remove_circle_outline
             </i>
-            <span class="list_item_title" v-bind:class="{ not_active: !this.item.active }"
-                  @click="titleClickHandler">{{ this.title }}</span>
+            <span
+                class="list_item_title"
+                :class="{ not_active: !item.active }"
+                @click="titleClickHandler"
+            >{{ title }}</span>
         </div>
-
     </div>
 </template>
 
 <script>
     export default {
-        name: "TMListElement",
+        name: 'TMListElement',
         props: {
             title: {
                 type: String,
@@ -36,7 +45,8 @@
                 default: false
             },
             item: {
-                type: Object
+                type: Object,
+                required: true
             }
         },
         data: () => ({

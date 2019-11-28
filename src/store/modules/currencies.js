@@ -52,8 +52,7 @@ const actions = {
 
     async storeCurrency({commit}, currency) {
         try {
-            let res = await api.store('currencies', currency);
-            return res;
+            return await api.store('currencies', currency);
         }
         catch (error) {
             throw error;
@@ -75,7 +74,7 @@ const mutations = {
 
         data.map(item => {
             item.selected = false;
-        })
+        });
 
         data.sort(function (a, b) {
             let x = a.name.toLowerCase();

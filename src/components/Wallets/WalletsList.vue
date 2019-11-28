@@ -1,40 +1,33 @@
 <template>
-
     <div class="row">
-
         <v-dialog
-                v-if="showElementForm"
-                v-model="showElementForm"
-                max-width="500px"
-                persistent
-                :fullscreen="$vuetify.breakpoint.xsOnly"
+            v-if="showElementForm"
+            v-model="showElementForm"
+            max-width="500px"
+            persistent
+            :fullscreen="$vuetify.breakpoint.xsOnly"
         >
             <wallet-element
-                    v-bind:item="this.editedItem"
-                    @cancel="showElementForm = false"
-                    @stored="showElementForm = false; update()"
+                :item="editedItem"
+                @cancel="showElementForm = false"
+                @stored="showElementForm = false; update()"
             ></wallet-element>
         </v-dialog>
 
         <div class="table-wrapper">
-
             <ul class="list-group list-group-flush">
                 <li
-                        class="list-group-item list-header"
+                    class="list-group-item list-header"
                 >
                     <v-layout row ml-3>
                         <v-flex xs10 sm10 md10 lg11 class="cell">
                             <v-layout row>
-
-
                                 <v-flex xs6 sm6>
                                     <span>Name</span>
                                 </v-flex>
                                 <v-flex xs3 sm3>
                                     <span>Currency</span>
                                 </v-flex>
-
-
                             </v-layout>
                         </v-flex>
 
@@ -42,60 +35,52 @@
                             <div class="cell-actions justify-content-end">
                                 <span>Act.</span>
                             </div>
-
                         </v-flex>
-
                     </v-layout>
-
-
                 </li>
-                <li v-for="item in items"
+                <li
+                    v-for="item in items"
+                    :key="item.id"
                     class="list-group-item list-item"
                     @click="edit(item)"
                 >
                     <v-layout row ml-3>
                         <v-flex xs10 sm10 md10 lg11 class="cell">
                             <v-layout row>
-
-
                                 <v-flex xs6 sm6>
-                                    <span>{{ item.name}}</span>
+                                    <span>{{ item.name }}</span>
                                 </v-flex>
 
                                 <v-flex xs6 sm6>
-                                    <span>{{ item.currency.short_name}}</span>
+                                    <span>{{ item.currency.short_name }}</span>
                                 </v-flex>
-
                             </v-layout>
                         </v-flex>
 
                         <v-flex xs2 sm2 md2 lg1>
                             <div class="cell-actions justify-content-end">
-                                <a class="delete" data-toggle="modal"
-                                   v-on:click.stop.prevent="showDeleteConfirm(item)">
+                                <a
+                                    class="delete"
+                                    data-toggle="modal"
+                                    @click.stop.prevent="showDeleteConfirm(item)"
+                                >
 
                                     <v-icon color="#F44336">delete</v-icon>
                                 </a>
                             </div>
-
                         </v-flex>
-
                     </v-layout>
-
                 </li>
-
             </ul>
         </div>
         <tm-modal-del
-                v-show="this.showDeleteConfirmation"
-                :dialog="this.showDeleteConfirmation"
-                :modelName="this.modelName"
-                @close="closeDeleteConfirmation()"
-                @confirm="deleteItem"
+            v-show="showDeleteConfirmation"
+            :dialog="showDeleteConfirmation"
+            :model-name="modelName"
+            @close="closeDeleteConfirmation()"
+            @confirm="deleteItem"
         ></tm-modal-del>
-
     </div>
-
 </template>
 
 <script>
@@ -103,19 +88,23 @@
     import {mapGetters} from 'vuex';
     import ApiClass from '../../api/api_laravel';
     import TMTableModalDelete from '../TMComponents/TMDataTable/TMTableModalDelete'
-    import moment from 'moment'
+
 
     const api = new ApiClass();
 
     export default {
+        components: {
+            'wallet-element': WalletElement,
+            'tm-modal-del': TMTableModalDelete
+        },
         data: () => ({
             showElementForm: false,
-            modelName: "wallet",
+            modelName: 'wallet',
             showDeleteConfirmation: false,
             itemForDel: null,
             dialogCB: false,
             formTitle: 'New',
-            title: "Wallets",
+            title: 'Wallets',
             processing: false,
             offsetTop: 0,
             offset: 0,
@@ -148,10 +137,6 @@
                 msg: '',
             },
         }),
-        components: {
-            'wallet-element': WalletElement,
-            'tm-modal-del': TMTableModalDelete
-        },
         computed: {
             ...mapGetters({
                 items: 'allWalletsList',
@@ -194,13 +179,12 @@
             },
 
             update() {
-                if (this.updating == false) {
+                if (this.updating === false) {
                     this.updating = true;
                     this.$store.dispatch('getAllWalletsList');
                     this.updating = false;
                 }
             },
-
 
             edit(item) {
 
@@ -234,72 +218,24 @@
                 this.showDeleteConfirmation = false;
                 this.itemForDel = null;
             },
-            deleteItem(item) {
+            deleteItem() {
                 this.showDeleteConfirmation = false;
                 this.processing = true;
 
                 api.delete('wallets', this.itemForDel.id)
-                    .then(result => {
+                    .then(() => {
                         alert(`${this.itemForDel.name} was deleted!`);
                         this.$store.dispatch('getAllWalletsList');
 
                     })
-                    .catch(err => {
+                    .catch(() => {
                         alert(`${this.itemForDel.name} wasn't deleted!`);
                     })
                     .finally(() => {
-                        this.itemForDel = null
+                        this.itemForDel = null;
                         this.processing = false;
                     });
             },
-
-            openChangeBalance() {
-                this.editedItem.newBalance = this.editedItem.currentBalance;
-                this.dialogCB = true;
-            },
-
-            changeBalance() {
-                if (this.editedItem.newBalance === this.editedItem.currentBalance) {
-                    this.dialogCB = false;
-                    return;
-                }
-
-                let diff = this.editedItem.newBalance - this.editedItem.currentBalance;
-
-                let day = moment();
-
-                const data = {
-                    date: day.format('YYYY-MM-DD'),
-                    wallet_id: this.editedItem.id,
-                    sumExpend: diff < 0 ? diff * -1 : 0,
-                    sumIncome: diff > 0 ? diff : 0,
-                    newBalance: Number(this.editedItem.newBalance),
-                };
-
-                const param = {
-                    model: 'changebalance',
-                    data: data,
-                };
-
-                Api.save(param).then(success => {
-                    if (success === true) {
-                        this.checkBalance(this.editedItem.id);
-                        this.dialogCB = false;
-                    }
-                });
-            },
-
-            checkBalance(id) {
-                const param = {
-                    url: '/wallets/balance',
-                    conditions: {id: id},
-                };
-
-                Api.index(param).then(result => {
-                    this.$set(this.editedItem, 'currentBalance', result.balance);
-                });
-            },
-
 
             close() {
                 this.dialog = false;
@@ -322,17 +258,7 @@
                 this.msgSettings.color = success ? 'light-green darken-3' : 'orange darken-4';
                 this.msgSettings.msg = success ? 'Saved/Updated successfully!' : 'Error';
                 this.msgSettings.show = true;
-            },
-            onScroll(e) {
-                this.offsetTop = e.target.scrollTop;
-                let currOffset = e.target.scrollTop;
-                let maxOffset = e.target.scrollTopMax;
-
-                if ((currOffset / maxOffset) * 100 > 70) {
-                    this.offset += 50;
-                    this.getItems(this.offset);
-                }
-            },
+            }
         },
     };
 </script>

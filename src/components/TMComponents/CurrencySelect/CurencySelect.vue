@@ -1,41 +1,43 @@
 <template>
-
     <div :id="id" class="lang input-lang-wrapper">
-
         <button
-                type="button"
-                class="lang btn-block mt-2 btn-lang-select"
-                @click="showDropdown = !showDropdown"
+            type="button"
+            class="lang btn-block mt-2 btn-lang-select"
+            @click="showDropdown = !showDropdown"
         >
             <svg class="lang" width="32px" height="32px">
-                <use class="lang" :xlink:href="selectedSvgId"></use>
+                <use class="lang" :xlink:href="selectedSvgId" />
             </svg>
             <span class="lang lang-selected-currency">{{ selectedTitle }}</span>
-            <span class="lang flag-select-arrow" v-bind:class="{turned: showDropdown}"></span>
+            <span class="lang flag-select-arrow" :class="{turned: showDropdown}"></span>
         </button>
-        <ul v-if="showDropdown" class="lang lang-select-dropdown"
-            v-on:blur="showDropdown = !showDropdown">
+        <ul
+            v-if="showDropdown"
+            class="lang lang-select-dropdown"
+            @blur="showDropdown = !showDropdown"
+        >
             <li
-                    class="lang lang-select-dropdown-item"
-                    v-for="item in currencyList"
-                    @click="selectHandler(item)"
+                v-for="(item,index) in currencyList"
+                :key="index"
+                class="lang lang-select-dropdown-item"
+                @click="selectHandler(item)"
             >
                 <svg class="lang lang-select-dropdown-item-flag" width="30px" height="30px">
-                    <use :xlink:href="item.svgId"></use>
+                    <use :xlink:href="item.svgId" />
                 </svg>
                 <span class="lang lang-select-dropdown-item-title">{{ item.title }}</span>
             </li>
         </ul>
     </div>
-
 </template>
 
 <script>
     export default {
-        name: "CurencySelect.vue",
+        name: 'CurencySelectVue',
         props: {
             id: {
-                reqired: true,
+                type: String,
+                required: true,
             }
         },
         data() {
@@ -45,15 +47,15 @@
                 selectedSvgId: '#czk',
                 currencyList: [
                     {
-                        title: "RUB",
+                        title: 'RUB',
                         svgId: '#rub'
                     },
                     {
-                        title: "CZK",
+                        title: 'CZK',
                         svgId: '#czk'
                     },
                     {
-                        title: "EUR",
+                        title: 'EUR',
                         svgId: '#eur'
                     }
                 ],

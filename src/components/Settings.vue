@@ -1,25 +1,21 @@
 <template>
     <div class="container">
-
         <div class="row">
-
             <div class="col-xs-12 col-sm-12 col-md-5 ">
                 <div class="row d-block">
-
                     <div class="form-group">
                         <label for="settings_currency_el" class="tm-lable">Currency (read only):</label>
 
                         <tm-select
-                                id="settings_currency_el"
-                                v-model="currency"
-                                :options="currencies"
-                                :title="'name'"
-                                :clearable="true"
-                                :select-btn="true"
-                                :placeholder="'Select main wallet'"
-                                :read-only="true"
+                            id="settings_currency_el"
+                            v-model="currency"
+                            :options="currencies"
+                            :title="'name'"
+                            :clearable="true"
+                            :select-btn="true"
+                            :placeholder="'Select main wallet'"
+                            :read-only="true"
                         ></tm-select>
-
                     </div>
                 </div>
 
@@ -28,16 +24,15 @@
                         <label for="settings_main_wallet_el" class="tm-lable">Default wallet<span v-show="isDirty('wallet')"> *</span>:</label>
 
                         <tm-select
-                                id="settings_main_wallet_el"
-                                v-model="wallet"
-                                :options="wallets"
-                                :title="'name'"
-                                :clearable="true"
-                                :select-btn="true"
-                                :placeholder="'Select main wallet'"
-                                @open="openWalletSelectForm"
+                            id="settings_main_wallet_el"
+                            v-model="wallet"
+                            :options="wallets"
+                            :title="'name'"
+                            :clearable="true"
+                            :select-btn="true"
+                            :placeholder="'Select main wallet'"
+                            @open="openWalletSelectForm"
                         ></tm-select>
-
                     </div>
                 </div>
 
@@ -45,50 +40,51 @@
                     <div class="form-group">
                         <label for="settings_rep_currency_el" class="tm-lable">Currency of dashboard<span v-show="isDirty('currencyReports')"> *</span>:</label>
                         <tm-select
-                                v-model="currencyReports"
-                                id="settings_rep_currency_el"
-                                :options = "currencies"
-                                :title="'name'"
-                                :clearable="true"
-                                :select-btn="true"
-                                :placeholder="'Select currency for reports'"
+                            id="settings_rep_currency_el"
+                            v-model="currencyReports"
+                            :options="currencies"
+                            :title="'name'"
+                            :clearable="true"
+                            :select-btn="true"
+                            :placeholder="'Select currency for reports'"
                         ></tm-select>
                     </div>
                 </div>
 
                 <div class="row d-flex px-0 px-sm-3">
                     <button
-                            v-if="formModified"
-                            type="button"
-                            :disabled="this.processing"
-                            class="btn btn-success"
-                            @click="storeChanges"
-                    >Store changes</button>
+                        v-if="formModified"
+                        type="button"
+                        :disabled="processing"
+                        class="btn btn-success"
+                        @click="storeChanges"
+                    >
+                        Store changes
+                    </button>
                 </div>
-                <v-progress-linear v-show="this.processing" :indeterminate="true">
+                <v-progress-linear v-show="processing" :indeterminate="true">
                 </v-progress-linear>
             </div>
 
             <div class="col-xs-0 col-sm-0 col-md-2 "></div>
 
             <tm-wallets-select-form
-                    :items="this.wallets"
-                    :showWalletSelection="this.showWalletSelection"
-                    @select-wallets-close="completeWalletSelectionHandler"
+                :items="wallets"
+                :show-wallet-selection="this.showWalletSelection"
+                @select-wallets-close="completeWalletSelectionHandler"
             ></tm-wallets-select-form>
             <div class="col-xs-12 col-sm-12 col-md-5">
                 <div class="row d-block">
-
                     <div class="form-group">
                         <label for="settings_dash_period_el" class="tm-lable">Periodicity:</label>
                         <tm-select
-                                v-model="periodicity"
-                                id="settings_dash_period_el"
-                                :options = "periods"
-                                :title="'period'"
-                                :clearable="true"
-                                :select-btn="false"
-                                :placeholder="'Set periodicity for the app dashboard'"
+                            id="settings_dash_period_el"
+                            v-model="periodicity"
+                            :options="periods"
+                            :title="'period'"
+                            :clearable="true"
+                            :select-btn="false"
+                            :placeholder="'Set periodicity for the app dashboard'"
                         ></tm-select>
                     </div>
                 </div>
@@ -98,15 +94,13 @@
         <v-snackbar
             v-model="showAlert"
             :color="snackBarColor()"
-
         >
             {{ message }}
-            <v-btn color="white" flat @click="showAlert = false">Close</v-btn>
+            <v-btn color="white" flat @click="showAlert = false">
+                Close
+            </v-btn>
         </v-snackbar>
-
     </div>
-
-
 </template>
 
 <script>
@@ -114,6 +108,11 @@
     import {VProgressLinear} from 'vuetify/lib/components/VProgressLinear';
     import {VSnackbar} from 'vuetify/lib/components/VSnackbar';
     export default {
+
+        components: {
+            VProgressLinear,
+            VSnackbar
+        },
         data: () => ({
             formModified: false,
             showWalletSelection: false,
@@ -124,11 +123,6 @@
 
             dirtyElements: []
         }),
-
-        components: {
-            VProgressLinear,
-            VSnackbar
-        },
 
         computed: {
             ...mapState({
@@ -208,7 +202,7 @@
             },
 
             snackBarColor() {
-                return this.alertType == 'success' ? 'success' : 'error';
+                return this.alertType === 'success' ? 'success' : 'error';
             },
 
             storeChanges() {

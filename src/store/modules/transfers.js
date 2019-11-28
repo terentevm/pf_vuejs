@@ -1,12 +1,12 @@
 import ApiClass from '../../api/api_laravel';
-import moment from 'moment'
+import { format } from '../../helpers/date';
 
 const api = new ApiClass();
 
 const state = {
     formData: {
         id: null,
-        date: moment().format('YYYY-MM-DD'),
+        date: format(new Date()),
         walletFrom: null,
         walletTo: null,
         sumFrom: 0,
@@ -39,7 +39,7 @@ const actions = {
         if (id === 'new' || id === null || id === undefined) {
             commit('setFormData', {
                 id: null,
-                date: moment().format('YYYY-MM-DD'),
+                date: format(new Date()),
                 walletFrom: null,
                 walletTo: null,
                 sumFrom: 0,
@@ -74,7 +74,7 @@ const actions = {
     resetFormData({commit}) {
         commit('setFormData', {
             id: null,
-            date: moment().format('YYYY-MM-DD'),
+            date: format(new Date()),
             walletFrom: null,
             walletTo: null,
             sumFrom: 0,
@@ -92,7 +92,7 @@ const mutations = {
 
     addTransferToItems(state, transfer) {
 
-        if (state.items.find(current => current.id === transfer.id) == undefined) {
+        if (state.items.find(current => current.id === transfer.id) === undefined) {
             state.items.push(transfer);
         }
 

@@ -1,21 +1,21 @@
 <template>
-  <ul class="list">
-    <li v-for="item in elements">
-      <div class="list-row">
-        <div class="list-row-ava-letter">
-          <span>{{ item.itemName.trim()[0].toUpperCase() }}</span>
-        </div>
+    <ul class="list">
+        <li v-for="(item,index) in elements" :key="index">
+            <div class="list-row">
+                <div class="list-row-ava-letter">
+                    <span>{{ item.itemName.trim()[0].toUpperCase() }}</span>
+                </div>
 
-        <div class="list-row-content">
-          <span>{{ item.itemName }}</span>
-        </div>
+                <div class="list-row-content">
+                    <span>{{ item.itemName }}</span>
+                </div>
 
-        <div class="list-row-sum">
-          <span>{{ item.sumConverted }}</span>
-        </div>
-      </div>
-    </li>
-  </ul>
+                <div class="list-row-sum">
+                    <span>{{ item.sumConverted }}</span>
+                </div>
+            </div>
+        </li>
+    </ul>
 </template>
 
 <script>

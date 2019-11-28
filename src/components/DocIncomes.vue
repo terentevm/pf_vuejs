@@ -1,98 +1,77 @@
 <template>
+    <v-layout row>
+        <v-flex xs12 sm12 md12 lg12>
+            <div class="table-wrapper">
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item list-header">
+                        <v-layout row ml-4>
+                            <v-flex xs10 sm10 md10 lg11 class="cell">
+                                <v-layout row>
+                                    <v-flex xs8 sm8 md10 lg10 class="cell">
+                                        <v-layout row d-flex class="flex-column flex-md-row">
+                                            <v-flex xs4>
+                                                <span>Date</span>
+                                            </v-flex>
+                                            <v-flex xs8>
+                                                <span>Wallet</span>
+                                            </v-flex>
+                                        </v-layout>
+                                    </v-flex>
+                                    <v-flex xs4 sm4 md2 lg2>
+                                        <div class="d-flex justify-content-end">
+                                            <span>Sum</span>
+                                        </div>
+                                    </v-flex>
+                                </v-layout>
+                            </v-flex>
 
-        <v-layout row>
-            <v-flex xs12 sm12 md12 lg12>
-                <div class="table-wrapper">
+                            <v-flex xs2 sm2 md2 lg1>
+                                <div class="cell-actions justify-content-center">
+                                    <span>Act.</span>
+                                </div>
+                            </v-flex>
+                        </v-layout>
+                    </li>
+                    <li
+                        v-for="item in items"
+                        :key="item.id"
+                        class="list-group-item list-item"
+                        @click="editItem(item)"
+                    >
+                        <v-layout row ml-4>
+                            <v-flex xs10 sm10 md10 lg11 class="cell">
+                                <v-layout row>
+                                    <v-flex xs8 sm8 md10 lg10 class="cell">
+                                        <v-layout row d-flex class="flex-column flex-md-row">
+                                            <v-flex xs8 sm4>
+                                                <span>{{ item.date }}</span>
+                                            </v-flex>
+                                            <v-flex xs8>
+                                                <span>{{ item.walletName }}</span>
+                                            </v-flex>
+                                        </v-layout>
+                                    </v-flex>
+                                    <v-flex xs4 sm4 md2 lg2>
+                                        <div class="d-flex justify-content-end">
+                                            <span>{{ item.sum }}</span>
+                                        </div>
+                                    </v-flex>
+                                </v-layout>
+                            </v-flex>
 
-                    <ul class="list-group list-group-flush">
-                        <li
-                                class="list-group-item list-header"
-                        >
-                            <v-layout row ml-3>
-                                <v-flex xs10 sm10 md10 lg11 class="cell">
-                                    <v-layout row>
-                                        <v-flex xs8 sm8md10 lg10 class="cell">
-                                            <v-layout row d-flex class="flex-column flex-md-row">
-                                                <v-flex xs4>
-                                                    <span>Date</span>
-                                                </v-flex>
-                                                <v-flex xs8>
-                                                    <span>Wallet</span>
-                                                </v-flex>
-
-                                            </v-layout>
-                                        </v-flex>
-                                        <v-flex xs4 sm4 md2 lg2>
-
-                                            <div class="d-flex justify-content-end">
-                                                <span>Sum</span>
-                                            </div>
-
-
-                                        </v-flex>
-                                    </v-layout>
-                                </v-flex>
-
-                                <v-flex xs2 sm2 md2 lg1>
-                                    <div class="cell-actions justify-content-end">
-                                        <span>Act.</span>
-                                    </div>
-
-                                </v-flex>
-
-                            </v-layout>
-
-
-                        </li>
-                        <li v-for="item in items"
-                            class="list-group-item list-item"
-                            @click="editItem(item)"
-                        >
-                            <v-layout row ml-3>
-                                <v-flex xs10 sm10 md10 lg11 class="cell">
-                                    <v-layout row>
-                                        <v-flex xs8 sm8 md10 lg10 class="cell">
-                                            <v-layout row d-flex class="flex-column flex-md-row">
-                                                <v-flex xs8 sm4>
-                                                    <span>{{ item.date}}</span>
-                                                </v-flex>
-                                                <v-flex xs8>
-                                                    <span>{{ item.walletName}}</span>
-                                                </v-flex>
-
-                                            </v-layout>
-                                        </v-flex>
-                                        <v-flex xs4 sm4 md2 lg2>
-
-                                            <div class="d-flex justify-content-end">
-                                                <span>{{ item.sum }}</span>
-                                            </div>
-
-
-                                        </v-flex>
-                                    </v-layout>
-                                </v-flex>
-
-                                <v-flex xs2 sm2 md2 lg1>
-                                    <div class="cell-actions justify-content-end">
-                                        <a class="delete" data-toggle="modal">
-
-                                            <v-icon color="#F44336">delete</v-icon>
-                                        </a>
-                                    </div>
-
-                                </v-flex>
-
-                            </v-layout>
-
-
-                        </li>
-
-                    </ul>
-                </div>
-            </v-flex>
-        </v-layout>
-
+                            <v-flex xs2 sm2 md2 lg1>
+                                <div class="cell-actions justify-content-center">
+                                    <a class="delete" data-toggle="modal">
+                                        <v-icon color="#F44336">delete</v-icon>
+                                    </a>
+                                </div>
+                            </v-flex>
+                        </v-layout>
+                    </li>
+                </ul>
+            </div>
+        </v-flex>
+    </v-layout>
 </template>
 
 <style scoped>
@@ -152,7 +131,7 @@
     export default {
         data: () => ({
             items: [],
-            title: "Incomes",
+            title: 'Incomes',
             processing: false,
             offsetTop: 0,
             offset: 0,
@@ -167,9 +146,9 @@
 
             headers: [
                 {text: 'id', value: 'id', classList: ['d-none']},
-                {text: 'Date', value: 'date', classList: ["col-xs-2 col-sm-2 col-lg-2"]},
-                {text: 'Wallet', value: 'walletName', classList: ["col-xs-2 col-sm-4 col-lg-4"]},
-                {text: 'Sum', value: 'sum', classList: ["col-xs-2 col-sm-4 col-lg-5"]},
+                {text: 'Date', value: 'date', classList: ['col-xs-2 col-sm-2 col-lg-2']},
+                {text: 'Wallet', value: 'walletName', classList: ['col-xs-2 col-sm-4 col-lg-4']},
+                {text: 'Sum', value: 'sum', classList: ['col-xs-2 col-sm-4 col-lg-5']},
             ],
         }),
 
@@ -223,11 +202,11 @@
             },
 
             add() {
-                this.$router.push({path: `income/new`});
+                this.$router.push({path: 'income/new'});
             },
 
             addDocs() {
-                if (this.updating == true) {
+                if (this.updating === true) {
                     return;
                 }
 
@@ -239,7 +218,8 @@
                 this.showDel = !this.showDel;
             },
             deleteItem(item) {
-                alert("Action doesn't support yet");
+                //ToDo: implement element deletion
+                alert('Action doesn\'t support yet');
             },
 
             edit(doc) {

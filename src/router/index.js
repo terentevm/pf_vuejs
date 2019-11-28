@@ -1,5 +1,5 @@
-import Vue from "vue";
-import Router from "vue-router";
+import Vue from 'vue';
+import Router from 'vue-router';
 
 import Login from '@/components/login';
 
@@ -97,7 +97,6 @@ export default new Router({
                 '../components/TransfersList'),
             meta: {requiresAuth: true},
         },
-        ,
         {
             path: '/transfers/:docId',
             name: 'Transfer',

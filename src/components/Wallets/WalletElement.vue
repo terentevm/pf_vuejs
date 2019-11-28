@@ -1,5 +1,4 @@
 <template>
-
     <v-card>
         <v-toolbar color="appColor" dark>
             <v-toolbar-title>Wallet: {{ title }}</v-toolbar-title>
@@ -12,15 +11,15 @@
         <v-card-text>
             <v-container grid-list-md>
                 <v-flex xs12 sm12 md12 d-none>
-                    <v-text-field label="id" v-model="formData.id"></v-text-field>
+                    <v-text-field v-model="formData.id" label="id"></v-text-field>
                 </v-flex>
 
                 <div class="row">
                     <div class="col-12 col-sm-12 col-md-12 col-lg-12">
                         <v-text-field
-                                label="Name"
-                                v-model="formData.name"
-                                row-height="15"
+                            v-model="formData.name"
+                            label="Name"
+                            row-height="15"
                         ></v-text-field>
                     </div>
                 </div>
@@ -28,15 +27,15 @@
                 <div class="row">
                     <div class="col-12 col-sm-12 col-md-12 col-lg-12">
                         <v-select
-                                :items="currencies"
-                                v-model="formData.currency"
-                                max-height="15"
-                                auto
-                                label="Currency"
-                                single-line
-                                item-text="name"
-                                item-value="id"
-                                return-object
+                            v-model="formData.currency"
+                            :items="currencies"
+                            max-height="15"
+                            auto
+                            label="Currency"
+                            single-line
+                            item-text="name"
+                            item-value="id"
+                            return-object
                         ></v-select>
                     </div>
                 </div>
@@ -44,10 +43,10 @@
                 <div class="row">
                     <div class="col-12 col-sm-12 col-md-12 col-lg-12">
                         <v-checkbox
-                                :label="`Is credit card`"
-                                v-model="formData.is_creditcard"
-                                true-value="1"
-                                false-value="0"
+                            v-model="formData.is_creditcard"
+                            :label="`Is credit card`"
+                            true-value="1"
+                            false-value="0"
                         ></v-checkbox>
                     </div>
                 </div>
@@ -55,19 +54,19 @@
                 <div class="row">
                     <div class="col-6 col-sm-6 col-md-6 col-lg-6">
                         <v-text-field
-                                label="Credit limit"
-                                v-model="formData.credit_limit"
-                                row-height="15"
-                                v-show="formData.is_creditcard == 1"
+                            v-show="formData.is_creditcard === 1"
+                            v-model="formData.credit_limit"
+                            label="Credit limit"
+                            row-height="15"
                         ></v-text-field>
                     </div>
 
                     <div class="col-6 col-sm-6 col-md-6 col-lg-6">
                         <v-text-field
-                                label="Grace period"
-                                v-model="formData.grace_period"
-                                row-height="15"
-                                v-show="formData.is_creditcard == 1"
+                            v-show="formData.is_creditcard === 1"
+                            v-model="formData.grace_period"
+                            label="Grace period"
+                            row-height="15"
                         ></v-text-field>
                     </div>
                 </div>
@@ -77,26 +76,25 @@
                             <v-avatar class="green darken-4">
                                 <v-icon>edit</v-icon>
                             </v-avatar>
-                            Balance: {{formData.balance}}
+                            Balance: {{ formData.balance }}
                         </v-chip>
                     </div>
                 </div>
-
             </v-container>
         </v-card-text>
         <v-card-actions>
-            <v-btn color="blue darken-1" flat @click="close()">Cancel</v-btn>
+            <v-btn color="blue darken-1" flat @click="close()">
+                Cancel
+            </v-btn>
             <v-spacer></v-spacer>
-            <v-btn :disabled="this.processing == true" color="green darken-3" flat @click="store()">
+            <v-btn :disabled="processing === true" color="green darken-3" flat @click="store()">
                 Save
             </v-btn>
         </v-card-actions>
-        <v-progress-linear v-show="this.processing" :indeterminate="true">
+        <v-progress-linear v-show="processing === true" :indeterminate="true">
             <p>process</p>
         </v-progress-linear>
     </v-card>
-
-
 </template>
 
 <script>
@@ -109,6 +107,12 @@
     const api = new ApiClass();
     export default {
         name: 'WalletElement',
+
+        components: {
+            VChip,
+            VSelect,
+            VTextField
+        },
         props: {
             item: {
                 type: Object,
@@ -140,12 +144,6 @@
 
             processing: false,
         }),
-
-        components: {
-            VChip,
-            VSelect,
-            VTextField
-        },
 
         computed: {
             ...mapGetters({
@@ -181,11 +179,12 @@
                 }
 
                 promise
-                    .then(result => {
+                    .then(() => {
                         this.processing = false;
                         this.$emit('stored');
                     })
-                    .catch(err => {
+                    .catch((err) => {
+                        console.dir(err);
                         this.processing = false;
                     });
             },

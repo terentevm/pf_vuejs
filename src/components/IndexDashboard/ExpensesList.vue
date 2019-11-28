@@ -1,21 +1,20 @@
 <template>
-  <v-card class="mx-1 mt-2">
-    <v-card-title>
-      <div><span class="grey--text">Structure of expenses </span><br /></div>
-    </v-card-title>
+    <v-card class="mx-1 mt-2">
+        <v-card-title>
+            <div><span class="grey--text">Structure of expenses </span><br></div>
+        </v-card-title>
 
-    <v-divider light></v-divider>
+        <v-divider light></v-divider>
 
-    <v-layout row>
-      <v-flex xs12>
-        <tm-list-rounded v-bind:elements="this.expenses"></tm-list-rounded>
-      </v-flex>
-    </v-layout>
-  </v-card>
+        <v-layout row>
+            <v-flex xs12>
+                <tm-list-rounded :elements="expenses"></tm-list-rounded>
+            </v-flex>
+        </v-layout>
+    </v-card>
 </template>
 
 <script>
-import { mapGetters, mapActions } from 'vuex';
 
 export default {
   props: ['expenses'],

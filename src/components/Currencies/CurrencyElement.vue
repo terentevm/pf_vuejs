@@ -4,36 +4,40 @@
             <v-toolbar-title>Currency: {{ title }}</v-toolbar-title>
             <v-spacer></v-spacer>
             <svg class="lang lang-select-dropdown-item-flag" width="30px" height="30px">
-                <use :xlink:href="getSvgId(formData.short_name)"></use>
+                <use :xlink:href="getSvgId(formData.short_name)" />
             </svg>
         </v-toolbar>
         <v-card-text>
             <v-container grid-list-md>
                 <v-layout wrap>
                     <v-flex xs12 sm12 md12 d-none>
-                        <v-text-field label="id" v-model="formData.id"></v-text-field>
+                        <v-text-field v-model="formData.id" label="id"></v-text-field>
                     </v-flex>
                     <v-flex xs12 sm6 md6>
-                        <v-text-field label="Code (ISO)" v-model="formData.code"></v-text-field>
+                        <v-text-field v-model="formData.code" label="Code (ISO)"></v-text-field>
                     </v-flex>
                     <v-flex xs12 sm6 md6>
                         <v-text-field
-                            label="Char code"
                             v-model="formData.short_name"
+                            label="Char code"
                         ></v-text-field>
                     </v-flex>
                     <v-flex xs12 sm12 md12>
-                        <v-text-field label="Name" v-model="formData.name"></v-text-field>
+                        <v-text-field v-model="formData.name" label="Name"></v-text-field>
                     </v-flex>
                 </v-layout>
             </v-container>
         </v-card-text>
         <v-card-actions>
-            <v-btn color="blue darken-1" flat @click="close()">Cancel</v-btn>
+            <v-btn color="blue darken-1" flat @click="close()">
+                Cancel
+            </v-btn>
             <v-spacer></v-spacer>
-            <v-btn :disabled ="this.processing == true" color="green darken-3" flat @click="store()">Save</v-btn>
+            <v-btn :disabled="processing === true" color="green darken-3" flat @click="store()">
+                Save
+            </v-btn>
         </v-card-actions>
-        <v-progress-linear v-show="this.processing" :indeterminate="true">
+        <v-progress-linear v-show="processing === true" :indeterminate="true">
             <p>process</p>
         </v-progress-linear>
     </v-card>
@@ -47,6 +51,10 @@ import VTextField from 'vuetify/lib/components/VTextField';
 
 export default {
     name: 'CurrencyElement',
+
+    components: {
+        VTextField
+    },
     props: {
         item: {
             type: Object,
@@ -69,10 +77,6 @@ export default {
         },
         processing: false
     }),
-
-    components: {
-        VTextField
-    },
 
     created: function() {
         this.title = this.item === null ? 'New' : this.item.short_name;
@@ -100,11 +104,12 @@ export default {
             }
 
             promise
-                .then(result => {
+                .then(() => {
                     this.processing = false;
                     this.$emit('stored');
                 })
                 .catch(err => {
+                    console.dir(err);
                     this.processing = false;
                 });
         },

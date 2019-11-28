@@ -1,21 +1,21 @@
 <template>
-  <v-card class="mx-1 mt-2">
-    <v-card-title>
-      <div><span class="grey--text">Structure of incomes </span><br /></div>
-    </v-card-title>
+    <v-card class="mx-1 mt-2">
+        <v-card-title>
+            <div><span class="grey--text">Structure of incomes </span><br></div>
+        </v-card-title>
 
-    <v-divider light></v-divider>
+        <v-divider light></v-divider>
 
-    <v-layout row>
-      <v-flex xs12>
-        <tm-list-rounded v-bind:elements="this.incomes"></tm-list-rounded>
-      </v-flex>
-    </v-layout>
-  </v-card>
+        <v-layout row>
+            <v-flex xs12>
+                <tm-list-rounded :elements="incomes"></tm-list-rounded>
+            </v-flex>
+        </v-layout>
+    </v-card>
 </template>
 
 <script>
-import { mapGetters, mapActions } from 'vuex';
+
 
 export default {
   props: ['incomes'],
@@ -55,8 +55,6 @@ export default {
   vertical-align: middle;
   background-color: tomato;
   border-radius: 50%;
-
-  font-family: 'Roboto';
   font-weight: 400;
   font-size: 1.2rem;
 }
@@ -68,7 +66,7 @@ export default {
   margin-left: 10px;
   flex-grow: 3;
 
-  font-family: 'Roboto';
+  font-family: 'Roboto',serif;
   font-weight: 400;
   font-size: 1.2rem;
   color: #43425d;

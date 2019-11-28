@@ -1,20 +1,19 @@
 <template>
     <div class="cbx_wrapper">
         <label class="tm_checkBox_label">
-            <input type="checkbox" v-model="cbxValue">
+            <input v-model="cbxValue" type="checkbox">
             <span class="tm_checkbox_custom"></span>
         </label>
     </div>
-
 </template>
 
 <script>
     export default {
-        name: "TMCheckbox",
+        name: 'TMCheckbox',
         props: {
             value: {
                 type: Boolean,
-                required: true
+                default: false
             }
         },
 

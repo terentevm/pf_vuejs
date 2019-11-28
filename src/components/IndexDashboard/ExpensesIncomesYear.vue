@@ -1,14 +1,13 @@
 <template>
     <div class="card mt-1" style="min-height: 300px">
         <line-chart
-                v-if="loaded"
-                :id="'canvas_expenses_incomes_year'"
-                v-bind:chart-data="chartData"
-                v-bind:options="options"
-                v-bind:chart-height="chartHeight"
-                v-bind:parent-name="'card-balance-by-periods'"
+            v-if="loaded"
+            :id="'canvas_expenses_incomes_year'"
+            :chart-data="chartData"
+            :options="options"
+            :chart-height="chartHeight"
+            :parent-name="'card-balance-by-periods'"
         >
-
         </line-chart>
     </div>
 </template>
@@ -18,7 +17,11 @@
     import LineChart from './charts/LineChart';
 
     export default {
-        name: "BalanceByPeriods",
+        name: 'BalanceByPeriods',
+
+        components: {
+            'line-chart': LineChart
+        },
         data: () => ({
             currencyBalance: null,
             chartData: null,
@@ -50,10 +53,6 @@
             chartHeight: 300,
             title: 'Expenses & Incomes by the year'
         }),
-
-        components: {
-            'line-chart': LineChart
-        },
 
         async beforeMount() {
 

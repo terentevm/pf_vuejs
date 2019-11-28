@@ -1,5 +1,4 @@
 <template>
-
     <div class="card" style="height: 100%">
         <div class="card-header appColor text-white">
             {{ formTitle }}
@@ -12,13 +11,13 @@
                             <label for="parent_select" class="tm-lable">Parent:</label>
 
                             <tm-select
-                                    id="parent_select"
-                                    v-model="parent"
-                                    :options="itemslist"
-                                    :title="'name'"
-                                    :clearable="true"
-                                    :select-btn="false"
-                                    :placeholder="'Select parent'"
+                                id="parent_select"
+                                v-model="parent"
+                                :options="itemslist"
+                                :title="'name'"
+                                :clearable="true"
+                                :select-btn="false"
+                                :placeholder="'Select parent'"
                             ></tm-select>
                         </div>
                     </div>
@@ -31,47 +30,42 @@
                         <div class="form-group mx-1">
                             <label for="item_income_title" class="tm-lable">Title:</label>
                             <tm-input
-                                    v-model="formData.name"
-                                    :placeholder="'Title'"
-                                    :id="'item_income_title'"
-                                    :input-type="'text'"
-                                    :clearable="true"
+                                :id="'item_income_title'"
+                                v-model="formData.name"
+                                :placeholder="'Title'"
+                                :input-type="'text'"
+                                :clearable="true"
                             ></tm-input>
                         </div>
                     </div>
-
                 </div>
-
             </div>
 
             <div class="row">
-
                 <div class="form-group mx-1">
                     <div class="d-flex justify-start">
                         <tm-checkbox v-model="formData.active"></tm-checkbox>
-                        <p class="tm-lable ml-2">The item is active</p>
+                        <p class="tm-lable ml-2">
+                            The item is active
+                        </p>
                     </div>
-
-
                 </div>
-
             </div>
-
         </div>
-        <v-progress-linear v-show="this.processing" :indeterminate="true" class="my-0">
+        <v-progress-linear v-show="processing === true" :indeterminate="true" class="my-0">
         </v-progress-linear>
         <div class="card-footer text-muted">
             <div class="row d-flex justify-content-between">
-                <v-btn color="blue darken-1" flat @click="close">Cancel</v-btn>
+                <v-btn color="blue darken-1" flat @click="close">
+                    Cancel
+                </v-btn>
 
-                <v-btn :disabled="this.processing" color="green darken-3" flat @click.native="save">
+                <v-btn :disabled="processing === true" color="green darken-3" flat @click.native="save">
                     Save
                 </v-btn>
             </div>
-
         </div>
     </div>
-
 </template>
 
 <script>
@@ -83,7 +77,11 @@
     const api = new ApiClass();
 
     export default {
-        name: "ItemElement",
+        name: 'ItemElement',
+        components: {
+            'tm-input': TMInput,
+            'tm-checkbox': TMCheckbox,
+        },
         props: {
             item: {
                 type: Object,
@@ -104,10 +102,6 @@
             },
 
         }),
-        components: {
-            'tm-input': TMInput,
-            'tm-checkbox': TMCheckbox,
-        },
         computed: {
             ...mapGetters({
                 itemslist: 'allIncomeItems'
@@ -120,7 +114,7 @@
                             return item.id === this.formData.parent_id;
                         });
 
-                        return parent != undefined ? parent : null;
+                        return parent !== undefined ? parent : null;
                     }
 
                     return null;
@@ -163,12 +157,12 @@
                     : api.update('itemsincome', this.formData.id, this.formData);
 
 
-                res_promise.then(res => {
+                res_promise.then(() => {
                     this.close();
                 })
-                    .catch(err => {
-                        alert('Error!')
-                    }).finally(() => {
+                .catch(err => {
+                    console.dir(err);
+                }).finally(() => {
                     this.processing = false;
                 })
             },

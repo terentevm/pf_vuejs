@@ -1,30 +1,29 @@
 <template>
-    <div class="tm_input_wrapper" v-bind:class="{focused: inputFocused == true}">
-
+    <div class="tm_input_wrapper" :class="{focused: inputFocused === true}">
         <input
-                class="tm_input"
-                v-bind="scope.search.attributes"
-                v-on="scope.search.events"
-                v-bind:style="styleObject"
+            class="tm_input"
+            v-bind="scope.search.attributes"
+            :style="styleObject"
+            v-on="scope.search.events"
         >
         <div v-if="clearable && !readOnly" class="tm_input_btn_wrapper">
-            <button class="tm_input_btn" type="button" v-on:click="clear">
-                <component :is="childComponents.Clear" class="tm_icon"/>
+            <button class="tm_input_btn" type="button" @click="clear">
+                <component :is="childComponents.Clear" class="tm_icon"></component>
             </button>
         </div>
     </div>
-
 </template>
 
 <script>
     import childComponents from '../TMSelect/childComponents';
     import myNum from '../../../helpers/MyNum';
     export default {
-        name: "TMInput",
+        name: 'TMInput',
+        components:{ ...childComponents },
         props: {
             id: {
                 type: String,
-                reqired: true
+                required: true
             },
 
 
@@ -34,7 +33,7 @@
             },
 
             value: {
-                reqired: true
+                required: true
             },
 
             inputType: {
@@ -71,7 +70,6 @@
             }
         }),
 
-        components:{ ...childComponents },
         computed: {
             childComponents () {
                 return {
@@ -135,16 +133,16 @@
                 this.inputValue = value;
             },
 
-            clear(e) {
+            clear() {
                 this.inputValue = this.inputType === 'number' ? 0 : '';
             },
-            onInputFocus(e) {
+            onInputFocus() {
 
                 this.inputFocused = true;
                 this.$emit('focus');
             },
 
-            inputBlur(e) {
+            inputBlur() {
                 this.inputFocused = false;
             }
         }

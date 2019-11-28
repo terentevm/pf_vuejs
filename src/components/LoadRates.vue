@@ -6,128 +6,145 @@
                     <v-layout row mx-2>
                         <v-flex xs12 sm12 md12 lg12>
                             <v-menu
-                                    :close-on-content-click="true"
-                                    :nudge-right="40"
-                                    lazy
-                                    transition="scale-transition"
-                                    offset-y
-                                    full-width
-                                    max-width="290px"
-                                    min-width="290px"
+                                :close-on-content-click="true"
+                                :nudge-right="40"
+                                lazy
+                                transition="scale-transition"
+                                offset-y
+                                full-width
+                                max-width="290px"
+                                min-width="290px"
                             >
                                 <v-text-field
-                                        slot="activator"
-                                        v-model="dateFrom"
-                                        label="Begin date"
-                                        persistent-hint
-                                        prepend-icon="event"
-                                        @blur="dateFrom = parseDate(dateFormatted)"
+                                    slot="activator"
+                                    v-model="dateFrom"
+                                    label="Begin date"
+                                    persistent-hint
+                                    prepend-icon="event"
+                                    @blur="dateFrom = parseDate(dateFormatted)"
                                 ></v-text-field>
-                                <v-date-picker v-model="dateFrom" no-title
-                                               @input="menu1 = false"></v-date-picker>
+                                <v-date-picker
+                                    v-model="dateFrom"
+                                    no-title
+                                    @input="menu1 = false"
+                                ></v-date-picker>
                             </v-menu>
                         </v-flex>
                         <v-flex xs12 sm12 md12 lg12>
                             <v-menu
-                                    :close-on-content-click="true"
-                                    :nudge-right="40"
-                                    lazy
-                                    transition="scale-transition"
-                                    offset-y
-                                    full-width
-                                    max-width="290px"
-                                    min-width="290px"
+                                :close-on-content-click="true"
+                                :nudge-right="40"
+                                lazy
+                                transition="scale-transition"
+                                offset-y
+                                full-width
+                                max-width="290px"
+                                min-width="290px"
                             >
                                 <v-text-field
-                                        slot="activator"
-                                        v-model="dateTo"
-                                        label="End date"
-                                        persistent-hint
-                                        prepend-icon="event"
-                                        @blur="dateTo = parseDate(dateFormatted)"
+                                    slot="activator"
+                                    v-model="dateTo"
+                                    label="End date"
+                                    persistent-hint
+                                    prepend-icon="event"
+                                    @blur="dateTo = parseDate(dateFormatted)"
                                 ></v-text-field>
-                                <v-date-picker v-model="dateTo" no-title
-                                               @input="menu1 = false"></v-date-picker>
+                                <v-date-picker
+                                    v-model="dateTo"
+                                    no-title
+                                    @input="menu1 = false"
+                                ></v-date-picker>
                             </v-menu>
                         </v-flex>
                     </v-layout>
                     <v-layout row mx-2>
                         <v-btn
-                                color="appColor"
-                                dark
-                                block
-                                @click="load"
-                                :disabled="this.processing === true"
-                        >Load rates
+                            color="appColor"
+                            dark
+                            block
+                            :disabled="processing === true"
+                            @click="load"
+                        >
+                            Load rates
                         </v-btn>
                     </v-layout>
 
                     <v-progress-linear
-                            v-show="processing"
-                            :indeterminate="true">
+                        v-show="processing"
+                        :indeterminate="true"
+                    >
                     </v-progress-linear>
 
                     <v-layout row mx-2>
                         <v-flex xs12 sm12 md12 lg12>
                             <v-list two-line>
                                 <template v-for="(item, index) in currencies">
-                                    <v-list-tile :key="item.id" avatar ripple
-                                                 @click="toggle(item)">
+                                    <v-list-tile
+                                        :key="item.id"
+                                        avatar
+                                        ripple
+                                        @click="toggle(item)"
+                                    >
                                         <v-list-tile-content>
-                                            <v-list-tile-title>{{ item.short_name }}
+                                            <v-list-tile-title>
+                                                {{ item.short_name }}
                                             </v-list-tile-title>
-                                            <v-list-tile-sub-title>{{ item.name }}
+                                            <v-list-tile-sub-title>
+                                                {{ item.name }}
                                             </v-list-tile-sub-title>
                                         </v-list-tile-content>
                                         <v-list-tile-action>
-                                            <v-list-tile-action-text v-if="item.rate == null"
-                                            >The rate isn't loaded
-                                            </v-list-tile-action-text
-                                            >
                                             <v-list-tile-action-text
-                                                    v-if="item.rate !== null && item.mult == 1"
-                                            >{{ item.rate }} {{mainCurrency.short_name}}
-                                            </v-list-tile-action-text
+                                                v-if="item.rate == null"
                                             >
+                                                The rate isn't loaded
+                                            </v-list-tile-action-text>
                                             <v-list-tile-action-text
-                                                    v-if="item.rate !== null && item.mult > 1"
-                                            >{{ item.rate }} {{mainCurrency.short_name}} for {{
-                                                item.mult }}
+                                                v-if="item.rate !== null && item.mult === 1"
+                                            >
+                                                {{ item.rate }} {{ mainCurrency.short_name }}
+                                            </v-list-tile-action-text>
+                                            <v-list-tile-action-text
+                                                v-if="item.rate !== null && item.mult > 1"
+                                            >
+                                                {{ item.rate }} {{ mainCurrency.short_name }} for {{
+                                                    item.mult }}
                                                 {{ item.short_name }}
-                                            </v-list-tile-action-text
-                                            >
+                                            </v-list-tile-action-text>
                                             <v-list-tile-action>
-                                                <v-checkbox :input-value="isSelected(item)" primary
-                                                            hide-details></v-checkbox>
+                                                <v-checkbox
+                                                    :input-value="isSelected(item)"
+                                                    primary
+                                                    hide-details
+                                                ></v-checkbox>
                                             </v-list-tile-action>
                                         </v-list-tile-action>
                                     </v-list-tile>
-                                    <v-divider v-if="index + 1 < currencies.length"
-                                               :key="index"></v-divider>
+                                    <v-divider
+                                        v-if="index + 1 < currencies.length"
+                                        :key="index"
+                                    ></v-divider>
                                 </template>
                             </v-list>
                         </v-flex>
                     </v-layout>
-
-
                 </div>
             </v-flex>
 
             <v-snackbar
-                    v-model="info.showMsg"
-                    :color="info.color"
-                    :timeout="2000"
+                v-model="info.showMsg"
+                :color="info.color"
+                :timeout="2000"
             >
                 {{ info.message }}
                 <v-btn
-                        dark
-                        flat
-                        @click="info.showMsg = false"
+                    dark
+                    flat
+                    @click="info.showMsg = false"
                 >
                     Close
                 </v-btn>
             </v-snackbar>
-
         </v-layout>
     </v-container>
 </template>
@@ -138,11 +155,16 @@
     import VTextField from 'vuetify/lib/components/VTextField';
     import {mapGetters} from 'vuex';
     import ApiClass from '../api/api_laravel';
+    import { format } from '../helpers/date';
 
-    import moment from 'moment'
     const api = new ApiClass();
 
     export default {
+        components: {
+            VDatePicker,
+            VMenu,
+            VTextField
+        },
         data: () => ({
             dateFrom: null,
             dateTo: null,
@@ -156,11 +178,6 @@
             }
 
         }),
-        components: {
-            VDatePicker,
-            VMenu,
-            VTextField
-        },
         computed: {
             computedDateFrom() {
                 return this.formatDate(this.dateFrom);
@@ -172,7 +189,7 @@
         },
 
         watch: {
-            date(val) {
+            date() {
                 this.dateFormatted = this.formatDate(this.date);
             },
         },
@@ -190,13 +207,13 @@
             this.$store.dispatch('getSettings');
             this.$store.dispatch('getAllCurrenciesWithRates');
 
-            this.dateTo = moment().format('YYYY-MM-DD');
+            this.dateTo = format(new Date());
         },
         methods: {
             toggle(item) {
-                let index = this.selected.findIndex(obj => obj.id == item.id);
+                let index = this.selected.findIndex(obj => obj.id === item.id);
 
-                if (index == -1) {
+                if (index === -1) {
                     this.selected.push(item);
                 } else {
                     this.selected.splice(index, 1);
@@ -204,11 +221,9 @@
             },
 
             isSelected(item) {
-                let index = this.selected.findIndex(obj => obj.id == item.id);
-                if (index == -1) {
-                    return false;
-                }
-                return true;
+                let index = this.selected.findIndex(obj => obj.id === item.id);
+
+                return index === -1 ? false : true;
             },
 
             formatDate(date) {
@@ -226,7 +241,7 @@
             },
 
             load() {
-                if (this.selected.length == 0 || this.dateFrom == null || this.dateTo == null) return;
+                if (this.selected.length === 0 || this.dateFrom == null || this.dateTo == null) return;
 
                 let currencies = [];
 
@@ -244,12 +259,12 @@
                         currencies: currencies,
                     }
                 )
-                    .then(res => {
+                    .then(() => {
                         this.processing = false;
                         this.$store.dispatch('getAllCurrenciesWithRates');
                         this.showMessage(true, 'Rates was loaded successfully');
                     })
-                    .catch(err => {
+                    .catch(() => {
                         this.processing = false;
                         this.showMessage(true, 'Error occurred! Try again!');
                     });

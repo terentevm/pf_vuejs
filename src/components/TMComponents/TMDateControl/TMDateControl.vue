@@ -1,37 +1,34 @@
 <template>
-
     <div class="tm_select_wrapper">
         <div class="tm_select_input_wrapper">
             <v-menu
-                    :close-on-content-click="false"
-                    v-model="dateSelection"
-                    :nudge-right="40"
-                    lazy
-                    transition="scale-transition"
-                    offset-y
-                    full-width
-                    max-width="inherit"
-                    min-width="290px"
-
+                v-model="dateSelection"
+                :close-on-content-click="false"
+                :nudge-right="40"
+                lazy
+                transition="scale-transition"
+                offset-y
+                full-width
+                max-width="inherit"
+                min-width="290px"
             >
                 <template v-slot:activator="{ on }">
                     <input
-                            slot="activator"
-                            type="text"
-                            :value="date"
-                            aria-label="Date"
-                            aria-describedby="document date"
-                            class="date-input"
-                            readonly
-                            v-on="on"
-
+                        slot="activator"
+                        type="text"
+                        :value="date"
+                        aria-label="Date"
+                        aria-describedby="document date"
+                        class="date-input"
+                        readonly
+                        v-on="on"
                     >
                 </template>
                 <v-date-picker
-                        header-color="appColor"
-                        :value="date"
-                        @change="dateOnChange"
-                        @input="dateSelection = false"
+                    header-color="appColor"
+                    :value="date"
+                    @change="dateOnChange"
+                    @input="dateSelection = false"
                 >
                 </v-date-picker>
             </v-menu>
@@ -51,10 +48,18 @@
     import {VDatePicker} from 'vuetify/lib/components/VDatePicker';
 
     import VMenu from 'vuetify/lib/components/VMenu';
-    import moment from 'moment';
+    import parse from 'date-fns/parse';
+    import addDays from 'date-fns/addDays';
+    import format from 'date-fns/format';
+    import subDays from 'date-fns/subDays';
 
     export default {
-        name: "TMDateControl",
+        name: 'TMDateControl',
+
+        components: {
+            VMenu,
+            'v-date-picker': VDatePicker,
+        },
         props: {
             date: {
                 type: String,
@@ -70,9 +75,8 @@
             dateSelection: false,
         }),
 
-        components: {
-            VMenu,
-            'v-date-picker': VDatePicker,
+        mounted() {
+            console.log(this.date);
         },
 
         methods: {
@@ -81,11 +85,13 @@
             },
 
             addDay() {
-                this.$emit('change', moment(this.date).add(1, 'day').format('YYYY-MM-DD'));
+                let current = parse(this.date, 'yyyy-MM-dd', new Date());
+                this.$emit('change', format(addDays(current, 1), 'yyyy-MM-dd'));
             },
 
             subDay() {
-                this.$emit('change', moment(this.date).subtract(1, 'day').format('YYYY-MM-DD'));
+                let current = parse(this.date, 'yyyy-MM-dd', new Date());
+                this.$emit('change', format(subDays(current, 1), 'yyyy-MM-dd'));
             }
         }
     }
@@ -111,11 +117,12 @@
 
 
     .date-input {
-        flex-grow: 1;
+        display: block;
+        position: relative;
+        flex: 1 1 auto;
+        width: 1%;
         height: $tm_component_height;
-        min-width: 100%;
-        /*border: 1px solid #566787;*/
-        /*background: #dfe5fb;*/
+
         text-transform: lowercase;
         font-variant: small-caps;
         border-radius: 4px;

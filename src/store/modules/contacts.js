@@ -10,63 +10,57 @@ const state = {
         name: '',
         phone: '',
         email: ''
-    },
+    }
 };
 
 // getters
 const getters = {
-
     contacts: state => state.contacts,
     contactFormData: state => state.formData,
 
     name: state => state.contactFormData.name,
     phone: state => state.contactFormData.phone,
-    email: state => state.contactFormData.email,
+    email: state => state.contactFormData.email
 };
 
 // actions
 const actions = {
-    async getContacts({commit}) {
+    async getContacts({ commit }) {
         let data = [];
 
         try {
             data = await api.index('contacts');
             commit('setContacts', data);
-        }
-        catch (err) {
+        } catch (err) {
             console.dir(err);
         }
-
     },
 
-    async storeContact({commit}) {
-
+    storeContact() {
         let id = this.state.contacts.contactFormData.id;
 
-        let promise = id == null
+        return id == null
             ? api.store('contacts', this.state.contacts.contactFormData)
             : api.update('contacts', id, this.state.contacts.contactFormData);
-
-        return promise;
-
     },
 
-    editContact({commit}, contact) {
+    editContact({ commit }, contact) {
         commit('setContactFormData', Object.assign({}, contact));
     }
 };
 
 // mutations
 const mutations = {
-
     setContacts(state, data) {
         data.forEach(contact => {
-            if (state.contacts.find(current => current.id === contact.id) == undefined) {
+            if (
+                state.contacts.find(current => current.id === contact.id) ===
+                undefined
+            ) {
                 contact.active = true;
                 state.contacts.push(contact);
             }
         });
-
     },
 
     setContactFormData(state, contact) {
@@ -84,12 +78,11 @@ const mutations = {
     setContactEmail(sate, email) {
         state.contactFormData.email = email;
     }
-
 };
 
 export default {
     state,
     getters,
     actions,
-    mutations,
+    mutations
 };

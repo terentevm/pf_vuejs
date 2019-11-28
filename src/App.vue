@@ -1,33 +1,48 @@
 <template lang="html">
-    <v-app v-bind:class="{appColor: !$store.state.auth}">
+    <v-app :class="{appColor: !$store.state.auth}">
         <v-navigation-drawer
-                fixed
-                clipped
-                app
-                v-model="drawer"
-                class="appColor"
-                v-if="this.$store.state.auth"
+            v-if="this.$store.state.auth"
+            v-model="drawer"
+            fixed
+            clipped
+            app
+            class="appColor"
         >
-            <v-list dense class="appColor" dark>
+            <v-list
+                dense
+                class="appColor"
+                dark
+            >
                 <template v-for="item in items">
-                    <v-layout row v-if="item.heading" align-center :key="item.heading"
-                              class="side-menu">
+                    <v-layout
+                        v-if="item.heading"
+                        :key="item.heading"
+                        row
+                        align-center
+                        class="side-menu"
+                    >
                         <v-flex xs6>
                             <v-subheader v-if="item.heading">
                                 {{ item.heading }}
                             </v-subheader>
                         </v-flex>
-                        <v-flex xs6 class="text-xs-center">
-                            <a href="#!" class="body-2 black--text">EDIT</a>
+                        <v-flex
+                            xs6
+                            class="text-xs-center"
+                        >
+                            <a
+                                href="#!"
+                                class="body-2 black--text"
+                            >EDIT</a>
                         </v-flex>
                     </v-layout>
 
                     <v-list-group
-                            v-else-if="item.children"
-                            v-model="item.model"
-                            :key="item.text"
-                            :prepend-icon="item.model ? item.icon : item['icon-alt']"
-                            append-icon=""
+                        v-else-if="item.children"
+                        :key="item.text"
+                        v-model="item.model"
+                        :prepend-icon="item.model ? item.icon : item['icon-alt']"
+                        append-icon=""
                     >
                         <v-list-tile slot="activator">
                             <v-list-tile-content>
@@ -36,9 +51,20 @@
                                 </v-list-tile-title>
                             </v-list-tile-content>
                         </v-list-tile>
-                        <v-list-tile v-for="(child, i) in item.children" :key="i" :to="child.link">
-                            <v-list-tile-avatar tile size="32">
-                                <img :src="child.avatar" height="24px" width="24px"/>
+                        <v-list-tile
+                            v-for="(child, i) in item.children"
+                            :key="i"
+                            :to="child.link"
+                        >
+                            <v-list-tile-avatar
+                                tile
+                                size="32"
+                            >
+                                <img
+                                    :src="child.avatar"
+                                    height="24px"
+                                    width="24px"
+                                >
                             </v-list-tile-avatar>
 
                             <v-list-tile-content>
@@ -49,9 +75,19 @@
                         </v-list-tile>
                     </v-list-group>
 
-                    <v-list-tile v-else @click="" avatar dark :key="item.text" :to="item.link">
+                    <v-list-tile
+                        v-else
+                        :key="item.text"
+                        avatar
+                        dark
+                        :to="item.link"
+                    >
                         <v-list-tile-avatar tile>
-                            <img :src="item.avatar" height="32px" width="32px"/>
+                            <img
+                                :src="item.avatar"
+                                height="32px"
+                                width="32px"
+                            >
                         </v-list-tile-avatar>
 
                         <v-list-tile-content>
@@ -65,7 +101,11 @@
 
                 <v-list-tile :to="logoutMenu.link">
                     <v-list-tile-avatar tile>
-                        <img :src="logoutMenu.avatar" height="32px" width="32px"/>
+                        <img
+                            :src="logoutMenu.avatar"
+                            height="32px"
+                            width="32px"
+                        >
                     </v-list-tile-avatar>
 
                     <v-list-tile-content>
@@ -74,41 +114,50 @@
                         </v-list-tile-title>
                     </v-list-tile-content>
                 </v-list-tile>
-
             </v-list>
 
 
             <v-footer
-                    dark
-                    height="auto"
-                    color="appColor"
-                    inset
-                    fixed
+                dark
+                height="auto"
+                color="appColor"
+                inset
+                fixed
             >
                 <v-divider></v-divider>
                 <div class="col-12">
                     <span class="white--text">Icons made by</span>
-                    <a href="https://www.flaticon.com/authors/freepik" title="Freepik">
+                    <a
+                        href="https://www.flaticon.com/authors/freepik"
+                        title="Freepik"
+                    >
                         <span class="text-info">Freepik</span>
                     </a>
                     <span class="white--text">from</span>
-                    <a class="text-info" href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com</a>
+                    <a
+                        class="text-info"
+                        href="https://www.flaticon.com/"
+                        title="Flaticon"
+                    >www.flaticon.com</a>
                 </div>
             </v-footer>
         </v-navigation-drawer>
 
         <v-toolbar
-                color="appColor"
-                dark
-                app
-                :clipped-left="this.$vuetify.breakpoint.lgAndUp"
-                fixed
-                height="50"
-                v-if="$store.state.auth"
+            v-if="this.$store.state.auth"
+            color="appColor"
+            dark
+            app
+            :clipped-left="this.$vuetify.breakpoint.lgAndUp"
+            fixed
+            height="50"
         >
             <v-toolbar-side-icon @click.stop="drawer = !drawer"></v-toolbar-side-icon>
-            <v-toolbar-title fixed style="width: 300px" class="ml-0 pl-3">
-
+            <v-toolbar-title
+                fixed
+                style="width: 300px"
+                class="ml-0 pl-3"
+            >
                 <span>{{ title }}</span>
             </v-toolbar-title>
 
@@ -116,51 +165,64 @@
 
             <!--SM AND UP  FOR BIG SCREENS-->
             <template v-if="$vuetify.breakpoint.smAndUp">
-
                 <v-btn
-                        v-if="this.showMainAction"
-                        flat
-                        @click="toolbarMenu.mainAction.action"
+                    v-if="showMainAction"
+                    flat
+                    @click="toolbarMenu.mainAction.action"
                 >
-                    <v-icon left>{{toolbarMenu.mainAction.icon}}</v-icon>
-                    {{toolbarMenu.mainAction.title }}
+                    <v-icon left>
+                        {{ toolbarMenu.mainAction.icon }}
+                    </v-icon>
+                    {{ toolbarMenu.mainAction.title }}
                 </v-btn>
 
-                <template v-for="act in this.$store.state.app.toolbarMenu.menu">
-                    <v-btn flat
-                           @click="act.action"
+                <template v-for="(act,index) in this.$store.state.app.toolbarMenu.menu">
+                    <v-btn
+                        :key="index"
+                        flat
+                        @click="act.action"
                     >
-                        <v-icon left>{{act.icon}}</v-icon>
-                        {{act.title}}
+                        <v-icon left>
+                            {{ act.icon }}
+                        </v-icon>
+                        {{ act.title }}
                     </v-btn>
                 </template>
-
             </template>
             <!--SM AND UP  FOR BIG SCREENS-->
 
             <!--SX ONLY  FOR SMALL SCREENS-->
             <template v-if="$vuetify.breakpoint.xsOnly">
-
                 <v-btn
-                        v-if="this.showMainAction === true"
-                        icon
-                        @click="toolbarMenu.mainAction.action"
+                    v-if="showMainAction === true"
+                    icon
+                    @click="toolbarMenu.mainAction.action"
                 >
-                    <v-icon>{{toolbarMenu.mainAction.icon}}</v-icon>
+                    <v-icon>{{ toolbarMenu.mainAction.icon }}</v-icon>
                 </v-btn>
 
-                <v-bottom-sheet v-model="sheet" v-if="this.showActionsMenu === true">
+                <v-bottom-sheet
+                    v-if="showActionsMenu === true"
+                    v-model="sheet"
+                >
                     <template v-slot:activator>
                         <v-btn icon>
                             <v-icon>more_vert</v-icon>
                         </v-btn>
                     </template>
                     <v-card>
-                        <template v-for="act in toolbarMenu.menu">
-                            <v-layout row>
+                        <template v-for="(act, index) in toolbarMenu.menu">
+                            <v-layout :key="index" row>
                                 <v-flex xs12>
-                                    <v-btn outline color="grey" block @click="callAction(act)">
-                                        <v-icon left>{{act.icon}}</v-icon>
+                                    <v-btn
+                                        outline
+                                        color="grey"
+                                        block
+                                        @click="callAction(act)"
+                                    >
+                                        <v-icon left>
+                                            {{ act.icon }}
+                                        </v-icon>
                                         {{ act.title }}
                                     </v-btn>
                                 </v-flex>
@@ -168,10 +230,7 @@
                         </template>
                     </v-card>
                 </v-bottom-sheet>
-
             </template>
-
-
         </v-toolbar>
 
         <v-content>
@@ -180,19 +239,24 @@
             </v-container>
         </v-content>
         <v-snackbar
-                v-model="showMsg"
-                :color="msgType"
-                auto-height
+            v-model="showMsg"
+            :color="msgType"
+            auto-height
         >
             <ul>
-                <li v-for="msg in appMessages">
+                <li v-for="(msg,index) in appMessages" :key="index">
                     {{ msg }}
                 </li>
             </ul>
-            <v-btn color="white" flat @click="showMsg = false">Close</v-btn>
+            <v-btn
+                color="white"
+                flat
+                @click="showMsg = false"
+            >
+                Close
+            </v-btn>
         </v-snackbar>
     </v-app>
-
 </template>
 
 <script>
@@ -213,6 +277,15 @@
     import imgContacts from '@/assets/contacts.svg';
 
     export default {
+
+        components: {
+            VApp,
+            VBottomSheet,
+            VContent,
+            VNavigationDrawer,
+            VFooter
+        },
+
         data: () => ({
             dialog: false,
             drawer: true,
@@ -283,18 +356,6 @@
             ],
             logoutMenu: {icon: 'exit_to_app', text: 'Log out', link: '/login', avatar: imgLogout},
         }),
-
-        components: {
-            VApp,
-            VBottomSheet,
-            VContent,
-            VNavigationDrawer,
-            VFooter
-        },
-
-        mounted: function () {
-            this.$store.state.auth = sessionStorage.getItem('jwt') != null ? true : false;
-        },
         computed: {
             title() {
                 return this.$store.state.title === undefined ? 'Personal finances' : this.$store.state.title;
@@ -332,8 +393,9 @@
                 return this.$store.state.app.appMessages;
             }
         },
-        props: {
-            source: String,
+
+        mounted: function () {
+            this.$store.state.auth = sessionStorage.getItem('jwt') != null ? true : false;
         },
         methods: {
             callAction(actionProps) {

@@ -1,9 +1,11 @@
 import ApiClass from '../../api/api_laravel';
+import {format} from '../../helpers/date';
+import parse from 'date-fns/parse';
 
 const api = new ApiClass();
-import moment from 'moment'
 
 const state = {
+    expensesList: [],
     expenseObj: {
         id: null,
         date: '',
@@ -19,15 +21,52 @@ const state = {
     showMessage: false,
     typeMessage: 'success',
     closeForm: false,
+    page: 1
 };
 
 const getters = {
+    expensesList: state => state.expensesList,
     expenseObj: state => state.expenseObj,
+    page: state => state.page
 };
 
 
 ////////////////////////////////////////////////////////////////////////
 const actions = {
+
+    nextPage({ commit }) {
+       commit('pageIncrement');
+       this.dispatch('getExpensesList');
+    },
+
+    async getExpensesList({ commit, state }) {
+        console.dir(this);
+        try {
+            let paginationInfo = await api.index(
+            'expenses',
+            {page: state.page});
+
+            paginationInfo.data.forEach(expense => {
+                expense.walletName = expense.wallet.name;
+            });
+
+            commit('addExpenseToExpensesList', paginationInfo.data);
+
+        } catch (e) {
+            this.dispatch('showAppMsg', {
+                type: 'error',
+                messages: [
+                `status: ${e.status}`,
+                e.data.error
+                ]
+
+            });
+            console.dir(e.data);
+        }
+
+
+    },
+
     getExpense: function ({commit}, id) {
         state.closeForm = false;
         state.showMessage = false;
@@ -45,7 +84,7 @@ const actions = {
         });
     },
 
-    saveExpense({commit}) {
+    saveExpense() {
 
         const formData = {};
 
@@ -76,7 +115,7 @@ const actions = {
 
     },
 
-    async deleteExpense({commti}, expense) {
+    async deleteExpense({commit}, expense) {
 
         try {
             const res = api.delete('expenses', expense.id);
@@ -90,11 +129,16 @@ const actions = {
 
 const mutations = {
 
+    addExpenseToExpensesList(state, expenses) {
+
+        state.expensesList = expenses;
+
+    },
+
     prepareNewDocument(state) {
         state.expenseObj.id = null;
-        state.expenseObj.date = moment().format('YYYY-MM-DD');
+        state.expenseObj.date = format(new Date());
         state.expenseObj.wallet = this.state.settings.wallet;
-
 
         if (this.state.settings.wallet instanceof Object
             && this.state.settings.wallet.hasOwnProperty('currency')) {
@@ -104,14 +148,13 @@ const mutations = {
         state.expenseObj.sum = 0;
         state.expenseObj.rows = [];
 
-
     },
 
     setDocumentData(state, expense) {
 
         state.expenseObj.id = expense.id;
 
-        state.expenseObj.date = moment(expense.date).format('YYYY-MM-DD');
+        state.expenseObj.date = format(parse(expense.date, 'yyyy-MM-dd', new Date()));
         state.expenseObj.wallet = expense.wallet;
         state.expenseObj.currency = expense.currency;
         //fill rows
@@ -167,6 +210,14 @@ const mutations = {
     expenseDeleteRow(state, row) {
         const index = state.expenseObj.rows.indexOf(row);
         delete state.expenseObj.rows.splice(index, 1);
+    },
+
+    pageIncrement(state) {
+        state.page ++;
+    },
+
+    setPageForExpenses(state, page) {
+        state.page = page;
     }
 };
 

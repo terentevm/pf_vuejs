@@ -1,7 +1,16 @@
 import ApiClass from '../../api/api_laravel';
-import moment from 'moment'
+
+import {format} from '../../helpers/date';
+import parse from 'date-fns/parse';
+import startOfMonth from 'date-fns/startOfMonth';
+import endOfMonth from 'date-fns/endOfMonth';
+import startOfWeek from 'date-fns/startOfWeek';
+import endOfWeek from 'date-fns/endOfWeek';
+import startOfYear from 'date-fns/startOfYear';
+import endOfYear from 'date-fns/endOfYear';
 
 const api = new ApiClass();
+const optionsWeek = {weekStartsOn:1};
 
 function storeDashboardSettingsToLocalStorage(settings) {
     if (window.localStorage) {
@@ -9,7 +18,7 @@ function storeDashboardSettingsToLocalStorage(settings) {
     }
 }
 
-function getDashboardSettingsFromLocalStorage(settings) {
+function getDashboardSettingsFromLocalStorage() {
     if (window.localStorage) {
         return JSON.parse(localStorage.getItem('dashboard_settings'));
     }
@@ -17,22 +26,23 @@ function getDashboardSettingsFromLocalStorage(settings) {
 
 function getPeriod(periodicity) {
 
+
     const period = {
-        end: moment().format('YYYY-MM-DD')
+        end: format(new Date)
     };
 
     switch (periodicity) {
         case 'year':
-            period.begin = moment().startOf('year').format('YYYY-MM-DD');
+            period.begin = format(startOfYear(new Date()));
             break;
         case 'month':
-            period.begin = moment().startOf('month').format('YYYY-MM-DD');
+            period.begin = format(startOfMonth(new Date()));
             break;
         case 'week':
-            period.begin = moment().startOf('week').format('YYYY-MM-DD');
+            period.begin = startOfWeek(new Date(), optionsWeek);
             break;
         default:
-            period.begin = moment().startOf('month').format('YYYY-MM-DD');
+            period.begin = format(startOfMonth(new Date()));
     }
 
     return period;
@@ -64,21 +74,21 @@ const state = {
         'periodicityOptions': [
             {
                 period: 'month',
-                name: "Current month",
-                begin: moment().startOf('month').format('Y-MM-DD'),
-                end: moment().endOf('month').format('Y-MM-DD')
+                name: 'Current month',
+                begin: format(startOfMonth(new Date())),
+                end: format(endOfMonth(new Date()))
             },
             {
                 period: 'year',
-                name: "Current year",
-                begin: moment().startOf('year').format('Y-MM-DD'),
-                end: moment().endOf('year').format('Y-MM-DD')
+                name: 'Current year',
+                begin: format(startOfYear(new Date())),
+                end: format(endOfYear(new Date))
             },
             {
                 period: 'week',
-                name: "Current week",
-                begin: moment().startOf('week').format('Y-MM-DD'),
-                end: moment().endOf('week').format('Y-MM-DD')
+                name: 'Current week',
+                begin: format(startOfWeek(new Date(), optionsWeek)),
+                end: format(endOfWeek(new Date(), optionsWeek))
             },
         ]
     },
@@ -114,7 +124,7 @@ const actions = {
             byWallets: true
         };
 
-        const srvData = await api.post('/api/reports/balance', params)
+        const srvData = await api.post('/api/reports/balance', params);
 
         commit('setBalanceTotal', srvData.data.total);
         commit('setBalanceTotalCurrency', srvData.reportCurrency);
@@ -125,8 +135,8 @@ const actions = {
     async getExpensesWithDetails({commit}) {
 
         let params = {
-            "byPeriod": false,
-            "details": true
+            'byPeriod': false,
+            'details': true
         };
 
         if (!state.dashboardSettings.periodicity) {
@@ -154,8 +164,8 @@ const actions = {
     async getIncomesWithDetails({commit}) {
 
         let params = {
-            "byPeriod": false,
-            "details": true
+            'byPeriod': false,
+            'details': true
         };
 
         if (!state.dashboardSettings.periodicity) {
@@ -199,15 +209,15 @@ const actions = {
 
 
         try {
-            const res = await api.post("/api/reports/balance-by-periods", params);
+            const res = await api.post('/api/reports/balance-by-periods', params);
 
             const labels = [];
             const data = [];
 
             res.data.forEach(balanceData => {
-                labels.push(moment(balanceData.period).format('MMM YY'));
+                labels.push(format(parse(balanceData.period, 'yyyy-MM-dd', new Date()), 'MMM yy'));
                 data.push(Number(balanceData.sum));
-            })
+            });
 
             const chartData = {
                 labels: labels,
@@ -242,11 +252,11 @@ const actions = {
 
             const labels = [];
             const expenses = [];
-            const incomes = []
+            const incomes = [];
 
             result.data.forEach(balanceData => {
 
-                labels.push(moment(balanceData.period).format('MMM YY'));
+                labels.push(format(parse(balanceData.period, 'yyyy-MM-dd', new Date()), 'MMM yy'));
 
                 expenses.push(Number(balanceData.expense));
 

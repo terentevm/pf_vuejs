@@ -55,7 +55,7 @@ function performToFlatCollection(items) {
 
     let perform = function (items) {
         items.forEach(item=>{
-            if (item.children.length == 0) {
+            if (item.children.length === 0) {
                 collection.push(item);
             }
             else {

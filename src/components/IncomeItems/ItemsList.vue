@@ -1,34 +1,34 @@
 <template>
-
     <v-layout row>
-
-        <v-dialog v-if="dialog" v-model="dialog" max-width="500" persistent
-                  :fullscreen="$vuetify.breakpoint.smAndDown">
-            <tm-item :item="formData" v-on:close="close"></tm-item>
+        <v-dialog
+            v-if="dialog"
+            v-model="dialog"
+            max-width="500"
+            persistent
+            :fullscreen="$vuetify.breakpoint.smAndDown"
+        >
+            <tm-item :item="formData" @close="close"></tm-item>
         </v-dialog>
 
         <div class="table-wrapper">
             <tm-tree
-                    :items="items"
-                    @itemclick="openFormElement"
+                :items="items"
+                @itemclick="openFormElement"
             ></tm-tree>
         </div>
-
-
     </v-layout>
-
 </template>
 
 <script>
-
-    import ApiClass from '../../api/api_laravel';
     import {mapGetters} from 'vuex';
     import TMTree from '../TMComponents/TMList/TMTree';
     import ItemElement from './ItemElement';
 
-    const api = new ApiClass();
-
     export default {
+        components: {
+            'tm-tree': TMTree,
+            'tm-item': ItemElement
+        },
         data: () => ({
             headers: [{text: 'Name', value: 'name'}],
             dialog: false,
@@ -44,10 +44,6 @@
             },
 
         }),
-        components: {
-            'tm-tree': TMTree,
-            'tm-item': ItemElement
-        },
         computed: {
             ...mapGetters({
                 items: 'allIncomeItemsHierarchically',
@@ -61,7 +57,7 @@
                             return item.id === this.formData.parent_id;
                         });
 
-                        return parent != undefined ? parent : null;
+                        return parent !== undefined ? parent : null;
                     }
 
                     return null;
@@ -80,16 +76,16 @@
             }
         },
 
-        beforeMount: function () {
-            this.$store.state.title = 'Income items';
-            this.$store.dispatch('getAllIncomeItemsHierarchically');
-            this.$store.commit('setupToolbarMenu', this.getUpMenu());
-        },
-
         watch: {
             dialog(val) {
                 val || this.close();
             },
+        },
+
+        beforeMount: function () {
+            this.$store.state.title = 'Income items';
+            this.$store.dispatch('getAllIncomeItemsHierarchically');
+            this.$store.commit('setupToolbarMenu', this.getUpMenu());
         },
 
         methods: {

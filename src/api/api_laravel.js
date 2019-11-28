@@ -36,13 +36,9 @@ function createUrlNotFoundError(model) {
     return new Error(`URL for model ${model} is undefined`);
 }
 
-function toConsole(data) {
-    console.dir(data);
-}
-
 function errorHandler(error) {
 
-    console.log('error handling start')
+    console.log('error handling start');
     console.dir(error);
 
     const err = {
@@ -198,7 +194,7 @@ class Connection {
         let url = `${routesMap.get(model)}/${id}`;
 
         try {
-            let res = await this._http.delete(url);
+            await this._http.delete(url);
             return true;
         } catch (e) {
             throw errorHandler(e);

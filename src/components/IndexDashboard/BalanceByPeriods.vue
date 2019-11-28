@@ -1,15 +1,12 @@
 <template>
     <div class="card mt-1" style="min-height: 300px">
-
         <bar-chart
-                    v-if="loaded"
-                    :id="'canvas_balance_by_months'"
-                    v-bind:chart-data="chartData"
-                    v-bind:options="options"
+            v-if="loaded"
+            :id="'canvas_balance_by_months'"
+            :chart-data="chartData"
+            :options="options"
         >
-
         </bar-chart>
-
     </div>
 </template>
 
@@ -18,7 +15,11 @@
     import BarChart from './charts/BarChart';
 
     export default {
-        name: "BalanceByPeriods",
+        name: 'BalanceByPeriods',
+
+        components: {
+            'bar-chart': BarChart
+        },
         props: {
             chartData: {
                 type: Object,
@@ -47,10 +48,6 @@
             chartHeight: 300,
             title: 'Balance by months'
         }),
-
-        components: {
-            'bar-chart': BarChart
-        },
 
         async beforeMount() {
 

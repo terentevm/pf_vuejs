@@ -1,7 +1,7 @@
 <template>
-  <v-dialog v-model="showWalletSelection" width="400" scrollable persistent>
-    <v-card>
-      <!-- <v-toolbar  color="#43425D" dark scroll-target="#scrolling-techniques">
+    <v-dialog v-model="showWalletSelection" width="400" scrollable persistent>
+        <v-card>
+            <!-- <v-toolbar  color="#43425D" dark scroll-target="#scrolling-techniques">
                     <v-avatar
                     tile
                     :size=32
@@ -14,26 +14,26 @@
                     <v-icon>close</v-icon>
                 </v-btn>
       </v-toolbar>-->
-      <v-card-title>Select a item of expenses</v-card-title>
-      <v-divider></v-divider>
-      <v-list dense style="height: 300px;" id="scrolling-techniques" class="scroll-y">
-        <template v-for="(item, index) in items">
-          <v-list-tile :key="item.title" avatar @click="close(item)">
-            <v-list-tile-avatar size="24">
-              <img :src="picElement" />
-            </v-list-tile-avatar>
+            <v-card-title>Select a item of expenses</v-card-title>
+            <v-divider></v-divider>
+            <v-list id="scrolling-techniques" dense style="height: 300px;" class="scroll-y">
+                <template v-for="(item, index) in items">
+                    <v-list-tile :key="item.title" avatar @click="close(item)">
+                        <v-list-tile-avatar size="24">
+                            <img :src="picElement">
+                        </v-list-tile-avatar>
 
-            <v-list-tile-content>
-              <v-list-tile-title
-                >{{ item.name }} ({{ item.Currency.short_name }})</v-list-tile-title
-              >
-            </v-list-tile-content>
-          </v-list-tile>
-          <v-divider :key="index"></v-divider>
-        </template>
-      </v-list>
-    </v-card>
-  </v-dialog>
+                        <v-list-tile-content>
+                            <v-list-tile-title>
+                                {{ item.name }} ({{ item.Currency.short_name }})
+                            </v-list-tile-title>
+                        </v-list-tile-content>
+                    </v-list-tile>
+                    <v-divider :key="index"></v-divider>
+                </template>
+            </v-list>
+        </v-card>
+    </v-dialog>
 </template>
 
 <script>

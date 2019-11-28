@@ -1,14 +1,12 @@
 <template>
     <div class="card mt-2">
-
         <div class="card-header bg-transparent dash-card-header-title">
             Money in wallets
         </div>
 
         <ul class="list-group list-group-flush">
-            <li v-for="item in balanceAll" class="list-group-item pr-0">
+            <li v-for="(item,index) in balanceAll" :key="index" class="list-group-item pr-0">
                 <div class="list-row">
-
                     <div class="list-column-content">
                         <div class="list-row-content">
                             <span>{{ item.wallet_name }}</span>
@@ -41,7 +39,7 @@
             balanceAll: {
                 get() {
                     return this.$store.state.dashboard.balanceByWallets.filter(item => {
-                        return Number(item.balance) != 0
+                        return Number(item.balance) !== 0
                     });
                 }
             }

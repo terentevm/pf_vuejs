@@ -1,7 +1,5 @@
 <template>
-
-    <canvas v-bind:id="id" height="300px"></canvas>
-
+    <canvas :id="id" height="300px"></canvas>
 </template>
 
 <script>
@@ -9,7 +7,7 @@
     import Chart from 'chart.js/dist/Chart.min.js';
 
     export default {
-        name: "BarChart",
+        name: 'BarChart',
 
         props: {
             id: {
@@ -32,10 +30,10 @@
         }),
 
         watch: {
-            chartData: function (val) {
+            chartData: function () {
                 this.renderChart(this.chartData, this.options);
             },
-            options: function (val) {
+            options: function () {
                 this.renderChart(this.chartData, this.options);
             }
         },

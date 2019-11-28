@@ -1,3 +1,9 @@
+.tm-input-label {
+    color: #566787;
+    font-family: 'Varela Round', sans-serif;
+    font-size: 15px;
+    font-weight: 700;
+}
 .table-wrapper {
 
     border-radius: 3px;

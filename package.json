@@ -7,7 +7,8 @@
   "scripts": {
     "dev": "cross-env NODE_ENV=development webpack-dev-server --progress",
     "staging": "cross-env NODE_ENV=staging webpack",
-    "build": "cross-env NODE_ENV=production webpack"
+    "build": "cross-env NODE_ENV=production webpack",
+    "lint": "eslint src/**/*.{js,vue}"
   },
   "dependencies": {
     "@babel/runtime": "^7.5.5",
@@ -16,6 +17,7 @@
     "babel-polyfill": "^6.26.0",
     "bootstrap": "^4.3.1",
     "chart.js": "^2.8.0",
+    "date-fns": "^2.8.1",
     "material-icons": "^0.3.1",
     "moment": "^2.24.0",
     "v-calendar": "^1.0.0-beta.22",
@@ -52,6 +54,8 @@
     "cross-env": "~5.2",
     "css-loader": "^0.28.11",
     "eslint": "^5.16.0",
+    "eslint-config-prettier": "^6.7.0",
+    "eslint-plugin-prettier": "^3.1.1",
     "eslint-plugin-vue": "^6.0.1",
     "eslint-plugin-vuetify": "^1.0.0-beta.5",
     "extract-text-webpack-plugin": "^3.0.0",
@@ -69,7 +73,7 @@
     "postcss-import": "^11.1.0",
     "postcss-loader": "^2.1.6",
     "postcss-url": "^7.3.2",
-    "prettier": "^1.16.1",
+    "prettier": "1.19.1",
     "rimraf": "^2.6.3",
     "sass-loader": "^7.2.0",
     "sass-resources-loader": "^2.0.0",

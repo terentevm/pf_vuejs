@@ -1,5 +1,6 @@
 import ApiClass from '../../api/api_laravel';
-import moment from 'moment'
+import format from 'date-fns/format';
+import parse from 'date-fns/parse';
 
 const api = new ApiClass();
 
@@ -80,7 +81,7 @@ const mutations = {
 
     prepareNewDocument(state) {
         state.incomeObj.id = null;
-        state.incomeObj.date = moment().format('YYYY-MM-DD');
+        state.incomeObj.date = format(new Date(), 'yyyy-MM-dd');
         state.incomeObj.wallet = this.state.settings.wallet;
 
         if (this.state.settings.wallet instanceof Object
@@ -91,14 +92,13 @@ const mutations = {
         state.incomeObj.sum = 0;
         state.incomeObj.rows = [];
 
-
     },
 
     setDocumentData(state, income) {
 
         state.incomeObj.id = income.id;
-
-        state.incomeObj.date = moment(income.date).format('YYYY-MM-DD');
+        state.incomeObj.date = format(parse(income.date, 'yyyy-MM-dd', new Date()),
+                                'yyyy-MM-dd');
         state.incomeObj.wallet = income.wallet;
         state.incomeObj.currency = income.currency;
         //fill rows

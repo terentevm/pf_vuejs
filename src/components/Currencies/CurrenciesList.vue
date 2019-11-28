@@ -1,30 +1,27 @@
 <template>
-
     <div class="row">
         <v-flex xs12 sm12 md12 lg12>
             <v-dialog
-                    v-if="dialog"
-                    v-model="dialog"
-                    max-width="500px"
-                    persistent
-                    :fullscreen="$vuetify.breakpoint.xsOnly">
+                v-if="dialog"
+                v-model="dialog"
+                max-width="500px"
+                persistent
+                :fullscreen="$vuetify.breakpoint.xsOnly"
+            >
                 <currency-element
-                        v-bind:item="this.formData"
-                        @cancel="dialog = false"
-                        @stored="dialog = false; update()"
+                    :item="formData"
+                    @cancel="dialog = false"
+                    @stored="dialog = false; update()"
                 ></currency-element>
             </v-dialog>
             <div class="table-wrapper">
-
                 <ul class="list-group list-group-flush">
                     <li
-                            class="list-group-item list-header"
+                        class="list-group-item list-header"
                     >
                         <v-layout row ml-3>
                             <v-flex xs10 sm10 md10 lg11 class="cell">
                                 <v-layout row>
-
-
                                     <v-flex xs6 sm6>
                                         <span>Name</span>
                                     </v-flex>
@@ -34,8 +31,6 @@
                                     <v-flex xs12 sm3>
                                         <span>Char code</span>
                                     </v-flex>
-
-
                                 </v-layout>
                             </v-flex>
 
@@ -43,71 +38,60 @@
                                 <div class="cell-actions justify-content-end">
                                     <span>Act.</span>
                                 </div>
-
                             </v-flex>
-
                         </v-layout>
-
-
                     </li>
-                    <li v-for="item in items"
+                    <li
+                        v-for="item in items"
+                        :key="item.id"
                         class="list-group-item list-item"
                         @click="edit(item)"
                     >
                         <v-layout row ml-3>
                             <v-flex xs10 sm10 md10 lg11 class="cell">
                                 <v-layout row>
-
-
                                     <v-flex xs6 sm6>
-                                        <span>{{ item.name}}</span>
+                                        <span>{{ item.name }}</span>
                                     </v-flex>
                                     <v-flex xs3 sm3>
-                                        <span>{{ item.code}}</span>
+                                        <span>{{ item.code }}</span>
                                     </v-flex>
                                     <v-flex xs12 sm3>
-                                        <span>{{ item.short_name}}</span>
+                                        <span>{{ item.short_name }}</span>
                                     </v-flex>
-
-
                                 </v-layout>
                             </v-flex>
 
                             <v-flex xs2 sm2 md2 lg1>
                                 <div class="cell-actions justify-content-end">
-                                    <a class="delete" data-toggle="modal"
-                                       v-on:click.stop.prevent="showDeleteConfirm(item)">
+                                    <a
+                                        class="delete"
+                                        data-toggle="modal"
+                                        @click.stop.prevent="showDeleteConfirm(item)"
+                                    >
 
                                         <v-icon color="#F44336">delete</v-icon>
                                     </a>
                                 </div>
-
                             </v-flex>
-
                         </v-layout>
-
                     </li>
-
                 </ul>
             </div>
         </v-flex>
 
         <tm-modal-del
-                v-show="this.showDeleteConfirmation"
-                :dialog="this.showDeleteConfirmation"
-                :modelName="this.modelName"
-                @close="closeDeleteConfirmation()"
-                @confirm="deleteItem"
+            v-show="showDeleteConfirmation"
+            :dialog="showDeleteConfirmation"
+            :model-name="modelName"
+            @close="closeDeleteConfirmation()"
+            @confirm="deleteItem"
         ></tm-modal-del>
-
     </div>
-
 </template>
 
 <script>
-
     import ApiClass from '../../api/api_laravel';
-
     import currencyElement from './CurrencyElement';
     import {mapGetters} from 'vuex';
     import TMTableModalDelete from '../TMComponents/TMDataTable/TMTableModalDelete'
@@ -115,9 +99,13 @@
     const api = ApiClass();
 
     export default {
+        components: {
+            'currency-element': currencyElement,
+            'tm-modal-del': TMTableModalDelete
+        },
         data: () => ({
-            title: "Currencies",
-            modelName: "currency",
+            title: 'Currencies',
+            modelName: 'currency',
             showDeleteConfirmation: false,
             itemForDel: null,
             dialog: false,
@@ -134,7 +122,7 @@
                     value: 'short_name',
                     visibility: 'hidden-md-and-down',
                     sortable: false,
-                    class: "th_font"
+                    class: 'th_font'
                 },
             ],
 
@@ -153,10 +141,6 @@
                 msg: '',
             },
         }),
-        components: {
-            'currency-element': currencyElement,
-            'tm-modal-del': TMTableModalDelete
-        },
         computed: mapGetters({
             items: 'allCurrencies',
         }),
@@ -208,7 +192,7 @@
             },
 
             update() {
-                if (this.updating == false) {
+                if (this.updating === false) {
                     this.items = [];
                     this.updating = true;
                     this.$store.dispatch('getAllCurrencies');
@@ -256,19 +240,18 @@
                 this.processing = true;
 
                 api.delete('currencies', this.itemForDel.id)
-                    .then(result => {
+                    .then(() => {
                         alert(`${this.itemForDel.name} was deleted!`);
                         this.$store.dispatch('getAllCurrencies');
 
                     })
-                    .catch(err => {
+                    .catch(() => {
                         alert(`${this.itemForDel.name} wasn't deleted!`);
                     })
                     .finally(() => {
                         this.itemForDel = null;
                         this.processing = false;
                     });
-
             }
 
 

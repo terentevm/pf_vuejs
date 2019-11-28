@@ -3,10 +3,11 @@
     import LiElement from './TMListElement';
 
     export default {
-        name: "TMTree",
+        name: 'TMTree',
         props: {
             items: {
-                type: Array
+                type: Array,
+                default: ()=>[]
             },
             level: {
                 type: Number,
@@ -22,7 +23,7 @@
             let self = this;
 
             let list_elements = [];
-            let style = this.collapsed == true ? "display: none" : "";
+            let style = this.collapsed === true ? 'display: none' : '';
 
             let margin_left = 10 * this.level;
 

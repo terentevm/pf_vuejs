@@ -35,5 +35,5 @@ export default new Vuex.Store({
         transfers,
         contacts
     },
-    mutations: {},
+    mutations: {}
 });

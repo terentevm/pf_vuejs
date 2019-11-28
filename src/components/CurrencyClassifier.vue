@@ -1,17 +1,14 @@
 <template>
-
-
     <form>
-
         <div class="form-group">
             <input
-                    v-model="search"
-                    type="search"
-                    class="form-control"
-                    id="searchCountryFilter"
-                    aria-describedby="search"
-                    placeholder="enter country name or char code"
-                    autofocus
+                id="searchCountryFilter"
+                v-model="search"
+                type="search"
+                class="form-control"
+                aria-describedby="search"
+                placeholder="enter country name or char code"
+                autofocus
             >
             <small v-if="selected > 0" id="tagCount" class="form-text text-muted">
                 Selected: <span>{{ selected }}</span>
@@ -19,24 +16,27 @@
         </div>
 
         <v-list
-                subheader
-                two-line
+            subheader
+            two-line
         >
-
             <v-list-tile
-                    v-for="(item, key) in filteredList"
-                    v-bind:key="item.id"
-                    @click="item.selected = !item.selected">
+                v-for="(item, key) in filteredList"
+                :key="key"
+                @click="item.selected = !item.selected"
+            >
                 <v-list-tile-avatar tile>
-                    <svg class="lang lang-select-dropdown-item-flag" width="48px"
-                         height="48px">
-                        <use :xlink:href="getSvgId(item.short_name)"></use>
+                    <svg
+                        class="lang lang-select-dropdown-item-flag"
+                        width="48px"
+                        height="48px"
+                    >
+                        <use :xlink:href="getSvgId(item.short_name)" />
                     </svg>
                 </v-list-tile-avatar>
 
 
                 <v-list-tile-content>
-                    <v-list-tile-title>{{ item.name}}</v-list-tile-title>
+                    <v-list-tile-title>{{ item.name }}</v-list-tile-title>
                     <v-list-tile-sub-title>{{ item.short_name }}</v-list-tile-sub-title>
                 </v-list-tile-content>
 
@@ -44,11 +44,8 @@
                     <v-checkbox :input-value="item.selected"></v-checkbox>
                 </v-list-tile-action>
             </v-list-tile>
-
         </v-list>
     </form>
-
-
 </template>
 
 <script>
@@ -69,7 +66,7 @@
                 return this.$store.state.currencies.classifier.filter(currency => {
 
                     let existed = this.$store.state.currencies.all.find(item => {
-                        return item.short_name == currency.short_name;
+                        return item.short_name === currency.short_name;
                     });
 
                     return !existed
@@ -88,6 +85,17 @@
 
 
             }
+        },
+
+        watch: {
+            loader() {
+                const l = this.loader;
+                this[l] = !this[l];
+
+                setTimeout(() => (this[l] = false), 3000);
+
+                this.loader = null;
+            },
         },
 
         beforeMount: function () {
@@ -143,17 +151,6 @@
                 this.$router.push({path: '/currencies'});
             }
 
-        },
-
-        watch: {
-            loader() {
-                const l = this.loader;
-                this[l] = !this[l];
-
-                setTimeout(() => (this[l] = false), 3000);
-
-                this.loader = null;
-            },
         },
     };
 </script>

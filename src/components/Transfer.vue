@@ -1,5 +1,5 @@
 <template>
-    <div class="container" id="transfer-form-root">
+    <div id="transfer-form-root" class="container">
         <v-progress-linear v-if="processing === true" :indeterminate="true">
         </v-progress-linear>
 
@@ -8,8 +8,10 @@
                 <div class="row d-flex">
                     <div class="form-group mx-1">
                         <label for="expense_date_el" class="tm-lable">Date:</label>
-                        <v-date-control :date="date"
-                                        @change="dateOnChange"></v-date-control>
+                        <v-date-control
+                            :date="date"
+                            @change="dateOnChange"
+                        ></v-date-control>
                     </div>
                 </div>
             </div>
@@ -23,24 +25,24 @@
                         <label for="wallet_from_el" class="tm-lable">From wallet:</label>
 
                         <tm-select
-                                id="wallet_from_el"
-                                v-model="walletFrom"
-                                :options="wallets"
-                                :title="'name'"
-                                :clearable="true"
-                                :select-btn="true"
-                                :placeholder="'Select wallet'"
-                                @open="startWalletChoice(1)"
+                            id="wallet_from_el"
+                            v-model="walletFrom"
+                            :options="wallets"
+                            :title="'name'"
+                            :clearable="true"
+                            :select-btn="true"
+                            :placeholder="'Select wallet'"
+                            @open="startWalletChoice(1)"
                         ></tm-select>
                     </div>
                     <div class="form-group mx-1">
                         <label for="sum_from_el" class="tm-lable">Sum:</label>
                         <tm-input
-                                v-model="sumFrom"
-                                :id="'sum_from_el'"
-                                :input-type="'number'"
-                                :clearable="true"
-                                :text-color="'#fc0303'"
+                            :id="'sum_from_el'"
+                            v-model="sumFrom"
+                            :input-type="'number'"
+                            :clearable="true"
+                            :text-color="'#fc0303'"
                         ></tm-input>
                     </div>
                 </div>
@@ -58,40 +60,36 @@
                         <label for="wallet_to_input" class="tm-lable">To wallet:</label>
 
                         <tm-select
-                                id="wallet_to_input"
-                                v-model="walletTo"
-                                :options="wallets"
-                                :title="'name'"
-                                :clearable="true"
-                                :select-btn="true"
-                                :placeholder="'Select wallet'"
-                                @open="startWalletChoice(2)"
+                            id="wallet_to_input"
+                            v-model="walletTo"
+                            :options="wallets"
+                            :title="'name'"
+                            :clearable="true"
+                            :select-btn="true"
+                            :placeholder="'Select wallet'"
+                            @open="startWalletChoice(2)"
                         ></tm-select>
                     </div>
                     <div class="form-group mx-1">
                         <label for="sum_to_input" class="tm-lable">Sum:</label>
                         <tm-input
-                                v-model="sumTo"
-                                :id="'sum_to_input'"
-                                :input-type="'number'"
-                                :clearable="true"
-                                :read-only="sumToReadOnly"
-                                :text-color="'#08a816'"
+                            :id="'sum_to_input'"
+                            v-model="sumTo"
+                            :input-type="'number'"
+                            :clearable="true"
+                            :read-only="sumToReadOnly"
+                            :text-color="'#08a816'"
                         ></tm-input>
                     </div>
                 </div>
-
             </div>
-
         </div>
 
         <tm-wallets-select-form
-                v-bind:items="this.wallets"
-                v-bind:showWalletSelection="this.showWalletSelection"
-                @select-wallets-close="completeWalletSelectionHandler"
+            :items="wallets"
+            :show-wallet-selection="showWalletSelection"
+            @select-wallets-close="completeWalletSelectionHandler"
         ></tm-wallets-select-form>
-
-
     </div>
 </template>
 
@@ -104,6 +102,13 @@
     import MyNum from '../helpers/MyNum';
 
     export default {
+
+        components: {
+            'v-date-control': TMDateControl,
+            'tm-input': TMInput,
+            'tm-select': TMSelect,
+
+        },
         props: ['docId'],
         data: () => ({
             processing: false,
@@ -113,25 +118,18 @@
             sumToReadOnly: false,
             dictionary: {
                 attributes: {
-                    walletFrom: "Wallet from",
-                    walletTo: "wallet to"
+                    walletFrom: 'Wallet from',
+                    walletTo: 'wallet to'
                 },
                 custom: {
                     name: {
-                        required: () => "Name can not be empty",
-                        max: "The name field may not be greater than 10 characters"
+                        required: () => 'Name can not be empty',
+                        max: 'The name field may not be greater than 10 characters'
                         // custom messages
                     }
                 }
             }
         }),
-
-        components: {
-            'v-date-control': TMDateControl,
-            'tm-input': TMInput,
-            TMSelect,
-
-        },
 
         computed: {
             date: {
@@ -228,10 +226,10 @@
 
                 if (wallet !== undefined && typeof wallet === 'object') {
 
-                    if (this.typeWalletEdit == 1) {
+                    if (this.typeWalletEdit === 1) {
                         this.walletFrom = wallet;
                     }
-                    else if (this.typeWalletEdit == 2) {
+                    else if (this.typeWalletEdit === 2) {
                         this.walletTo = wallet;
                     }
                 }
@@ -244,7 +242,7 @@
                 if ((this.walletFrom instanceof Object && this.walletFrom.hasOwnProperty('currency'))
                     && (this.walletTo instanceof Object && this.walletTo.hasOwnProperty('currency'))) {
 
-                    if (this.walletFrom.currency.id == this.walletTo.currency.id) {
+                    if (this.walletFrom.currency.id === this.walletTo.currency.id) {
 
                         this.sumToReadOnly = true;
                         this.sumTo = this.sumFrom;

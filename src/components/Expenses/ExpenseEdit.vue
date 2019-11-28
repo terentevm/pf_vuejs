@@ -1,19 +1,23 @@
 <template>
-
-    <div class="row mx-0" id="expense-form-root">
-
-        <v-progress-linear v-show="this.processing == true"
-                           :indeterminate="true"></v-progress-linear>
+    <div id="expense-form-root" class="row mx-0">
+        <v-progress-linear
+            v-show="processing === true"
+            :indeterminate="true"
+        ></v-progress-linear>
         <!--Header start-->
         <form style="min-width: 100%">
             <div class="edit_from_header">
                 <div class="row">
                     <div class="col-xs-12 col-sm-6 px-0">
                         <div class="form-group">
-                            <label for="expense_date_el"
-                                   class="tm-input-label">Date</label>
-                            <v-date-control :date="date"
-                                            @change="dateOnChange"></v-date-control>
+                            <label
+                                for="expense_date_el"
+                                class="tm-input-label"
+                            >Date</label>
+                            <v-date-control
+                                :date="date"
+                                @change="dateOnChange"
+                            ></v-date-control>
                         </div>
                     </div>
                 </div>
@@ -25,141 +29,155 @@
                                 <label for="wallet_sel" class="tm-lable">Wallet:</label>
 
                                 <tm-select
-                                        id="wallet_sel"
-                                        v-model="wallet"
-                                        :options="wallets"
-                                        :title="'name'"
-                                        :clearable="true"
-                                        :select-btn="true"
-                                        :placeholder="'Select wallet'"
-                                        @open="startWalletChoice"
+                                    id="wallet_sel"
+                                    v-model="wallet"
+                                    :options="wallets"
+                                    :title="'name'"
+                                    :clearable="true"
+                                    :select-btn="true"
+                                    :placeholder="'Select wallet'"
+                                    @open="startWalletChoice"
                                 ></tm-select>
                             </div>
                         </div>
                     </div>
                 </div>
-
             </div>
             <tm-wallets-select-form
-                    v-bind:items="this.wallets"
-                    v-bind:showWalletSelection="this.showWalletSelection"
-                    @select-wallets-close="completeWalletSelectionHandler"
+                :items="wallets"
+                :show-wallet-selection="showWalletSelection"
+                @select-wallets-close="completeWalletSelectionHandler"
             ></tm-wallets-select-form>
 
             <!--Header end-->
             <div class="row">
                 <!--<div class="col-xs-12 col-sm-12">-->
-                    <tm-editRow
-                            v-bind:items="items"
-                            v-bind:editRow="editRow"
-                            v-bind:dialog="dialog"
+                <tm-editRow
+                    :items="items"
+                    :edit-row="editRow"
+                    :dialog="dialog"
 
-                            @close="closeEditRowDialog"
-                            @done="saveRow"
+                    @close="closeEditRowDialog"
+                    @done="saveRow"
+                >
+                </tm-editRow>
+
+                <div class="from-table-wrapper">
+                    <v-toolbar
+                        color="appColor"
+                        dense
+                        dark
                     >
+                        <v-toolbar-items>
+                            <v-btn flat dark @click="addNewLine()">
+                                <v-icon left dark>
+                                    add
+                                </v-icon>
+                                Add
+                            </v-btn>
 
-                    </tm-editRow>
-
-                    <div class="from-table-wrapper">
-                        <v-toolbar
-                                color="appColor"
-                                dense
+                            <v-btn
+                                v-show="selected.length > 0"
+                                flat
                                 dark
-                        >
-                            <v-toolbar-items>
-                                <v-btn flat dark @click="addNewLine()">
-                                    <v-icon left dark>add</v-icon>
-                                    Add
-                                </v-btn>
+                                @click="deleteSelected()"
+                            >
+                                <v-icon>delete</v-icon>
+                                Delete
+                            </v-btn>
+                        </v-toolbar-items>
+                        <v-spacer></v-spacer>
 
-                                <v-btn
-                                        v-show="this.selected.length > 0"
-                                        flat
-                                        dark
-                                        @click="deleteSelected()"
-                                >
-                                    <v-icon>delete</v-icon>
-                                    Delete
-                                </v-btn>
-
-                            </v-toolbar-items>
-                            <v-spacer></v-spacer>
-
-                            <v-toolbar-title color="white">Total: {{ totalAmount }} ({{
+                        <v-toolbar-title color="white">
+                            Total: {{ totalAmount }} ({{
                                 currency.short_name }})
-                            </v-toolbar-title>
-                        </v-toolbar>
+                        </v-toolbar-title>
+                    </v-toolbar>
 
-                        <v-data-table
-                                select-all
-                                v-model="selected"
-                                :headers="headers"
-                                :items="rows"
-                                item-key="rowId"
-                                class="elevation-1"
-                                id="table-of-expenses"
+                    <v-data-table
+                        id="table-of-expenses"
+                        v-model="selected"
+                        select-all
+                        :headers="headers"
+                        :items="rows"
+                        item-key="rowId"
+                        class="elevation-1"
+                    >
+                        <template slot="headers" slot-scope="props">
+                            <th>
+                                <v-checkbox
+                                    :input-value="props.all"
+                                    :indeterminate="props.indeterminate"
+                                    primary
+                                    hide-details
+                                    @click="toggleAll"
+                                ></v-checkbox>
+                            </th>
+                            <th
+                                v-for="header in props.headers"
+                                :key="header.text"
+                                :align="header.align"
+                                :class="header.class"
+                            >
+                                {{ header.text }}
+                            </th>
+                        </template>
+
+                        <template
+                            slot="items"
+                            slot-scope="props"
+                            class="table-of-expenses"
                         >
-                            <template slot="headers" slot-scope="props">
-                                <th>
+                            <tr>
+                                <td class="d-none">
+                                    {{ props.item.item }}
+                                </td>
+                                <td>
                                     <v-checkbox
-                                            :input-value="props.all"
-                                            :indeterminate="props.indeterminate"
-                                            primary
-                                            hide-details
-                                            @click="toggleAll"
+                                        v-model="props.selected"
+                                        primary
+                                        hide-details
                                     ></v-checkbox>
-                                </th>
-                                <th
-                                        v-for="header in props.headers"
-                                        :key="header.text"
-                                        :align="header.align"
-                                        :class="header.class"
+                                </td>
+
+                                <td
+                                    class="text-xs-left"
+                                    @click="editCurrentRow(props.item)"
                                 >
-                                    {{ header.text }}
-                                </th>
-                            </template>
+                                    {{ props.item.item.name }}
+                                </td>
 
-                            <template slot="items" slot-scope="props"
-                                      class="table-of-expenses">
-                                <tr>
-                                    <td class="d-none">{{ props.item.item }}</td>
-                                    <td>
-                                        <v-checkbox v-model="props.selected" primary
-                                                    hide-details></v-checkbox>
-                                    </td>
-
-                                    <td class="text-xs-left"
-                                        @click="editCurrentRow(props.item)">
-                                        {{ props.item.item.name }}
-                                    </td>
-
-                                    <td class="text-xs-left"
-                                        @click="editCurrentRow(props.item)">
-                                        {{ props.item.sum }}
-                                    </td>
-
-                                    <td class="text-xs-left hidden-sm-and-down"
-                                        @click="editCurrentRow(props.item)">
-                                        {{ props.item.comment }}
-                                    </td>
-
-                                </tr>
-                            </template>
-
-                            <template slot="no-data">
-                                <v-alert :value="true" type="info" icon="warning"
-                                >To add a new expense, click "Add"
-                                </v-alert
+                                <td
+                                    class="text-xs-left"
+                                    @click="editCurrentRow(props.item)"
                                 >
-                            </template>
-                        </v-data-table>
-                    </div>
+                                    {{ props.item.sum }}
+                                </td>
+
+                                <td
+                                    class="text-xs-left hidden-sm-and-down"
+                                    @click="editCurrentRow(props.item)"
+                                >
+                                    {{ props.item.comment }}
+                                </td>
+                            </tr>
+                        </template>
+
+                        <template slot="no-data">
+                            <v-alert
+                                :value="true"
+                                type="info"
+                                icon="warning"
+                            >
+                                To add a new expense, click "Add"
+                            </v-alert>
+                        </template>
+                    </v-data-table>
+                </div>
                 <!--</div>-->
             </div>
         </form>
-
     </div>
-
 </template>
 
 <script>
@@ -177,6 +195,14 @@
     import '../../style/myselect.scss';
 
     export default {
+        components: {
+
+            VAlert,
+            VDataTable,
+            'v-date-control': TMDateControl,
+            'tm-select': TMSelect,
+            'tm-editRow': EditRowDialog,
+        },
         props: ['docId'],
         data: () => ({
             selected: [],
@@ -211,21 +237,13 @@
             showWalletSelection: false,
             processing: false
         }),
-        components: {
-
-            VAlert,
-            VDataTable,
-            'v-date-control': TMDateControl,
-            'tm-select': TMSelect,
-            'tm-editRow': EditRowDialog,
-        },
         computed: {
             date: {
                 get() {
                     return this.$store.state.expenses.expenseObj.date;
                 },
 
-                set(value) {
+                set(fDate) {
 
                     this.$store.commit('expenseUpdateDate', fDate);
                 }
@@ -254,6 +272,16 @@
                 return MyNum.round2(total);
             },
         },
+
+        watch: {
+
+            closeForm: function (val) {
+                if (val === true) {
+                    this.$router.push({path: '/expends'});
+                }
+            },
+
+        },
         beforeMount() {
             this.$store.state.title = 'Expense';
             this.$store.commit('setupToolbarMenu', []);
@@ -263,16 +291,6 @@
             this.$store.dispatch('getAllWallets');
             this.$store.dispatch('getAllExpenseItems');
             this.$store.dispatch('getExpense', this.docId);
-        },
-
-        watch: {
-
-            closeForm: function (val, oldVal) {
-                if (val === true) {
-                    this.$router.push({path: '/expends'});
-                }
-            },
-
         },
         methods: {
             getUpMenu() {
@@ -337,15 +355,15 @@
             },
 
             addNewLine() {
-                this.tempRow = null;
 
-                (this.editRow = {
+                this.editRow = {
                     index: null,
                     item: null,
                     sum: 0,
                     comment: '',
-                }),
-                    (this.dialog = true);
+                };
+
+                this.dialog = true;
             },
 
             closeEditRowDialog() {
@@ -376,7 +394,7 @@
             },
 
             maxRowId() {
-                if (this.rows.length == 0) {
+                if (this.rows.length === 0) {
                     return 0;
                 }
 
@@ -384,9 +402,8 @@
                     return Math.max(accumulator, row.rowId);
                 };
 
-                let maxRowId = this.rows.reduce(reducer, 0);
+                return this.rows.reduce(reducer, 0);
 
-                return maxRowId;
             },
 
             deleteRow(row) {
