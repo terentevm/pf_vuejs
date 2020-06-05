@@ -1,77 +1,96 @@
 <template>
-    <v-layout row>
-        <v-flex xs12 sm12 md12 lg12>
-            <div class="table-wrapper">
-                <ul class="list-group list-group-flush">
-                    <li class="list-group-item list-header">
-                        <v-layout row ml-4>
-                            <v-flex xs10 sm10 md10 lg11 class="cell">
-                                <v-layout row>
-                                    <v-flex xs8 sm8 md10 lg10 class="cell">
-                                        <v-layout row d-flex class="flex-column flex-md-row">
-                                            <v-flex xs4>
-                                                <span>Date</span>
-                                            </v-flex>
-                                            <v-flex xs8>
-                                                <span>Wallet</span>
-                                            </v-flex>
-                                        </v-layout>
-                                    </v-flex>
-                                    <v-flex xs4 sm4 md2 lg2>
-                                        <div class="d-flex justify-content-end">
-                                            <span>Sum</span>
-                                        </div>
-                                    </v-flex>
-                                </v-layout>
-                            </v-flex>
+    <div class="row">
+        <div class="table-wrapper">
+            <ul class="list-group list-group-flush mb-5">
+                <li class="list-group-item list-header">
+                    <v-layout row ml-4>
+                        <v-flex xs10 sm10 md10 lg11 class="cell">
+                            <v-layout row>
+                                <v-flex xs8 sm8 md10 lg10 class="cell">
+                                    <v-layout row d-flex class="flex-column flex-md-row">
+                                        <v-flex xs4>
+                                            <span>Date</span>
+                                        </v-flex>
+                                        <v-flex xs8>
+                                            <span>Wallet</span>
+                                        </v-flex>
+                                    </v-layout>
+                                </v-flex>
+                                <v-flex xs4 sm4 md2 lg2>
+                                    <div class="d-flex justify-content-end">
+                                        <span>Sum</span>
+                                    </div>
+                                </v-flex>
+                            </v-layout>
+                        </v-flex>
 
-                            <v-flex xs2 sm2 md2 lg1>
-                                <div class="cell-actions justify-content-center">
-                                    <span>Act.</span>
-                                </div>
-                            </v-flex>
-                        </v-layout>
-                    </li>
-                    <li
-                        v-for="item in items"
-                        :key="item.id"
-                        class="list-group-item list-item"
-                        @click="editItem(item)"
-                    >
-                        <v-layout row ml-4>
-                            <v-flex xs10 sm10 md10 lg11 class="cell">
-                                <v-layout row>
-                                    <v-flex xs8 sm8 md10 lg10 class="cell">
-                                        <v-layout row d-flex class="flex-column flex-md-row">
-                                            <v-flex xs8 sm4>
-                                                <span>{{ item.date }}</span>
-                                            </v-flex>
-                                            <v-flex xs8>
-                                                <span>{{ item.walletName }}</span>
-                                            </v-flex>
-                                        </v-layout>
-                                    </v-flex>
-                                    <v-flex xs4 sm4 md2 lg2>
-                                        <div class="d-flex justify-content-end">
-                                            <span>{{ item.sum }}</span>
-                                        </div>
-                                    </v-flex>
-                                </v-layout>
-                            </v-flex>
+                        <v-flex xs2 sm2 md2 lg1>
+                            <div class="cell-actions justify-content-center">
+                                <span>Act.</span>
+                            </div>
+                        </v-flex>
+                    </v-layout>
+                </li>
+                <li v-for="item in transactionsList" :key="item.id" class="list-group-item list-item" @click="editItem(item)">
+                    <v-layout row ml-4>
+                        <v-flex xs10 sm10 md10 lg11 class="cell">
+                            <v-layout row>
+                                <v-flex xs8 sm8 md10 lg10 class="cell">
+                                    <v-layout row d-flex class="flex-column flex-md-row">
+                                        <v-flex xs8 sm4>
+                                            <span>{{ item.date }}</span>
+                                        </v-flex>
+                                        <v-flex xs8>
+                                            <span>{{ item.walletName }}</span>
+                                        </v-flex>
+                                    </v-layout>
+                                </v-flex>
+                                <v-flex xs4 sm4 md2 lg2>
+                                    <div class="d-flex justify-content-end">
+                                        <span>{{ item.sum }}</span>
+                                    </div>
+                                </v-flex>
+                            </v-layout>
+                        </v-flex>
 
-                            <v-flex xs2 sm2 md2 lg1>
-                                <div class="cell-actions justify-content-center">
-                                    <a class="delete" data-toggle="modal">
-                                        <v-icon color="#F44336">delete</v-icon>
-                                    </a>
-                                </div>
-                            </v-flex>
-                        </v-layout>
-                    </li>
-                </ul>
-            </div>
-        </v-flex>
-    </v-layout>
+                        <v-flex xs2 sm2 md2 lg1>
+                            <div class="cell-actions justify-content-center">
+                                <a class="delete" data-toggle="modal" @click.stop="showDeleteQuestion(item)">
+                                    <v-icon color="#F44336">delete</v-icon>
+                                </a>
+                            </div>
+                        </v-flex>
+                    </v-layout>
+                </li>
+            </ul>
+            <v-footer
+                fixed
+                inset
+                height="50"
+            >
+                <v-layout
+                    justify-center
+                    row
+                    wrap
+                >
+                    <div class="text-center">
+                        <v-pagination
+                            v-model="page"
+                            :length="15"
+                            :total-visible="6"
+                        ></v-pagination>
+                    </div>
+                </v-layout>
+            </v-footer>
+        </div>
+        <tm-modal-del
+            v-show="showDeleteConfirmation"
+            :dialog="showDeleteConfirmation"
+            :model-name="modelName"
+            @close="closeDeleteConfirmation"
+            @confirm="deleteItem"
+        ></tm-modal-del>
+    </div>
 </template>
 
 <style scoped>
@@ -124,20 +143,26 @@
 </style>
 
 <script>
-    import ApiClass from '../api/api_laravel';
-
-    const api = new ApiClass();
-
+    import VFooter from 'vuetify/lib/components/VFooter';
+    import VPagination from 'vuetify/lib/components/VPagination';
+    import TMTableModalDelete from './TMComponents/TMDataTable/TMTableModalDelete';
     export default {
+        components: {
+            VFooter,
+            VPagination,
+            'tm-modal-del': TMTableModalDelete,
+        },
         data: () => ({
             items: [],
             title: 'Incomes',
             processing: false,
             offsetTop: 0,
             offset: 0,
-            page: 0,
             updating: false,
             showDel: false,
+            showDeleteConfirmation: false,
+            modelName: 'income',
+            itemForDelete: null,
             pagination: {
                 sortBy: 'date',
                 descending: true,
@@ -151,14 +176,28 @@
                 {text: 'Sum', value: 'sum', classList: ['col-xs-2 col-sm-4 col-lg-5']},
             ],
         }),
+        computed: {
+            transactionsList() {
+                return this.$store.state.incomes.incomesList;
+            },
 
+            page: {
+                get() {
+                    return this.$store.state.incomes.page;
+                },
+
+                set(page) {
+                    console.dir(this.$route);
+                    this.$route.query.page = page;
+                    this.$store.commit('setPageForIncomes', page);
+                    this.$store.dispatch('getIncomesList');
+                }
+            }
+        },
         beforeMount: function () {
             this.$store.state.title = 'Incomes';
             this.$store.commit('setupToolbarMenu', this.getUpMenu());
-        },
-
-        created() {
-            this.getDocs();
+            this.update();
         },
 
         methods: {
@@ -184,18 +223,6 @@
 
             },
 
-            getDocs() {
-                api.index('incomes', {page: this.page})
-                    .then(paginationInfo => {
-                        paginationInfo.data.forEach(doc => {
-                            doc.walletName = doc.wallet.name;
-                            if (this.items.indexOf(doc) === -1) {
-                                this.items.push(doc);
-                            }
-                        })
-                    });
-            },
-
             editItem(item) {
                 let id = item.id;
                 this.$router.push({path: `income/${id}`});
@@ -205,21 +232,30 @@
                 this.$router.push({path: 'income/new'});
             },
 
-            addDocs() {
-                if (this.updating === true) {
-                    return;
-                }
-
-                this.offset += 50;
-                this.updating = true;
-                this.getDocs(this.offset);
+            update() {
+                this.$store.dispatch('getIncomesList');
             },
+
             showDelBtn() {
                 this.showDel = !this.showDel;
             },
-            deleteItem(item) {
-                //ToDo: implement element deletion
-                alert('Action doesn\'t support yet');
+
+            showDeleteQuestion(item) {
+                this.itemForDelete = item;
+                this.showDeleteConfirmation = true;
+            },
+
+            closeDeleteConfirmation() {
+                this.showDeleteConfirmation = false;
+                this.itemForDelete = null;
+            },
+
+            deleteItem() {
+                this.showDeleteConfirmation = false;
+
+                this.$store.dispatch('deleteIncome', this.itemForDelete).then(res => {
+                    this.update();
+                });
             },
 
             edit(doc) {

@@ -1,5 +1,5 @@
 <template>
-    <div class="card">
+    <div class="card" style="height: 100%">
         <div class="card-body">
             <h5 class="card-subtitle mb-2 text-muted">
                 Set period
@@ -37,31 +37,35 @@
                 </div>
                 <div class="row mx-0">
                     <div class="commands mt-1">
-                        <div class="row">
-                            <div class="col-12">
+                        <div class="row mx-0">
+                            <div class="col-xs-12">
                                 <div class="form-group">
                                     <label
-                                        for="custom_begin"
+                                        for="'custom_begin'"
                                         class="tm-input-label"
                                     >Begin</label>
                                     <date-control
                                         :id="'custom_begin'"
                                         :date="periodCustom.dateBegin"
+                                        :height="40"
+                                        @change="beginOnChange"
                                     ></date-control>
                                 </div>
                             </div>
                         </div>
 
-                        <div class="row">
-                            <div class="col-12">
+                        <div class="row mx-0">
+                            <div class="col-xs-12">
                                 <div class="form-group">
                                     <label
-                                        for="custom_end"
+                                        for="'custom_end'"
                                         class="tm-input-label"
                                     >End</label>
                                     <date-control
                                         :id="'custom_end'"
                                         :date="periodCustom.dateEnd"
+                                        :height="40"
+                                        @change="endOnChange"
                                     ></date-control>
                                 </div>
                             </div>
@@ -70,10 +74,17 @@
                 </div>
             </div>
 
-            <div class="row px-3">
+            <div class="row px-2 d-flex">
                 <v-btn
-                    block
+                    id="'btn_period_cancel'"
+                    @click="close"
+                >
+                    Cancel
+                </v-btn>
+                <v-btn
+                    id="'btn_period_apply'"
                     color="success"
+                    @click="applyOnClick"
                 >
                     Apply
                 </v-btn>
@@ -329,8 +340,20 @@
                 this.periodCustom.dateEnd = format(end, 'yyyy-MM-dd');
             },
 
-            apply() {
-                this.$emit('change', this.periodCustom);
+            beginOnChange(date) {
+                this.periodCustom.dateBegin = date;
+            },
+
+            endOnChange(date) {
+                this.periodCustom.dateEnd = date;
+            },
+
+            close() {
+                this.$emit('cancel');
+            },
+
+            applyOnClick() {
+                this.$emit('apply', this.periodCustom);
             }
         }
 

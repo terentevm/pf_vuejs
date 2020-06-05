@@ -8,7 +8,7 @@
                 <div class="col-xs-12">
                     <div class="d-flex flex-wrap">
                         <div class="form-group mx-1">
-                            <label for="contact_name" class="tm-lable">Name:</label>
+                            <label for="contact_name" class="tm-label">Name:</label>
                             <tm-input
                                 :id="'contact_name'"
                                 v-model="name"
@@ -25,7 +25,7 @@
                 <div class="col-xs-12">
                     <div class="d-flex flex-wrap">
                         <div class="form-group mx-1">
-                            <label for="'contact_phone'" class="tm-lable">Phone number:</label>
+                            <label for="'contact_phone'" class="tm-label">Phone number:</label>
                             <tm-input
                                 :id="'contact_phone'"
                                 v-model="phone"
@@ -42,7 +42,7 @@
                 <div class="col-xs-12">
                     <div class="d-flex flex-wrap">
                         <div class="form-group mx-1">
-                            <label for="contact_email" class="tm-lable">Email:</label>
+                            <label for="contact_email" class="tm-label">Email:</label>
                             <tm-input
                                 :id="'contact_email'"
                                 v-model="email"

@@ -15,7 +15,10 @@
                                 class="tm-input-label"
                             >Date</label>
                             <v-date-control
+                                v-model="date"
                                 :date="date"
+                                v-validate.disable="'required'"
+                                data-vv-name="date"
                                 @change="dateOnChange"
                             ></v-date-control>
                         </div>
@@ -26,11 +29,13 @@
                     <div class="col-xs-12 col-sm-6 px-0">
                         <div class="d-flex flex-wrap">
                             <div class="form-group">
-                                <label for="wallet_sel" class="tm-lable">Wallet:</label>
+                                <label for="wallet_sel" class="tm-label">Wallet:</label>
 
                                 <tm-select
                                     id="wallet_sel"
                                     v-model="wallet"
+                                    v-validate.disable="'required'"
+                                    data-vv-name="Wallet"
                                     :options="wallets"
                                     :title="'name'"
                                     :clearable="true"
@@ -266,7 +271,7 @@
 
         watch: {
 
-            closeForm: function (val, oldVal) {
+            closeForm: function (val) {
                 if (val === true) {
                     this.$router.push({path: '/expends'});
                 }
@@ -408,13 +413,27 @@
             },
 
             save() {
-                this.processing = true;
-                this.$store.dispatch('saveIncome').then(() => {
-                    this.processing = false;
-                    this.$router.push({path: '/incomes'});
-                }).catch(() => {
-                    //ToDo write error handle and show message
-                    this.processing = false;
+                this.$validator.validateAll().then(result => {
+
+                    if (!result) {
+                        this.$store.dispatch('showAppMsg', {
+                            type: 'error',
+                            messages: this.errors.all() 
+                        });
+
+                        return;
+
+                    }
+
+                    this.processing = true;
+                    
+                    this.$store.dispatch('saveIncome').then(() => {
+                        this.processing = false;
+                        this.$router.push({path: '/incomes'});
+                    }).catch(() => {
+                        //ToDo write error handle and show message
+                        this.processing = false;
+                    });
                 });
             },
 

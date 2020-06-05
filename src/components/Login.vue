@@ -51,7 +51,12 @@
                     <button type="submit" class="submit-button">
                         login
                     </button>
-
+                    <vs-button
+                        block
+                        color="success"
+                    >
+                        Test
+                    </vs-button>
                     <v-progress-linear v-show="sending" :indeterminate="true"></v-progress-linear>
                     <p class="message">
                         Not registered?
@@ -116,7 +121,8 @@ export default {
     },
     methods: {
         sendData() {
-            this.$validator.validateAll().then(result => {
+          console.dir(this.$vs);
+          this.$validator.validateAll().then(result => {
                 if (!result) {
                     return;
                 }

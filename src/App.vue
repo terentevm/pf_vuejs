@@ -234,7 +234,7 @@
         </v-toolbar>
 
         <v-content>
-            <v-container id="main-container">
+            <v-container id="main-container" h-100>
                 <router-view></router-view>
             </v-container>
         </v-content>
@@ -296,6 +296,7 @@
             isOffline: false,
             items: [
                 {icon: 'home', text: 'Dashboard', link: '/', avatar: imgReport},
+                {icon: 'budget', text: 'Budget', link: '/budget', avatar: imgReport},
                 {
                     icon: 'keyboard_arrow_up',
                     'icon-alt': 'keyboard_arrow_down',
@@ -395,7 +396,8 @@
         },
 
         mounted: function () {
-            this.$store.state.auth = sessionStorage.getItem('jwt') != null ? true : false;
+
+          this.$store.state.auth = sessionStorage.getItem('jwt') != null ? true : false;
         },
         methods: {
             callAction(actionProps) {

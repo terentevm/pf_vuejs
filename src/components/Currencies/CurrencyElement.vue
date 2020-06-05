@@ -1,6 +1,7 @@
 <template>
-    <v-card>
-        <v-toolbar color="appColor" dark>
+    <div class="tm-dialog">
+
+        <v-toolbar color="appColor" dark class="dialog-header">
             <v-toolbar-title>Currency: {{ title }}</v-toolbar-title>
             <v-spacer></v-spacer>
             <svg class="lang lang-select-dropdown-item-flag" width="30px" height="30px">
@@ -14,33 +15,53 @@
                         <v-text-field v-model="formData.id" label="id"></v-text-field>
                     </v-flex>
                     <v-flex xs12 sm6 md6>
-                        <v-text-field v-model="formData.code" label="Code (ISO)"></v-text-field>
+                        <vs-input
+                            label-placeholder="Code (ISO)"
+                            v-model="formData.code"
+                        />
                     </v-flex>
                     <v-flex xs12 sm6 md6>
-                        <v-text-field
+                        <vs-input
+                            label-placeholder="Char code"
                             v-model="formData.short_name"
-                            label="Char code"
-                        ></v-text-field>
+                    />
                     </v-flex>
                     <v-flex xs12 sm12 md12>
-                        <v-text-field v-model="formData.name" label="Name"></v-text-field>
+                        <div class="con-content">
+                        <vs-input
+                                label-placeholder="Title"
+                                v-model="formData.name"
+                        />
+                        </div>
                     </v-flex>
                 </v-layout>
             </v-container>
         </v-card-text>
         <v-card-actions>
-            <v-btn color="blue darken-1" flat @click="close()">
+            <vs-button
+                size="xl"
+                transparent
+                color="blue darken-1"
+                @click="close()"
+            >
                 Cancel
-            </v-btn>
+            </vs-button>
             <v-spacer></v-spacer>
-            <v-btn :disabled="processing === true" color="green darken-3" flat @click="store()">
+            <vs-button
+                size="xl"
+                transparent
+                :disabled="processing === true"
+                color="green darken-3"
+                @click="store()"
+            >
                 Save
-            </v-btn>
+            </vs-button>
         </v-card-actions>
         <v-progress-linear v-show="processing === true" :indeterminate="true">
             <p>process</p>
         </v-progress-linear>
     </v-card>
+    </div>
 </template>
 
 <script>
@@ -121,4 +142,16 @@ export default {
 };
 </script>
 
-<style scoped></style>
+<style scoped>
+
+    .tm-dialog {
+        margin-left: -16px;
+        margin-right: -16px;
+        margin-top: -10px;
+    }
+
+    .dialog-header{
+        border-top-left-radius: 20px;
+        border-top-right-radius: 20px;
+    }
+</style>

@@ -4,7 +4,7 @@
             <div class="col-xs-12 col-sm-12 col-md-5 ">
                 <div class="row d-block">
                     <div class="form-group">
-                        <label for="settings_currency_el" class="tm-lable">Currency (read only):</label>
+                        <label for="settings_currency_el" class="tm-label">Currency (read only):</label>
 
                         <tm-select
                             id="settings_currency_el"
@@ -21,7 +21,7 @@
 
                 <div class="row d-block">
                     <div class="form-group">
-                        <label for="settings_main_wallet_el" class="tm-lable">Default wallet<span v-show="isDirty('wallet')"> *</span>:</label>
+                        <label for="settings_main_wallet_el" class="tm-label">Default wallet<span v-show="isDirty('wallet')"> *</span>:</label>
 
                         <tm-select
                             id="settings_main_wallet_el"
@@ -38,7 +38,7 @@
 
                 <div class="row d-block ">
                     <div class="form-group">
-                        <label for="settings_rep_currency_el" class="tm-lable">Currency of dashboard<span v-show="isDirty('currencyReports')"> *</span>:</label>
+                        <label for="settings_rep_currency_el" class="tm-label">Currency of dashboard<span v-show="isDirty('currencyReports')"> *</span>:</label>
                         <tm-select
                             id="settings_rep_currency_el"
                             v-model="currencyReports"
@@ -76,7 +76,7 @@
             <div class="col-xs-12 col-sm-12 col-md-5">
                 <div class="row d-block">
                     <div class="form-group">
-                        <label for="settings_dash_period_el" class="tm-lable">Periodicity:</label>
+                        <label for="settings_dash_period_el" class="tm-label">Periodicity:</label>
                         <tm-select
                             id="settings_dash_period_el"
                             v-model="periodicity"

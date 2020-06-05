@@ -1,13 +1,14 @@
 import 'babel-polyfill';
 import Vue from 'vue';
 import App from './App';
-
+import Vuesax from 'vuesax';
 import router from './router';
 import store from './store';
-
+import 'boxicons';
+import 'boxicons/css/boxicons.css';
+import 'vuesax/dist/vuesax.css' //Vuesax styles
 // Import Vuetify components ++
 import Vuetify from 'vuetify/lib/components/Vuetify';
-
 import VAvatar from 'vuetify/lib/components/VAvatar';
 import VBtn from 'vuetify/lib/components/VBtn';
 import VCard from 'vuetify/lib/components/VCard';
@@ -76,6 +77,10 @@ Validator.localize('en', veeEn);
 
 // const mainColor = '#43425D';
 const mainColor = '#435d7d';
+
+Vue.use(Vuesax, {
+  appColor: mainColor,
+});
 
 Vue.use(VeeValidate);
 

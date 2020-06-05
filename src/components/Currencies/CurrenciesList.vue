@@ -1,19 +1,21 @@
 <template>
     <div class="row">
         <v-flex xs12 sm12 md12 lg12>
-            <v-dialog
+            <vs-dialog
+                blur
                 v-if="dialog"
                 v-model="dialog"
-                max-width="500px"
-                persistent
-                :fullscreen="$vuetify.breakpoint.xsOnly"
+                prevent-close
+                :full-screen="$vuetify.breakpoint.xsOnly"
             >
+
                 <currency-element
                     :item="formData"
                     @cancel="dialog = false"
                     @stored="dialog = false; update()"
                 ></currency-element>
-            </v-dialog>
+            </vs-dialog>
+
             <div class="table-wrapper">
                 <ul class="list-group list-group-flush">
                     <li

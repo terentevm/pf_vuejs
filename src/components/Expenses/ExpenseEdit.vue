@@ -11,10 +11,11 @@
                     <div class="col-xs-12 col-sm-6 px-0">
                         <div class="form-group">
                             <label
-                                for="expense_date_el"
+                                for="'expense_date_el'"
                                 class="tm-input-label"
                             >Date</label>
                             <v-date-control
+                                :id="'expense_date_el'"
                                 :date="date"
                                 @change="dateOnChange"
                             ></v-date-control>
@@ -26,7 +27,7 @@
                     <div class="col-xs-12 col-sm-6 px-0">
                         <div class="d-flex flex-wrap">
                             <div class="form-group">
-                                <label for="wallet_sel" class="tm-lable">Wallet:</label>
+                                <label for="wallet_sel" class="tm-label">Wallet:</label>
 
                                 <tm-select
                                     id="wallet_sel"

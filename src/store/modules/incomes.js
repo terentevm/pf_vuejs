@@ -5,6 +5,7 @@ import parse from 'date-fns/parse';
 const api = new ApiClass();
 
 const state = {
+    incomesList: [],
     incomeObj: {
         id: null,
         date: '',
@@ -20,16 +21,40 @@ const state = {
     showMessage: false,
     typeMessage: 'success',
     closeForm: false,
+    page: 1
 };
 
 const getters = {
+    incomesList: state => state.incomesList,
     incomeObj: state => state.incomeObj,
+    page: state => state.page
 };
-
 
 ////////////////////////////////////////////////////////////////////////
 const actions = {
-    getIncome: function ({commit}, id) {
+    nextPage({ commit }) {
+        commit('pageIncrement');
+        this.dispatch('getIncomesList');
+    },
+
+    async getIncomesList({ commit, state }) {
+        try {
+            let paginationInfo = await api.index('incomes', { page: state.page });
+
+            paginationInfo.data.forEach(income => {
+                income.walletName = income.wallet.name;
+            });
+
+            commit('setIncomesList', paginationInfo.data);
+        } catch (e) {
+            this.dispatch('showAppMsg', {
+                type: 'error',
+                messages: [`status: ${e.status}`, e.data.error]
+            });
+        }
+    },
+
+    getIncome: function({ commit }, id) {
         state.closeForm = false;
         state.showMessage = false;
 
@@ -39,14 +64,11 @@ const actions = {
         }
 
         api.show('incomes', id).then(income => {
-
             commit('setDocumentData', income);
-
-
         });
     },
-    saveIncome({commit}) {
 
+    saveIncome({ commit }) {
         const formData = {};
 
         formData.id = state.incomeObj.id == null ? null : state.incomeObj.id;
@@ -62,7 +84,7 @@ const actions = {
             formData.rows.push({
                 item_id: row.item.id,
                 sum: row.sum,
-                comment: row.comment,
+                comment: row.comment
             });
 
             total += Number(row.sum);
@@ -70,35 +92,39 @@ const actions = {
 
         formData.sum = total;
 
-        return state.incomeObj.id == null
-            ? api.store('incomes', formData)
-            : api.update('incomes', state.incomeObj.id, formData);
+        return state.incomeObj.id == null ? api.store('incomes', formData) : api.update('incomes', state.incomeObj.id, formData);
+    },
 
+    async deleteIncome({ commit }, income) {
+        try {
+            const res = api.delete('incomes', income.id);
+        } catch (e) {
+            throw e;
+        }
     }
 };
 
 const mutations = {
+    setIncomesList(state, incomes) {
+        state.incomesList = incomes;
+    },
 
     prepareNewDocument(state) {
         state.incomeObj.id = null;
         state.incomeObj.date = format(new Date(), 'yyyy-MM-dd');
         state.incomeObj.wallet = this.state.settings.wallet;
 
-        if (this.state.settings.wallet instanceof Object
-            && this.state.settings.wallet.hasOwnProperty('currency')) {
+        if (this.state.settings.wallet instanceof Object && this.state.settings.wallet.hasOwnProperty('currency')) {
             state.incomeObj.currency = this.state.settings.wallet.currency;
         }
 
         state.incomeObj.sum = 0;
         state.incomeObj.rows = [];
-
     },
 
     setDocumentData(state, income) {
-
         state.incomeObj.id = income.id;
-        state.incomeObj.date = format(parse(income.date, 'yyyy-MM-dd', new Date()),
-                                'yyyy-MM-dd');
+        state.incomeObj.date = format(parse(income.date, 'yyyy-MM-dd', new Date()), 'yyyy-MM-dd');
         state.incomeObj.wallet = income.wallet;
         state.incomeObj.currency = income.currency;
         //fill rows
@@ -112,7 +138,7 @@ const mutations = {
                 selected: false,
                 item: row.item,
                 sum: row.sum,
-                comment: row.comment,
+                comment: row.comment
             });
 
             rowId++;
@@ -135,7 +161,7 @@ const mutations = {
                 selected: false,
                 item: row.item,
                 sum: row.sum,
-                comment: row.comment,
+                comment: row.comment
             });
         } else {
             const obj = state.incomeObj.rows[row.index];
@@ -154,6 +180,14 @@ const mutations = {
     incomeDeleteRow(state, row) {
         const index = state.incomeObj.rows.indexOf(row);
         delete state.incomeObj.rows.splice(index, 1);
+    },
+
+    pageIncrement(state) {
+        state.page++;
+    },
+
+    setPageForIncomes(state, page) {
+        state.page = page;
     }
 };
 

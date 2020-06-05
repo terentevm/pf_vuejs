@@ -1,7 +1,7 @@
 import Vue from 'vue';
 import Router from 'vue-router';
 
-import Login from '@/components/login';
+import Login from '@/components/Auth/LoginPage';
 
 Vue.use(Router);
 
@@ -156,6 +156,15 @@ export default new Router({
                 '../components/Contacts/ContactsList'
                 ),
             meta: {requiresAuth: true},
+        },
+        {
+        path: '/budget',
+        name: 'Budget',
+        component: () => import(
+          /* webpackChunkName: "budget" */
+          '../components/Budget/Budget'
+          ),
+        meta: {requiresAuth: true},
         },
     ],
 });

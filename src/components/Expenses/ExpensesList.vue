@@ -5,12 +5,14 @@
                 v-if="showPeriodDialog"
                 v-model="showPeriodDialog"
                 max-width="500px"
+                :persistent="true"
+                :fullscreen="$vuetify.breakpoint.smAndDown"
             >
-                <tm-period></tm-period>
+                <tm-period
+                    @cancel="periodFilterOnCancel"
+                    @apply="periodFilterOnChange"
+                ></tm-period>
             </v-dialog>
-<!--            <div class="row">-->
-<!--                <a href="">period</a>-->
-<!--            </div>-->
             <ul class="list-group list-group-flush mb-5">
                 <li class="list-group-item list-header">
                     <v-layout row ml-4>
@@ -41,7 +43,7 @@
                         </v-flex>
                     </v-layout>
                 </li>
-                <li v-for="item in expensesList" :key="item.id" class="list-group-item list-item" @click="editItem(item)">
+                <li v-for="item in transactionsList" :key="item.id" class="list-group-item list-item" @click="editItem(item)">
                     <v-layout row ml-4>
                         <v-flex xs10 sm10 md10 lg11 class="cell">
                             <v-layout row>
@@ -107,7 +109,7 @@
 import VFooter from 'vuetify/lib/components/VFooter';
 import VPagination from 'vuetify/lib/components/VPagination';
 import TMTableModalDelete from '../TMComponents/TMDataTable/TMTableModalDelete';
-import TMPeriodDialog from "@/components/TMComponents/TMPeriodDialog/TMPeriodDialog";
+import TMPeriodDialog from '@/components/TMComponents/TMPeriodDialog/TMPeriodDialog';
 import VDialog from 'vuetify/lib/components/VDialog';
 export default {
     components: {
@@ -143,7 +145,7 @@ export default {
     }),
 
     computed: {
-        expensesList() {
+        transactionsList() {
             return this.$store.state.expenses.expensesList;
         },
 
@@ -233,6 +235,16 @@ export default {
 
         nextPage() {
             this.$store.dispatch('nextPage');
+        },
+
+        periodFilterOnCancel() {
+            console.log('cancel handle');
+            this.showPeriodDialog = false;
+        },
+
+        periodFilterOnChange(period) {
+            console.log('apply handle');
+            this.showPeriodDialog = false;
         }
     }
 };

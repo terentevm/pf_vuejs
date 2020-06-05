@@ -16,7 +16,7 @@
                         <div class="col-xs-12">
                             <div class="d-flex">
                                 <div class="form-group mx-1">
-                                    <label for="parent_select" class="tm-lable">Parent:</label>
+                                    <label for="parent_select" class="tm-label">Parent:</label>
 
                                     <tm-select
                                         id="parent_select"
@@ -36,7 +36,7 @@
                         <div class="col-xs-12">
                             <div class="d-flex flex-wrap">
                                 <div class="form-group mx-1">
-                                    <label for="item_income_title" class="tm-lable">Title:</label>
+                                    <label for="item_income_title" class="tm-label">Title:</label>
                                     <tm-input
                                         :id="'item_income_title'"
                                         v-model="formData.name"
@@ -53,7 +53,7 @@
                         <div class="form-group mx-1">
                             <div class="d-flex justify-start">
                                 <tm-checkbox v-model="formData.active"></tm-checkbox>
-                                <p class="tm-lable ml-2">
+                                <p class="tm-label ml-2">
                                     The item is active
                                 </p>
                             </div>

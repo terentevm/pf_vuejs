@@ -7,7 +7,7 @@
             <div class="col-xs-12 col-sm-6">
                 <div class="row d-flex">
                     <div class="form-group mx-1">
-                        <label for="expense_date_el" class="tm-lable">Date:</label>
+                        <label for="expense_date_el" class="tm-label">Date:</label>
                         <v-date-control
                             :date="date"
                             @change="dateOnChange"
@@ -22,7 +22,7 @@
             <div class="col-xs-12">
                 <div class="d-flex flex-wrap">
                     <div class="form-group mx-1">
-                        <label for="wallet_from_el" class="tm-lable">From wallet:</label>
+                        <label for="wallet_from_el" class="tm-label">From wallet:</label>
 
                         <tm-select
                             id="wallet_from_el"
@@ -36,7 +36,7 @@
                         ></tm-select>
                     </div>
                     <div class="form-group mx-1">
-                        <label for="sum_from_el" class="tm-lable">Sum:</label>
+                        <label for="sum_from_el" class="tm-label">Sum:</label>
                         <tm-input
                             :id="'sum_from_el'"
                             v-model="sumFrom"
@@ -57,7 +57,7 @@
             <div class="col-xs-12">
                 <div class="d-flex flex-wrap">
                     <div class="form-group mx-1">
-                        <label for="wallet_to_input" class="tm-lable">To wallet:</label>
+                        <label for="wallet_to_input" class="tm-label">To wallet:</label>
 
                         <tm-select
                             id="wallet_to_input"
@@ -71,7 +71,7 @@
                         ></tm-select>
                     </div>
                     <div class="form-group mx-1">
-                        <label for="sum_to_input" class="tm-lable">Sum:</label>
+                        <label for="sum_to_input" class="tm-label">Sum:</label>
                         <tm-input
                             :id="'sum_to_input'"
                             v-model="sumTo"
