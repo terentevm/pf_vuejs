@@ -1,65 +1,92 @@
 const state = {
-    toolbarMenu: [],
-    withRates: [],
-    classificator: [],
+  pending: false,
+  toolbarMenu: [],
+  withRates: [],
+  classificator: [],
 
-    showMsg: false,
-    msgType: 'warning',
-    appMessages: [] //contains error strings
-
+  showMsg: false,
+  msgType: 'warning',
+  appMessages: [], //contains error strings
+  drawer: true,
+  filterIsActive: false
 };
 
 // getters
 const getters = {
-    toolbarMenu: state => state.toolbarMenu,
-    showMsg: state => state.showMsg,
-    msgType: state => state.msgType,
-    appMessages: state => state.appMessages
+  pending: state => state.pending,
+  toolbarMenu: state => state.toolbarMenu,
+  showMsg: state => state.showMsg,
+  msgType: state => state.msgType,
+  appMessages: state => state.appMessages,
+  drawer: state => state.drawer,
+  filterIsActive: state => state.filterIsActive
 };
 
 // actions
 const actions = {
 
-    showAppMsg({ commit }, message) {
-        commit('setMessage', message)
-    },
+  startPending({commit}) {
+    commit('togglePending', true)
+  },
 
-    destroyAppMsg({ commit }) {
-        commit('unsetAppMsg') ;
-    }
+  finishPending({commit}) {
+    commit('togglePending', false)
+  },
 
+  showAppMsg({commit}, message) {
+    commit('setMessage', message)
+  },
+
+  destroyAppMsg({commit}) {
+    commit('unsetAppMsg');
+  },
+
+  toggleFilterActivity({commit}, isActive) {
+    commit('toggleFilterActivity', isActive);
+  }
 };
 
 // mutations
 const mutations = {
-    setupToolbarMenu(state, menu) {
-        state.toolbarMenu = menu;
-    },
 
-    setMessage(state, message) {
-        state.showMsg = true;
-        state.msgType = message.type || 'warning';
-        state.appMessages = message.messages;
+  togglePending(state, pending) {
+    state.pending = pending;
+  },
 
-        setTimeout(state =>{
-            state.showMsg = false;
-            state.msgType = 'warning';
-            state.appMessages = [];
-        }, 5500, state);
-    },
+  toggleDrawer(state, val) {
+    state.drawer = val;
+  },
 
-    unsetAppMsg(state) {
-        state.showMsg = false;
-        state.msgType = 'warning';
-        state.appMessages = [];
+  setupToolbarMenu(state, menu) {
+    state.toolbarMenu = menu;
+  },
 
+  setMessage(state, message) {
+    state.showMsg = true;
+    state.msgType = message.type || 'warning';
+    state.appMessages = message.messages;
 
-    }
+    setTimeout(state => {
+      state.showMsg = false;
+      state.msgType = 'warning';
+      state.appMessages = [];
+    }, 5500, state);
+  },
+
+  unsetAppMsg(state) {
+    state.showMsg = false;
+    state.msgType = 'warning';
+    state.appMessages = [];
+  },
+
+  toggleFilterActivity(state, isActive) {
+    state.filterIsActive = isActive;
+  }
 };
 
 export default {
-    state,
-    getters,
-    actions,
-    mutations,
+  state,
+  getters,
+  actions,
+  mutations,
 };

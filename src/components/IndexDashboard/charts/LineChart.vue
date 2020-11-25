@@ -23,13 +23,17 @@
             }
         },
         data: () => ({
-            canvas: null
+            canvas: null,
+          chart: null
 
         }),
 
         watch: {
             chartData: function () {
-                this.renderChart(this.chartData, this.options);
+              console.dir('chardata has been modified');
+              console.dir(this.chart);
+              //this.renderChart(this.chartData, this.options);
+                this.chart.update();
             },
             options: function () {
                 this.renderChart(this.chartData, this.options);
@@ -37,7 +41,7 @@
         },
 
         mounted() {
-
+            console.log('render chart!');
             this.renderChart(this.chartData, this.options);
 
 
@@ -49,7 +53,7 @@
 
                 this.canvas = document.getElementById(this.id).getContext('2d');
 
-                this.bar = new Chart(this.canvas, {
+                this.chart = new Chart(this.canvas, {
                     type: 'line',
                     data: data,
                     options: options

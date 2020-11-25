@@ -25,7 +25,6 @@
                 type: Object,
                 require: true
             }
-
         },
         data: () => ({
             currencyBalance: null,

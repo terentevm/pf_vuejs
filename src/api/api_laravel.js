@@ -39,8 +39,8 @@ function createUrlNotFoundError(model) {
 function errorHandler(error) {
 
     console.log('error handling start');
-    console.dir(error);
 
+    console.dir(this);
     const err = {
         status: undefined,
         data: {

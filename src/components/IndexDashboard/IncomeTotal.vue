@@ -1,34 +1,46 @@
 <template>
-
-    <div class="card mt-1">
-        <div class="card-header bg-transparent dash-card-header-title">
-            Incomes
-        </div>
-
-        <div class="card-body d-flex flex-row justify-content-between align-items-center">
-            <div>
-                <div class="headline">{{ incomesRounded }}</div>
-                <div class="grey--text">{{ totalIncomesCurrency.short_name }}</div>
-            </div>
-
-            <img src="../../assets/graph_income.svg" height="64px" width="64px">
-
-        </div>
-
-    </div>
-
+    <stats-card
+        title="Incomes"
+        type="gradient-green"
+        :sub-title="incomes"
+        icon="fas fa-coins text-white"
+        class="mb-3 mb-xl-0"
+    >
+    </stats-card>
 </template>
 
 <script>
-    import Mynum from '../../helpers/MyNum';
+  import StatsCard from '../../argon/src/components/StatsCard';
 
-    export default {
-        props: ['totalIncomes', 'totalIncomesCurrency'],
+  import Mynum from '../../helpers/MyNum';
 
-        computed: {
-            incomesRounded: function () {
-                return Mynum.round2(this.totalIncomes);
-            },
-        },
-    };
+  export default {
+    components: {
+      StatsCard
+    },
+    props: ['totalIncomes', 'totalIncomesCurrency'],
+
+    computed: {
+      incomesRounded: function () {
+        return Mynum.round2(this.totalIncomes);
+      },
+      incomes() {
+        return `${this.incomesRounded } (${ this.totalIncomesCurrency.short_name })`;
+      }
+    }
+
+  };
 </script>
+
+<style scoped>
+    .bg-gradient-success {
+        background: #56ab2f; /* fallback for old browsers */
+        background: -webkit-linear-gradient(to right, #a8e063, #56ab2f); /* Chrome 10-25, Safari 5.1-6 */
+        background: linear-gradient(to right, #a8e063, #56ab2f); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+
+    }
+
+    .card-stats .card-body {
+        padding: 1rem 1.5rem;
+    }
+</style>

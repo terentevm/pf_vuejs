@@ -24,14 +24,23 @@
 
         },
         data: () => ({
-            bar: null,
+            chart: null,
             canvas: null
 
         }),
 
         watch: {
-            chartData: function () {
-                this.renderChart(this.chartData, this.options);
+            chartData: {
+              handler(newVal, oldVal){
+                console.dir(this.chart);
+                console.dir(newVal);
+                console.dir(oldVal);
+                this.chart.data.datasets = [...newVal.datasets];
+                this.chart.data.labels = [...newVal.labels];
+
+                this.chart.update();
+              },
+              deep: true
             },
             options: function () {
                 this.renderChart(this.chartData, this.options);
@@ -51,7 +60,7 @@
 
                 this.canvas = document.getElementById(this.id).getContext('2d');
 
-                this.bar = new Chart(this.canvas, {
+                this.chart = new Chart(this.canvas, {
                     type: 'bar',
                     data: data,
                     options: options

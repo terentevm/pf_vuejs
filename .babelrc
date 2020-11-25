@@ -1,25 +1,23 @@
 {
     "presets": [
         [
-            "env",
+            "@babel/preset-env",
             {
-                "modules": false,
-                "targets": {
-                    "browsers": [
-                        "> 1%",
-                        "last 2 versions",
-                        "ie >= 11"
-                    ]
-                }
+                "useBuiltIns": "entry",
+                "targets": "> 0.25%, not dead"
             }
-        ],
-        "stage-2"
+        ]
     ],
     "env": {
         "test": {
             "presets": [
-                "env",
-                "stage-2"
+                [
+                    "@babel/preset-env",
+                    {
+                        "useBuiltIns": "entry",
+                        "targets": "> 0.25%, not dead"
+                    }
+                ]
             ],
             "plugins": [
                 [
@@ -38,7 +36,14 @@
     },
     "plugins": [
         "transform-vue-jsx",
-        "transform-runtime",
+        [
+            "@babel/plugin-transform-runtime",
+            {
+                "absoluteRuntime": false,
+                "corejs": 2,
+                "version": "^7.7.4"
+            }
+        ],
         ["transform-imports", {
             "vuetify": {
                 "transform": "vuetify/lib/${member}",

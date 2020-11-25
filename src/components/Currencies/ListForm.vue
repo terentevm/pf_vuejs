@@ -11,9 +11,9 @@
       <currency-element v-if="dialog" :item="formData" @close="closeDialog"/>
     </v-dialog>
     <div class="table-responsive-sm px-0">
-      <table class="table table-flush table-hover">
+      <table class="table table-flush table-hover thead-light">
         <thead>
-          <tr class="table-head-line bg-default text-white">
+          <tr class="table-head-line thead-bg text-white">
             <th>Title</th>
             <th>Code</th>
             <th class="d-none d-md-block">ISO</th>
@@ -24,7 +24,7 @@
           <tr
             v-for="item in items"
             :key="item.id"
-            class="align-items-center border-top-1 clickable"
+            class="align-items-center border-top-1 clickable table-row"
             @click="edit(item)"
           >
             <td>{{ item.name }}</td>
@@ -51,15 +51,17 @@
 
 <script>
 
-  import currencyElement from './CurrencyElement';
+  import currencyElement from './ElementForm';
   import {mapGetters} from 'vuex';
   import VDialog from 'vuetify/lib/components/VDialog';
+  import BaseTable from '../../argon/src/components/BaseTable';
   import alert from '../Dialogs/Alert/Alert';
   import '../../style/tables.scss';
 
   export default {
     components: {
       VDialog,
+      BaseTable,
       'currency-element': currencyElement,
     },
     data: () => ({

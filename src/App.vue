@@ -1,158 +1,25 @@
 <template lang="html">
-    <v-app :class="{appColor: !$store.state.auth}">
-        <v-navigation-drawer
+    <v-app v-bind:class="{app_auth: this.$store.state.auth, app_not_auth:!this.$store.state.auth}">
+        <side-nav
             v-if="this.$store.state.auth"
-            v-model="drawer"
-            fixed
-            clipped
-            app
-            class="appColor"
-        >
-            <v-list
-                dense
-                class="appColor"
-                dark
-            >
-                <template v-for="item in items">
-                    <v-layout
-                        v-if="item.heading"
-                        :key="item.heading"
-                        row
-                        align-center
-                        class="side-menu"
-                    >
-                        <v-flex xs6>
-                            <v-subheader v-if="item.heading">
-                                {{ item.heading }}
-                            </v-subheader>
-                        </v-flex>
-                        <v-flex
-                            xs6
-                            class="text-xs-center"
-                        >
-                            <a
-                                href="#!"
-                                class="body-2 black--text"
-                            >EDIT</a>
-                        </v-flex>
-                    </v-layout>
-
-                    <v-list-group
-                        v-else-if="item.children"
-                        :key="item.text"
-                        v-model="item.model"
-                        :prepend-icon="item.model ? item.icon : item['icon-alt']"
-                        append-icon=""
-                    >
-                        <v-list-tile slot="activator">
-                            <v-list-tile-content>
-                                <v-list-tile-title class="side-menu">
-                                    {{ item.text }}
-                                </v-list-tile-title>
-                            </v-list-tile-content>
-                        </v-list-tile>
-                        <v-list-tile
-                            v-for="(child, i) in item.children"
-                            :key="i"
-                            :to="child.link"
-                        >
-                            <v-list-tile-avatar
-                                tile
-                                size="32"
-                            >
-                                <img
-                                    :src="child.avatar"
-                                    height="24px"
-                                    width="24px"
-                                >
-                            </v-list-tile-avatar>
-
-                            <v-list-tile-content>
-                                <v-list-tile-title class="side-menu">
-                                    {{ child.text }}
-                                </v-list-tile-title>
-                            </v-list-tile-content>
-                        </v-list-tile>
-                    </v-list-group>
-
-                    <v-list-tile
-                        v-else
-                        :key="item.text"
-                        avatar
-                        dark
-                        :to="item.link"
-                    >
-                        <v-list-tile-avatar tile>
-                            <img
-                                :src="item.avatar"
-                                height="32px"
-                                width="32px"
-                            >
-                        </v-list-tile-avatar>
-
-                        <v-list-tile-content>
-                            <v-list-tile-title class="side-menu">
-                                {{ item.text }}
-                            </v-list-tile-title>
-                        </v-list-tile-content>
-                    </v-list-tile>
-                </template>
-                <v-divider></v-divider>
-
-                <v-list-tile :to="logoutMenu.link">
-                    <v-list-tile-avatar tile>
-                        <img
-                            :src="logoutMenu.avatar"
-                            height="32px"
-                            width="32px"
-                        >
-                    </v-list-tile-avatar>
-
-                    <v-list-tile-content>
-                        <v-list-tile-title class="side-menu">
-                            {{ logoutMenu.text }}
-                        </v-list-tile-title>
-                    </v-list-tile-content>
-                </v-list-tile>
-            </v-list>
-
-
-            <v-footer
-                dark
-                height="auto"
-                color="appColor"
-                inset
-                fixed
-            >
-                <v-divider></v-divider>
-                <div class="col-12">
-                    <span class="white--text">Icons made by</span>
-                    <a
-                        href="https://www.flaticon.com/authors/freepik"
-                        title="Freepik"
-                    >
-                        <span class="text-info">Freepik</span>
-                    </a>
-                    <span class="white--text">from</span>
-                    <a
-                        class="text-info"
-                        href="https://www.flaticon.com/"
-                        title="Flaticon"
-                    >www.flaticon.com</a>
-                </div>
-            </v-footer>
-        </v-navigation-drawer>
-
-        <v-toolbar
+            v-show="drawer"
+        ></side-nav>
+        <v-app-bar
             v-if="this.$store.state.auth"
             color="appColor"
             dark
             app
-            :clipped-left="this.$vuetify.breakpoint.lgAndUp"
+            :clipped-right="this.$vuetify.breakpoint.lgAndUp"
             fixed
             height="50"
         >
-            <v-toolbar-side-icon @click.stop="drawer = !drawer"></v-toolbar-side-icon>
+            <vs-button
+                icon
+                class="appColor"
+                @click.stop="drawer = !drawer"
+            >
+                <i class='bx bx-menu'></i>
+            </vs-button>
             <v-toolbar-title
                 fixed
                 style="width: 300px"
@@ -231,134 +98,58 @@
                     </v-card>
                 </v-bottom-sheet>
             </template>
-        </v-toolbar>
+        </v-app-bar>
 
         <v-content>
-            <v-container id="main-container" h-100>
+            <div class="container h-100" id="main-container">
                 <router-view></router-view>
-            </v-container>
+            </div>
         </v-content>
-        <v-snackbar
-            v-model="showMsg"
-            :color="msgType"
-            auto-height
-        >
-            <ul>
-                <li v-for="(msg,index) in appMessages" :key="index">
-                    {{ msg }}
-                </li>
-            </ul>
-            <v-btn
-                color="white"
-                flat
-                @click="showMsg = false"
-            >
-                Close
-            </v-btn>
-        </v-snackbar>
     </v-app>
 </template>
 
 <script>
     import VApp from 'vuetify/lib/components/VApp';
     import VBottomSheet from 'vuetify/lib/components/VBottomSheet';
-    import VNavigationDrawer from 'vuetify/lib/components/VNavigationDrawer';
-    import VFooter from 'vuetify/lib/components/VFooter';
-    import {VContent} from 'vuetify/lib/components/VGrid';
-    import imgReport from '@/assets/home.svg';
-    import imgWallet from '@/assets/wallet.png';
-    import imgCurrencies from '@/assets/currencies.svg';
-    import imgExpensesItems from '@/assets/shopping-bags.svg';
-    import imgIncomes from '@/assets/graph_income.svg';
-    import imgExpenses from '@/assets/graph_expenses.svg';
-    import imgTransfers from '@/assets/exchange.svg';
-    import imgSettings from '@/assets/settings.svg';
-    import imgLogout from '@/assets/logout.svg';
-    import imgContacts from '@/assets/contacts.svg';
 
+    import {VAppBar, VAppBarNavIcon} from 'vuetify/lib/components/VAppBar';
+    import {VToolbarTitle} from 'vuetify/lib/components/VToolbar';
+    import {VContent} from 'vuetify/lib/components/VContent';
+    import {VSpacer} from 'vuetify/lib/components/VGrid';
+
+    import SideNav from './components/AsideNav/AsideNav';
     export default {
 
         components: {
             VApp,
             VBottomSheet,
             VContent,
-            VNavigationDrawer,
-            VFooter
+            VAppBar,
+            VAppBarNavIcon,
+            VToolbarTitle,
+            VSpacer,
+            'side-nav': SideNav
         },
 
         data: () => ({
             dialog: false,
-            drawer: true,
             showMenu: false,
             showActionMenu: false,
             sheet: false,
 
             isOffline: false,
-            items: [
-                {icon: 'home', text: 'Dashboard', link: '/', avatar: imgReport},
-                {icon: 'budget', text: 'Budget', link: '/budget', avatar: imgReport},
-                {
-                    icon: 'keyboard_arrow_up',
-                    'icon-alt': 'keyboard_arrow_down',
-                    text: 'Catalogs',
-                    model: true,
-                    children: [
-                        {
-                            icon: 'euro_symbol',
-                            text: 'Currencies',
-                            link: '/currencies',
-                            avatar: imgCurrencies
-                        },
-                        {
-                            icon: 'account_balance_wallet',
-                            text: 'Wallets',
-                            link: '/wallets',
-                            avatar: imgWallet
-                        },
-                        {
-                            icon: 'local_atm',
-                            text: 'Income items',
-                            link: '/itemsincome',
-                            avatar: imgIncomes
-                        },
-                        {
-                            icon: 'shopping_basket',
-                            text: 'Expense items',
-                            link: '/itemsexpenditure',
-                            avatar: imgExpensesItems,
-                        },
 
-                        {
-                            icon: 'shopping_basket',
-                            text: 'Contacts',
-                            link: '/contacts',
-                            avatar: imgContacts,
-                        },
-                    ],
-                },
-                {
-                    icon: 'keyboard_arrow_up',
-                    'icon-alt': 'keyboard_arrow_down',
-                    text: 'Transactions',
-                    model: true,
-                    children: [
-                        {icon: 'remove', text: 'Expenses', link: '/expends', avatar: imgExpenses},
-                        {icon: 'add', text: 'Incomes', link: '/incomes', avatar: imgIncomes},
-                        {
-                            icon: 'compare_arrows',
-                            text: 'Transfers',
-                            link: '/transfers',
-                            avatar: imgTransfers
-                        },
-                    ],
-                },
-                {icon: 'settings', text: 'Settings', link: '/settings', avatar: imgSettings},
-
-            ],
-            logoutMenu: {icon: 'exit_to_app', text: 'Log out', link: '/login', avatar: imgLogout},
         }),
         computed: {
-            title() {
+          drawer: {
+            get() {
+              return this.$store.state.app.drawer;
+            },
+            set(val) {
+              this.$store.commit('toggleDrawer', val);
+            }
+          },
+          title() {
                 return this.$store.state.title === undefined ? 'Personal finances' : this.$store.state.title;
             },
             toolbarMenu() {
@@ -407,3 +198,16 @@
         },
     };
 </script>
+
+<style scoped>
+    .app_auth {
+        background-color: white;
+    }
+
+    .app_not_auth {
+        background-image: url("./assets/images/login-bg.jpg");
+        background-repeat: no-repeat;
+        background-size: cover;
+        background-position: center center;
+    }
+</style>

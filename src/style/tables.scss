@@ -1,0 +1,15 @@
+$table_header_font_size: 1rem;
+
+.vs-table__th {
+   font-size: $table_header_font_size;
+  font-family: 'Inter', sans-serif;
+}
+
+.vs-table__td {
+  font-size: $table_header_font_size;
+  font-family: 'Inter', sans-serif;
+}
+
+.clickable {
+  cursor: pointer;
+}

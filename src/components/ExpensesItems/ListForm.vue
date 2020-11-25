@@ -1,84 +1,22 @@
 <template>
-  <div class="row">
+  <div class="row mx-0 mt-2">
     <v-dialog
       v-model="dialog"
-      max-width="500"
+      hide-overlay
       persistent
+      attach=".wrapper"
       :fullscreen="$vuetify.breakpoint.smAndDown"
+      :max-width="'400px'"
     >
-      <div class="card" style="height: 100%">
-        <div class="card-header appColor text-white">
-          {{ formTitle }}
-        </div>
-
-        <div class="card-body">
-          <div class="row d-flex">
-            <div class="col-xs-12">
-              <div class="d-flex">
-                <div class="form-group mx-1">
-                  <label for="parent_select" class="tm-label">Parent:</label>
-
-                  <tm-select
-                    id="parent_select"
-                    v-model="parent"
-                    :options="itemslist"
-                    :title="'name'"
-                    :clearable="true"
-                    :select-btn="false"
-                    :placeholder="'Select parent'"
-                  />
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div class="row d-flex">
-            <div class="col-xs-12">
-              <div class="d-flex flex-wrap">
-                <div class="form-group mx-1">
-                  <label for="item_income_title" class="tm-label">Title:</label>
-                  <tm-input
-                    :id="'item_income_title'"
-                    v-model="formData.name"
-                    :placeholder="'Title'"
-                    :input-type="'text'"
-                    :clearable="true"
-                  />
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div class="row">
-            <div class="form-group mx-1">
-              <div class="d-flex justify-start">
-                <tm-checkbox v-model="formData.active"/>
-                <p class="tm-label ml-2">
-                  The item is active
-                </p>
-              </div>
-            </div>
-          </div>
-        </div>
-        <v-progress-linear v-show="processing === true" :indeterminate="true" class="my-0"/>
-        <div class="card-footer text-muted">
-          <div class="row d-flex justify-content-between">
-            <v-btn color="blue darken-1" flat @click.native="close">
-              Cancel
-            </v-btn>
-
-            <v-btn color="green darken-3" flat @click.native="save">
-              Save
-            </v-btn>
-          </div>
-        </div>
-      </div>
+      <item-form v-if="dialog" :item="formData" :items-list="itemslist" @close="closeDialog" />
     </v-dialog>
 
     <div class="table-wrapper">
       <tm-tree
         :items="items"
         @itemclick="openFormElement"
+        @addsub="add"
+        @delete="deleteItem"
       />
     </div>
   </div>
@@ -86,159 +24,148 @@
 
 <script>
 
-    import ApiClass from '../api/api_laravel';
-    import {mapGetters} from 'vuex';
-    import TMTree from './TMComponents/TMList/TMTree'
-    import TMInput from './TMComponents/TMInput/TMInput';
-    import TMCheckbox from './TMComponents/TMCheckbox';
-    const api = new ApiClass();
+  import {mapGetters} from 'vuex';
+  import ItemElementForm from './ElementForm';
+  import TMTree from '../TMComponents/TMList/TMTree'
+  import VDialog from 'vuetify/lib/components/VDialog';
+  import alert from '../Dialogs/Alert/Alert';
 
-    export default {
-        components: {
-            'tm-input': TMInput,
-            'tm-checkbox': TMCheckbox,
-            'tm-tree': TMTree
-        },
-        data: () => ({
-            headers: [{text: 'Name', value: 'name'}],
+  export default {
+    components: {
+      'item-form': ItemElementForm,
+      'tm-tree': TMTree,
+      VDialog
+    },
+    data: () => ({
+      headers: [{text: 'Name', value: 'name'}],
 
-            dialog: false,
-            formTitle: 'New',
-            editedIndex: -1,
+      dialog: false,
+      formTitle: 'New',
+      editedIndex: -1,
 
-            processing: false,
-            formData: {
-                id: null,
-                name: '',
-                parent_id: null,
-                active: true,
-                comment: ''
+      processing: false,
+      formData: {
+        id: null,
+        name: '',
+        parent_id: null,
+        active: true,
+        comment: ''
+      },
+
+    }),
+    computed: {
+      ...mapGetters({
+        items: 'allExpenseItemsHierarchically',
+        itemslist: 'allExpenseItems'
+      }),
+    },
+
+    beforeMount: function () {
+      this.$store.state.title = 'Expenditure items';
+      this.$store.dispatch('getAllExpenseItemsHierarchically');
+      this.$store.commit('setupToolbarMenu', this.getUpMenu());
+    },
+
+    methods: {
+      getUpMenu() {
+        return {
+          mainAction: {
+            title: 'add',
+            icon: 'add',
+            action: () => {
+              this.add();
             },
-
-        }),
-        computed: {
-            ...mapGetters({
-                items: 'allExpenseItemsHierarchically',
-                itemslist: 'allExpenseItems'
-            }),
-            parent: {
-                get() {
-                    if (this.formData.parent_id) {
-                        let parent = this.itemslist.find(item => {
-                            return item.id === this.formData.parent_id;
-                        });
-
-                        return parent !== undefined ? parent : null;
-                    }
-
-                    return null;
-                },
-
-                set(parent) {
-
-                    if (parent instanceof Object && parent.hasOwnProperty('id')) {
-                        this.formData.parent_id = parent.id;
-                    }
-                    else {
-                        this.formData.parent_id = null;
-                    }
-
-                }
+          },
+          menu: [
+            {
+              title: 'update',
+              icon: 'update',
+              action: () => {
+                this.update();
+              },
             }
-        },
+          ]
+        }
 
-        watch: {
-            dialog(val) {
-                val || this.close();
-            },
-        },
+      },
 
-        beforeMount: function () {
-            this.$store.state.title = 'Expenditure items';
-            this.$store.dispatch('getAllExpenseItemsHierarchically');
-            this.$store.commit('setupToolbarMenu', this.getUpMenu());
-        },
+      add(parent) {
 
-        methods: {
-            getUpMenu() {
-                return {
-                    mainAction: {
-                        title: 'add',
-                        icon: 'add',
-                        action: () => {
-                            this.add();
-                        },
-                    },
-                    menu: [
-                        {
-                            title: 'update',
-                            icon: 'update',
-                            action: () => {
-                                this.update();
-                            },
-                        }
-                    ]
-                }
+        const parentId = parent === undefined ? null : parent.id;
 
-            },
+        this.formData = {
+          id: null,
+          name: '',
+          parent_id: parentId,
+          active: true,
+          comment: ''
+        };
 
-            add() {
-                this.formTitle = 'New';
+        this.dialog = true;
+      },
 
-                this.formData = {
-                    id: null,
-                    name: '',
-                    parent_id: null,
-                    active: true,
-                    comment: ''
-                };
+      update() {
+        this.$store.dispatch('getAllExpenseItemsHierarchically');
+      },
 
-                this.dialog = true;
-            },
+      openFormElement(item) {
 
-            update() {
-                this.$store.dispatch('getAllExpenseItemsHierarchically');
-            },
-
-            openFormElement(item) {
-
-                this.copyObject(this.formData, item);
-
-                this.dialog = true;
-                this.formTitle = item.name;
-            },
+        this.copyObject(this.formData, item);
+        this.dialog = true;
+      },
 
 
-            close() {
-                this.dialog = false;
-            },
+      closeDialog(stored) {
+        this.dialog = false;
 
-            save() {
+        this.formData = {
+          id: null,
+          name: '',
+          parent_id: null,
+          active: true,
+          comment: ''
+        };
 
-                this.processing = true;
+        if (stored === true) {
+          this.update();
+        }
+      },
 
-                const res_promise = this.formData.id === null
-                    ? api.store('itemsexpense', this.formData)
-                    : api.update('itemsexpense', this.formData.id, this.formData);
+      async deleteItem(item) {
 
+        try {
+          await this.$dialog.confirm(`Do you want to delete ${item.name}?`, {
+            view: 'delete-confirmation', // can be set globally too
+            html: true,
+            animation: 'fade',
+            backdropClose: true
+          });
+        }
+        catch(e) {
+          return;
+        }
 
-                res_promise.then(() => {
-                    this.close();
-                    this.update();
-                })
-                .catch(err => {
-                    //ToDO:implement element deletion
-                }).finally(() => {
-                    this.processing = false;
-                })
-            },
-        },
-    };
+        await this.$store.dispatch('startPending');
+        const success = await this.$store.dispatch('deleteExpenseItem', item);
+        await this.$store.dispatch('finishPending');
+
+        const msg = success === true
+          ? `${item.name} has been deleted`
+          : `${item.name} hasn't been deleted`;
+
+        this.$vs.notification({
+          clickClose: true,
+          content: alert({
+            alertType: success === true ? 'success' : 'failure',
+            msgHeader: 'Result!',
+            msgBody: `${msg}`
+          }),
+        });
+
+        if (success === true) {
+          this.update();
+        }
+      },
+    },
+  };
 </script>
-
-<style scoped>
-
-    .node {
-        background-color: #00acc1;
-    }
-</style>

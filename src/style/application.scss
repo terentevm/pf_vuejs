@@ -1,0 +1,16 @@
+//Colors
+$table-head-bg-color: #94bdd1;
+
+$table-row-font-size: 0.9rem;
+
+//tables
+.thead-bg {
+  background-color: $table-head-bg-color;
+}
+
+.table th, .table td {
+  padding: 0.5rem;
+  vertical-align: center;
+  border-top: 1px solid #e9ecef;
+  font-size: $table-row-font-size;
+}

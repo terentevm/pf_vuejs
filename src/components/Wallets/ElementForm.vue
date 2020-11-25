@@ -1,196 +1,206 @@
 <template>
-    <v-card>
-        <v-toolbar color="appColor" dark>
-            <v-toolbar-title>Wallet: {{ title }}</v-toolbar-title>
-            <v-spacer></v-spacer>
-            <v-btn icon>
-                <v-icon>account_balance_wallet</v-icon>
-            </v-btn>
-        </v-toolbar>
+  <div class="h-100">
+    <card class="h-100" :header-classes="headerClasses" :footer-classes="footerClasses">
+      <div slot="header" class="row align-items-center">
+        <div class="col">
+          <h4 class="text-default text-uppercase ls-1 mb-1">Item: {{ title }}</h4>
+        </div>
+        <v-progress-linear
+          v-if="processing"
+          buffer-value="0"
+          color="#4193F2"
+          indeterminate
+          rounded
+        />
+      </div>
+      <label for="wallet_title">Title</label>
+      <base-input
+        id="wallet_title"
+        tabindex="1"
+        placeholder="Title"
+        v-model="formData.name"
+        class="text-default"
+      />
+      <div class="form-group">
+        <label for="wallet_currency">Currency</label>
+        <tm-select
+          id="wallet_currency"
+          v-model="formData.currency"
+          :options="currencies"
+          :title="'name'"
+          :clearable="true"
+          :select-btn="false"
+          :placeholder="'Select currency'"
+          :read-only="formData.block_currency === true"
+        />
+      </div>
 
-        <v-card-text>
-            <v-container grid-list-md>
-                <v-flex xs12 sm12 md12 d-none>
-                    <v-text-field v-model="formData.id" label="id"></v-text-field>
-                </v-flex>
+      <div class="form-group">
+        <base-checkbox
+          v-model="formData.is_creditcard"
+          :checked="formData.is_creditcard"
+        >Is credit card</base-checkbox>
+      </div>
 
-                <div class="row">
-                    <div class="col-12 col-sm-12 col-md-12 col-lg-12">
-                        <v-text-field
-                            v-model="formData.name"
-                            label="Name"
-                            row-height="15"
-                        ></v-text-field>
-                    </div>
-                </div>
+      <div v-if="formData.is_creditcard" class="row">
+        <div class="col">
+          <div class="form-group">
+            <label for="w_cred_lim">Limit</label>
+            <base-input
+              id="w_cred_lim"
+              v-model.number="formData.credit_limit"
+              type="number"
+              placeholder="Credit limit"
+            />
+          </div>
+        </div>
+        <div class="col">
+          <div class="form-group">
+            <label for="w_grace">Grace period</label>
+            <base-input
+              id="w_grace"
+              v-model.number="formData.grace_period"
+              type="number"
+              placeholder="Crace period"
+            />
+          </div>
+        </div>
+      </div>
 
-                <div class="row">
-                    <div class="col-12 col-sm-12 col-md-12 col-lg-12">
-                        <v-select
-                            v-model="formData.currency"
-                            :items="currencies"
-                            max-height="15"
-                            auto
-                            label="Currency"
-                            single-line
-                            item-text="name"
-                            item-value="id"
-                            return-object
-                        ></v-select>
-                    </div>
-                </div>
-
-                <div class="row">
-                    <div class="col-12 col-sm-12 col-md-12 col-lg-12">
-                        <v-checkbox
-                            v-model="formData.is_creditcard"
-                            :label="`Is credit card`"
-                            true-value="1"
-                            false-value="0"
-                        ></v-checkbox>
-                    </div>
-                </div>
-
-                <div class="row">
-                    <div class="col-6 col-sm-6 col-md-6 col-lg-6">
-                        <v-text-field
-                            v-show="formData.is_creditcard === 1"
-                            v-model="formData.credit_limit"
-                            label="Credit limit"
-                            row-height="15"
-                        ></v-text-field>
-                    </div>
-
-                    <div class="col-6 col-sm-6 col-md-6 col-lg-6">
-                        <v-text-field
-                            v-show="formData.is_creditcard === 1"
-                            v-model="formData.grace_period"
-                            label="Grace period"
-                            row-height="15"
-                        ></v-text-field>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="text-xs-center">
-                        <v-chip color="green" text-color="white">
-                            <v-avatar class="green darken-4">
-                                <v-icon>edit</v-icon>
-                            </v-avatar>
-                            Balance: {{ formData.balance }}
-                        </v-chip>
-                    </div>
-                </div>
-            </v-container>
-        </v-card-text>
-        <v-card-actions>
-            <v-btn color="blue darken-1" flat @click="close()">
-                Cancel
-            </v-btn>
-            <v-spacer></v-spacer>
-            <v-btn :disabled="processing === true" color="green darken-3" flat @click="store()">
-                Save
-            </v-btn>
-        </v-card-actions>
-        <v-progress-linear v-show="processing === true" :indeterminate="true">
-            <p>process</p>
-        </v-progress-linear>
-    </v-card>
+      <div class="row mx-0">
+        <strong>Balance: {{ formData.balance }}</strong>
+      </div>
+      <div slot="footer" class="row align-items-center">
+        <div class="col">
+        </div>
+        <base-button type="secondary" @click="close">
+          Cancel
+        </base-button>
+        <base-button type="success" @click="store()">
+          Store
+        </base-button>
+      </div>
+    </card>
+  </div>
 </template>
 
 <script>
-    import { VChip } from 'vuetify/lib/components/VChip';
-    import { VSelect } from 'vuetify/lib/components/VSelect';
-    import VTextField from 'vuetify/lib/components/VTextField';
-    import {mapGetters} from 'vuex';
-    import ApiClass from '../../api/api_laravel';
+  import Card from '../../argon/src/components/Card';
+  import BaseInput from '../../argon/src/components/BaseInput';
+  import BaseButton from '../../argon/src/components/BaseButton';
+  import VProgressLinear from 'vuetify/lib/components/VProgressLinear';
+  import TMSelect from '../TMComponents/TMSelect/TMSelect';
+  import BaseCheckbox from '../../argon/src/components/BaseCheckbox';
+  import alert from '../Dialogs/Alert/Alert';
+  import {mapGetters} from 'vuex';
 
-    const api = new ApiClass();
-    export default {
-        name: 'WalletElement',
+  export default {
+    name: 'WalletElement',
 
-        components: {
-            VChip,
-            VSelect,
-            VTextField
-        },
-        props: {
-            item: {
-                type: Object,
-                required: true,
-            },
+    components: {
+      Card,
+      BaseInput,
+      VProgressLinear,
+      'tm-select': TMSelect,
+      BaseCheckbox,
+      BaseButton
+    },
+    props: {
+      item: {
+        type: Object,
+        required: true,
+      },
 
-        },
-        data: () => ({
-            title: 'New',
+    },
+    data: () => ({
+      title: 'New',
+      formData: {
+        id: null,
+        name: '',
+        currency: '',
+        is_creditcard: false,
+        grace_period: 0,
+        credit_limit: 0,
+        balance: 0,
+        newBalance: 0,
+      },
+      processing: false,
+      headerClasses: ['bg-transparent py-1'],
+      footerClasses: ['py-1']
+    }),
 
-            formData: {
-                id: null,
-                name: '',
-                currency_id: '',
-                is_creditcard: false,
-                grace_period: 0,
-                credit_limit: 0,
-                balance: 0,
-                newBalance: 0,
-            },
-            serverData: {
-                id: null,
-                name: '',
-                currency_id: '',
-                is_creditcard: false,
-                grace_period: 0,
-                credit_limit: 0
-            },
+    computed: {
+      ...mapGetters({
+        currencies: 'allCurrencies',
+      }),
+    },
+    created: function () {
 
-            processing: false,
-        }),
+      this.$store.dispatch('getAllCurrencies');
+      this.formData = Object.assign({}, this.item);
+      this.title = this.item.id ? this.item.name : 'new';
 
-        computed: {
-            ...mapGetters({
-                currencies: 'allCurrencies',
-            }),
-        },
-        created: function () {
+    },
 
-            this.$store.dispatch('getAllCurrencies');
-            this.formData = Object.assign({}, this.item);
-            this.title = this.item.id ? this.item.name : 'new';
+    methods: {
 
-        },
+      close() {
+        this.$emit('close');
+      },
 
-        methods: {
-            close() {
-                this.$emit('cancel');
-            },
+      async store() {
 
-            store() {
+        this.formData.currency_id = this.formData.currency.id
 
-                this.processing = true;
-                this.copyObject(this.serverData, this.formData);
-                this.serverData.currency_id = this.formData.currency.id;
+        this.processing = true;
 
+        let success = true;
+        let msg = `Item ${this.formData.name} has been stored successfully!`;
 
-                let promise = null;
+        try {
+          await this.$store.dispatch('storeWallet', this.formData);
+        }
+        catch (err) {
 
-                if (!this.formData.id) {
-                    promise = api.store('wallets', this.serverData);
-                } else {
-                    promise = api.update('wallets', this.serverData.id, this.serverData);
-                }
+          success = false;
 
-                promise
-                    .then(() => {
-                        this.processing = false;
-                        this.$emit('stored');
-                    })
-                    .catch((err) => {
-                        console.dir(err);
-                        this.processing = false;
-                    });
-            },
+          let status = 'n/a';
+          let errorText = 'Error';
 
-        },
-    };
+          if (err instanceof Object && err.hasOwnProperty('status')) {
+            status = err.status;
+          }
+
+          if (err instanceof Object && err.hasOwnProperty('data')) {
+            if (err.data.hasOwnProperty('error')) {
+              errorText = err.data.error;
+            }
+
+          }
+
+          msg = `(${status}) ${errorText}`;
+        }
+        finally {
+          this.processing = false;
+        }
+
+        this.$vs.notification({
+          clickClose: true,
+          content: alert({
+            alertType: success === true ? 'success' : 'failure',
+            msgHeader: 'Result!',
+            msgBody: `${msg}`
+          }),
+        });
+
+        if (success === true) {
+          this.$emit('close', true);
+        }
+
+      }
+
+    },
+  };
 </script>
 
 <style scoped></style>

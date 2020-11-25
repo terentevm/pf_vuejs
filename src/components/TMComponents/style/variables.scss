@@ -1,12 +1,13 @@
 
-$tm_wrap_border: 1px solid rgba(67, 93, 125, 0.5);
-
+$tm_wrap_border: 1px solid #cad1d7;
+$tm_wrap_border_focused: 1px solid rgba(50,151,211,.25);
 $tm_input_focus_shadow: 0 0 5px rgba(67, 93, 125, 1);
 
-$tm_icon_color: #808080;
+$tm_text_color: #6c757d;
+$tm_icon_color: #6c757d;
 $tm_icon_hover_color: #435d7d;
 
 $tm_input_font-size: 18px;
-$tm_component_height: 50px;
+$tm_component_height: 40px;
 
 $tm_checkbox_border: 1px solid #435d7d;

@@ -7,7 +7,7 @@
     import Chart from 'chart.js/dist/Chart.min.js';
 
     export default {
-        name: 'BarChart',
+        name: 'PieChart',
 
         props: {
             id: {
@@ -52,7 +52,7 @@
                 this.canvas = document.getElementById(this.id).getContext('2d');
 
                 this.bar = new Chart(this.canvas, {
-                    type: 'bar',
+                    type: 'pie',
                     data: data,
                     options: options
                 });

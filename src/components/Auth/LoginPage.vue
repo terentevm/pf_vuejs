@@ -1,68 +1,69 @@
 <template>
-    <div class="center">
-        <form @submit.prevent="onSubmit">
-            <vs-dialog blur not-close v-model="active" prevent-close>
-                <template #header>
-                    <h4 class="not-margin">
-                        Welcome to <b>Personal finances</b>
-                    </h4>
-                </template>
+  <div class="">
+    <form data-testid="login-form" @submit.prevent="onSubmit">
+      <vs-dialog blur not-close v-model="active" prevent-close>
+        <template #header>
+          <h4 class="not-margin">
+            Welcome back to <b>Personal finances</b>
+          </h4>
+        </template>
 
-                <div class="con-form">
-                    <vs-input
-                        v-model="email"
-                        placeholder="Email"
-                        v-validate.disable="'required|email'"
-                        data-vv-name="login"
-                        :danger="errors.has('login')"
-                    >
-                        <template #icon>
-                            @
-                        </template>
-                        <template v-if="errors.has('login')" #message-danger>
-                            <p class="title-error">{{ errors.first('login') }}</p>
-                        </template>
-                    </vs-input>
-                    <vs-input
-                        v-model="password"
-                        type="password"
-                        placeholder="Password"
-                        v-validate.disable="'required'"
-                        data-vv-name="password"
-                    >
-                        <template #icon>
-                            <i class='bx bxs-lock'></i>
-                        </template>
-                        <template v-if="errors.has('password')" #message-danger>
-                            <p class="title-error"> {{ errors.first('password') }} </p>
-                        </template>
-                    </vs-input>
-                </div>
+        <div class="con-form">
+          <vs-input
+            v-model="email"
+            placeholder="Email"
+            v-validate.disable="'required|email'"
+            data-vv-name="login"
+            :danger="errors.has('login')"
+            data-testid="input-login"
+          >
+            <template #icon>
+              <i class="fas fa-at"></i>
+            </template>
+            <template v-if="errors.has('login')" #message-danger>
+              <p class="title-error" data-testid="input-login-err">{{ errors.first('login') }}</p>
+            </template>
+          </vs-input>
+          <vs-input
+            v-model="password"
+            type="password"
+            placeholder="Password"
+            v-validate.disable="'required'"
+            data-vv-name="password"
+            data-testid="input-pass"
+          >
+            <template #icon>
+              <i class="fas fa-lock"></i>
+            </template>
+            <template v-if="errors.has('password')" #message-danger>
+              <p class="title-error" data-testid="input-pass-err">{{ errors.first('password') }} </p>
+            </template>
+          </vs-input>
+        </div>
 
-                <template #footer>
-                    <div class="footer-dialog">
-                        <vs-button type="submit" block :loading="sending === true">
-                            Sign In
-                        </vs-button>
+        <template #footer>
+          <div class="footer-dialog">
+            <vs-button type="submit" block :loading="sending === true">
+              Sign In
+            </vs-button>
 
-                        <div class="new">
-                            New Here? <a href="#/signup">Create New Account</a>
-                        </div>
-                    </div>
-                </template>
-
-            </vs-dialog>
-        </form>
-    </div>
+            <div class="new">
+              New Here? <router-link to="/register" class="text-blue"><small>Create new account</small></router-link>
+            </div>
+          </div>
+        </template>
+      </vs-dialog>
+    </form>
+  </div>
 </template>
 
 <script>
   import ApiClass from '../../api/api_laravel';
-
+  import alert from '../Dialogs/Alert/Alert';
   const api = ApiClass();
 
   export default {
-    name: "LoginPage",
+    name: 'login-page',
     data() {
       return {
         active: true,
@@ -71,25 +72,13 @@
         password: '',
         sending: false,
         ErrorMessage: '',
-
-        dictionary: {
-          attributes: {
-            email: 'E-mail Address'
-          },
-          custom: {
-            name: {
-              required: () => 'Name can not be empty',
-              max: 'The name field may not be greater than 10 characters'
-              // custom messages
-            }
-          }
-        }
       };
     },
     beforeMount: function() {
       this.$store.state.title = 'Login';
       sessionStorage.removeItem('jwt');
       this.$store.state.auth = false;
+
     },
     mounted() {
       this.$validator.localize('en', this.dictionary);
@@ -125,12 +114,14 @@
                   ? 'Invalid login or password!'
                   : `Error. ${err.data.error}`;
 
+
               this.$vs.notification({
-                progress: 'auto',
-                color: 'danger',
-                position: 'top-center',
-                title: 'Authentication failed',
-                text: `${this.ErrorMessage}`
+                clickClose: true,
+                content: alert({
+                  alertType: 'failure',
+                  msgHeader: 'Auth error!',
+                  msgBody: `${this.ErrorMessage}`
+                }),
               });
             }
             finally {
@@ -144,12 +135,6 @@
 </script>
 
 <style>
-    .application--wrap {
-        background-image: url("../../assets/images/login-bg.jpg");
-        background-repeat: no-repeat;
-        background-size: cover;
-        background-position: center center;
-    }
     .not-margin {
         margin: 0px;
         font-weight: normal;

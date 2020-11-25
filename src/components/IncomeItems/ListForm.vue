@@ -1,147 +1,171 @@
 <template>
-    <v-layout row>
-        <v-dialog
-            v-if="dialog"
-            v-model="dialog"
-            max-width="500"
-            persistent
-            :fullscreen="$vuetify.breakpoint.smAndDown"
-        >
-            <tm-item :item="formData" @close="close"></tm-item>
-        </v-dialog>
+  <div class="row mx-0 mt-2">
+    <v-dialog
+      v-model="dialog"
+      hide-overlay
+      persistent
+      attach=".wrapper"
+      :fullscreen="$vuetify.breakpoint.smAndDown"
+      :max-width="'400px'"
+    >
+      <item-form v-if="dialog" :item="formData" :items-list="itemslist" @close="closeDialog"/>
+    </v-dialog>
 
-        <div class="table-wrapper">
-            <tm-tree
-                :items="items"
-                @itemclick="openFormElement"
-            ></tm-tree>
-        </div>
-    </v-layout>
+    <div class="table-wrapper">
+      <tm-tree
+        :items="items"
+        @itemclick="openFormElement"
+        @addsub="add"
+        @delete="deleteItem"
+      />
+    </div>
+  </div>
 </template>
 
 <script>
-    import {mapGetters} from 'vuex';
-    import TMTree from '../TMComponents/TMList/TMTree';
-    import ItemElement from './ItemElement';
 
-    export default {
-        components: {
-            'tm-tree': TMTree,
-            'tm-item': ItemElement
-        },
-        data: () => ({
-            headers: [{text: 'Name', value: 'name'}],
-            dialog: false,
-            editedIndex: -1,
+  import {mapGetters} from 'vuex';
+  import ItemElementForm from './ElementForm';
+  import TMTree from '../TMComponents/TMList/TMTree'
+  import VDialog from 'vuetify/lib/components/VDialog';
+  import alert from '../Dialogs/Alert/Alert';
 
-            processing: false,
-            formData: {
-                id: null,
-                name: '',
-                parent_id: null,
-                active: true,
-                comment: ''
+  export default {
+    components: {
+      'item-form': ItemElementForm,
+      'tm-tree': TMTree,
+      VDialog
+    },
+    data: () => ({
+      headers: [{text: 'Name', value: 'name'}],
+
+      dialog: false,
+      formTitle: 'New',
+      editedIndex: -1,
+
+      processing: false,
+      formData: {
+        id: null,
+        name: '',
+        parent_id: null,
+        active: true,
+        comment: ''
+      },
+
+    }),
+    computed: {
+      ...mapGetters({
+        items: 'allIncomeItemsHierarchically',
+        itemslist: 'allIncomeItems'
+      }),
+    },
+
+    beforeMount: function () {
+      this.$store.state.title = 'Income items';
+      this.update();
+      this.$store.commit('setupToolbarMenu', this.getUpMenu());
+    },
+
+    methods: {
+      getUpMenu() {
+        return {
+          mainAction: {
+            title: 'add',
+            icon: 'add',
+            action: () => {
+              this.add();
             },
-
-        }),
-        computed: {
-            ...mapGetters({
-                items: 'allIncomeItemsHierarchically',
-                itemslist: 'allIncomeItems'
-            }),
-
-            parent: {
-                get() {
-                    if (this.formData.parent_id) {
-                        let parent = this.itemslist.find(item => {
-                            return item.id === this.formData.parent_id;
-                        });
-
-                        return parent !== undefined ? parent : null;
-                    }
-
-                    return null;
-                },
-
-                set(parent) {
-
-                    if (parent instanceof Object && parent.hasOwnProperty('id')) {
-                        this.formData.parent_id = parent.id;
-                    }
-                    else {
-                        this.formData.parent_id = null;
-                    }
-
-                }
-            }
-        },
-
-        watch: {
-            dialog(val) {
-                val || this.close();
-            },
-        },
-
-        beforeMount: function () {
-            this.$store.state.title = 'Income items';
-            this.$store.dispatch('getAllIncomeItemsHierarchically');
-            this.$store.commit('setupToolbarMenu', this.getUpMenu());
-        },
-
-        methods: {
-            getUpMenu() {
-                return {
-                    mainAction: {
-                        title: 'add',
-                        icon: 'add',
-                        action: () => {
-                            this.add();
-                        },
-                    },
-                    menu: [
-                        {
-                            title: 'update',
-                            icon: 'update',
-                            action: () => {
-                                this.update();
-                            },
-                        }
-                    ]
-                };
-            },
-
-            add() {
-                this.formTitle = 'New';
-
-                this.formData = {
-                    id: null,
-                    name: '',
-                    parent_id: null,
-                    active: true,
-                    comment: ''
-                };
-
-                this.dialog = true;
-            },
-
-            update() {
-                this.$store.dispatch('getAllIncomeItemsHierarchically');
-            },
-
-            openFormElement(item) {
-
-                this.copyObject(this.formData, item);
-
-                this.dialog = true;
-            },
-
-
-            close() {
-                this.dialog = false;
+          },
+          menu: [
+            {
+              title: 'update',
+              icon: 'update',
+              action: () => {
                 this.update();
-            },
+              },
+            }
+          ]
+        }
+
+      },
+
+      add(parent) {
+
+        const parentId = parent === undefined ? null : parent.id;
+
+        this.formData = {
+          id: null,
+          name: '',
+          parent_id: parentId,
+          active: true,
+          comment: ''
+        };
+
+        this.dialog = true;
+      },
+
+      update() {
+        this.$store.dispatch('getAllIncomeItemsHierarchically');
+      },
+
+      openFormElement(item) {
+
+        this.copyObject(this.formData, item);
+        this.dialog = true;
+      },
 
 
-        },
-    };
+      closeDialog(stored) {
+        this.dialog = false;
+
+        this.formData = {
+          id: null,
+          name: '',
+          parent_id: null,
+          active: true,
+          comment: ''
+        };
+
+        if (stored === true) {
+          this.update();
+        }
+      },
+
+      async deleteItem(item) {
+
+        try {
+          await this.$dialog.confirm(`Do you want to delete ${item.name}?`, {
+            view: 'delete-confirmation', // can be set globally too
+            html: true,
+            animation: 'fade',
+            backdropClose: true
+          });
+        }
+        catch (e) {
+          return;
+        }
+
+        await this.$store.dispatch('startPending');
+        const success = await this.$store.dispatch('deleteIncomeItem', item);
+        await this.$store.dispatch('finishPending');
+
+        const msg = success === true
+          ? `${item.name} has been deleted`
+          : `${item.name} hasn't been deleted`;
+
+        this.$vs.notification({
+          clickClose: true,
+          content: alert({
+            alertType: success === true ? 'success' : 'failure',
+            msgHeader: 'Result!',
+            msgBody: `${msg}`
+          }),
+        });
+
+        if (success === true) {
+          this.update();
+        }
+      },
+    },
+  };
 </script>

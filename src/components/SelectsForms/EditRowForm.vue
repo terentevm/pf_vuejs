@@ -1,129 +1,160 @@
 <template>
-    <v-dialog
-        v-model="dialog"
-        max-width="550px"
-        persistent
-        class="form-dialog-bottom form-dialog"
-        :fullscreen="$vuetify.breakpoint.smAndDown"
-    >
-        <v-toolbar dense color="appColor" class="form-dialog-top" dark>
-            <v-btn flat @click="close">
-                Close
-            </v-btn>
-            <v-spacer></v-spacer>
-            <v-btn flat :tabindex="4" @click="saveRow(editRow)">
-                Ok
-            </v-btn>
-        </v-toolbar>
-        <v-card class="form-dialog-bottom">
-            <v-card-text>
-                <div class="row">
-                    <div class="col-xs-12 col-sm-6">
-                        <v-autocomplete
-                            v-model="editRow.item"
-                            label="Item"
-                            :items="items"
-                            autocomplete="true"
-                            cache-items
-                            clearable
-                            outline
-                            single-line
-                            item-text="name"
-                            item-value="id"
-                            return-object
-                            :tabindex="1"
-                        ></v-autocomplete>
-                    </div>
-                    <div class="col-xs-12 col-sm-6">
-                        <v-text-field
-                            v-model.number.lazy="amount"
-                            outline
-                            type="number"
-                            clearable
-                            label="Amount"
-                            :tabindex="2"
-                        ></v-text-field>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-12">
-                        <v-textarea
-                            v-model="editRow.comment"
-                            outline
-                            label="Comment"
-                            :tabindex="3"
-                        >
-                        </v-textarea>
-                    </div>
-                </div>
-            </v-card-text>
-        </v-card>
-    </v-dialog>
+  <modal :show.sync="dialog">
+    <template slot="header">
+      <h5 class="modal-title" id="exampleModalLabel">Select item</h5>
+    </template>
+    <div>
+      <div class="row">
+        <div class="col">
+          <tm-select
+            v-model="editRow.item"
+            :value="editRow.item"
+            :objects="true"
+            :options="items"
+          />
+        </div>
+        <div class="col">
+          <tm-input
+            :id="'sel-item-sum'"
+            :input-type="'number'"
+            :value="editRow.sum"
+            v-model.number="editRow.sum"
+          />
+        </div>
+      </div>
+      <textarea
+        class="form-control"
+        v-model="editRow.comment"
+        id="comment"
+        rows="3"
+        placeholder="Comment ..."/>
+    </div>
+    <template slot="footer">
+      <tm-button type="secondary" @click="$emit('close')">Close</tm-button>
+      <tm-button type="primary" @click="saveRow">Save changes</tm-button>
+    </template>
+  </modal>
 </template>
 
 <script>
-    import VAutocomplete from 'vuetify/lib/components/VAutocomplete';
-    import VTextarea from 'vuetify/lib/components/VTextarea';
-    import VTextField from 'vuetify/lib/components/VTextField';
-    import myNum from '../../helpers/MyNum';
+  import Modal from '../../argon/src/components/Modal';
+  import TMButton from '../TMComponents/TMButton/TMButton';
 
-    export default {
-        name: 'AddRowFrom',
+  export default {
+    name: 'AddRowFrom',
 
-        components: {
-            VAutocomplete,
-            VTextarea,
-            VTextField
-        },
-        props: {
-            dialog: {
-                type: Boolean,
-                default: false
-            },
-            editRow: {
-                type: Object
-            },
-            items: {
-                type: Array,
-                // eslint-disable-next-line vue/require-valid-default-prop
-                default: []
-            }
-        },
-        data: () => ({
-            fullscreen: false
-        }),
+    components: {
+      Modal,
+      'tm-button': TMButton
+    },
+    props: {
+      dialog: {
+        type: Boolean,
+        default: false
+      },
+      editRow: {
+        type: Object
+      },
+      items: {
+        type: Array,
+        // eslint-disable-next-line vue/require-valid-default-prop
+        default: []
+      }
+    },
+    data: () => ({
+      fullscreen: false
+    }),
 
-        computed: {
-            amount: {
-                get() {
-                    return this.editRow.sum;
-                },
+    methods: {
+      close() {
+        this.$emit('close');
+      },
 
-                set(value) {
-
-                    this.editRow.sum = myNum.round2(Number(value));
-                }
-            }
-        },
-
-        methods: {
-            close() {
-                this.$emit('close');
-            },
-
-            saveRow() {
-                this.$emit('done', this.editRow)
-            }
-        }
+      saveRow() {
+        this.$emit('done', this.editRow)
+      }
     }
+  }
 </script>
 
 <style scoped>
-    .form-dialog-top {
-        border-radius: 10px 10px 0 0;
-    }
+  .con-footer {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+  }
 
-    .form-dialog-bottom {
-        border-radius: 0 0 10px 10px;
-    }
+  .con-footer .vs-button {
+    margin: 0px;
+  }
+
+  .con-footer .vs-button .vs-button__content {
+    padding: 10px 30px;
+    font-size: 30px;
+  }
+
+  .con-footer .vs-button ~ .vs-button {
+    margin-left: 10px;
+  }
+
+  .not-margin {
+    margin: 0px;
+    font-weight: normal;
+    padding: 10px;
+    padding-bottom: 0px;
+  }
+
+  .con-content {
+    width: 100%;
+  }
+
+  .con-content p {
+    font-size: 0.8rem;
+    padding: 0px 10px;
+  }
+
+  .con-content .vs-checkbox-label {
+    font-size: 0.8rem;
+  }
+
+  .con-content .vs-input-parent {
+    width: 100%;
+  }
+
+  .con-content .vs-input-content {
+    margin: 10px 0px;
+    width: calc(100%);
+  }
+
+  .con-content .vs-input-content .vs-input {
+    width: 100%;
+  }
+
+  .footer-dialog {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    width: calc(100%);
+  }
+
+  .footer-dialog .new {
+    margin: 0px;
+    margin-top: 20px;
+    padding: 0px;
+    font-size: 0.7rem;
+  }
+
+  .footer-dialog .new a {
+    color: rgba(var(--vs-primary), 1) !important;
+    margin-left: 6px;
+  }
+
+  .footer-dialog .new a:hover {
+    text-decoration: underline;
+  }
+
+  .footer-dialog .vs-button {
+    margin: 0px;
+  }
 </style>
