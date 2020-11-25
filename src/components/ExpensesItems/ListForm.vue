@@ -1,88 +1,87 @@
 <template>
-    <div class="row">
-        <v-dialog
-            v-model="dialog"
-            max-width="500"
-            persistent
-            :fullscreen="$vuetify.breakpoint.smAndDown"
-        >
-            <div class="card" style="height: 100%">
-                <div class="card-header appColor text-white">
-                    {{ formTitle }}
-                </div>
-
-                <div class="card-body">
-                    <div class="row d-flex">
-                        <div class="col-xs-12">
-                            <div class="d-flex">
-                                <div class="form-group mx-1">
-                                    <label for="parent_select" class="tm-label">Parent:</label>
-
-                                    <tm-select
-                                        id="parent_select"
-                                        v-model="parent"
-                                        :options="itemslist"
-                                        :title="'name'"
-                                        :clearable="true"
-                                        :select-btn="false"
-                                        :placeholder="'Select parent'"
-                                    ></tm-select>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="row d-flex">
-                        <div class="col-xs-12">
-                            <div class="d-flex flex-wrap">
-                                <div class="form-group mx-1">
-                                    <label for="item_income_title" class="tm-label">Title:</label>
-                                    <tm-input
-                                        :id="'item_income_title'"
-                                        v-model="formData.name"
-                                        :placeholder="'Title'"
-                                        :input-type="'text'"
-                                        :clearable="true"
-                                    ></tm-input>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="row">
-                        <div class="form-group mx-1">
-                            <div class="d-flex justify-start">
-                                <tm-checkbox v-model="formData.active"></tm-checkbox>
-                                <p class="tm-label ml-2">
-                                    The item is active
-                                </p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <v-progress-linear v-show="processing === true" :indeterminate="true" class="my-0">
-                </v-progress-linear>
-                <div class="card-footer text-muted">
-                    <div class="row d-flex justify-content-between">
-                        <v-btn color="blue darken-1" flat @click.native="close">
-                            Cancel
-                        </v-btn>
-
-                        <v-btn color="green darken-3" flat @click.native="save">
-                            Save
-                        </v-btn>
-                    </div>
-                </div>
-            </div>
-        </v-dialog>
-
-        <div class="table-wrapper">
-            <tm-tree
-                :items="items"
-                @itemclick="openFormElement"
-            ></tm-tree>
+  <div class="row">
+    <v-dialog
+      v-model="dialog"
+      max-width="500"
+      persistent
+      :fullscreen="$vuetify.breakpoint.smAndDown"
+    >
+      <div class="card" style="height: 100%">
+        <div class="card-header appColor text-white">
+          {{ formTitle }}
         </div>
+
+        <div class="card-body">
+          <div class="row d-flex">
+            <div class="col-xs-12">
+              <div class="d-flex">
+                <div class="form-group mx-1">
+                  <label for="parent_select" class="tm-label">Parent:</label>
+
+                  <tm-select
+                    id="parent_select"
+                    v-model="parent"
+                    :options="itemslist"
+                    :title="'name'"
+                    :clearable="true"
+                    :select-btn="false"
+                    :placeholder="'Select parent'"
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="row d-flex">
+            <div class="col-xs-12">
+              <div class="d-flex flex-wrap">
+                <div class="form-group mx-1">
+                  <label for="item_income_title" class="tm-label">Title:</label>
+                  <tm-input
+                    :id="'item_income_title'"
+                    v-model="formData.name"
+                    :placeholder="'Title'"
+                    :input-type="'text'"
+                    :clearable="true"
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="form-group mx-1">
+              <div class="d-flex justify-start">
+                <tm-checkbox v-model="formData.active"/>
+                <p class="tm-label ml-2">
+                  The item is active
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+        <v-progress-linear v-show="processing === true" :indeterminate="true" class="my-0"/>
+        <div class="card-footer text-muted">
+          <div class="row d-flex justify-content-between">
+            <v-btn color="blue darken-1" flat @click.native="close">
+              Cancel
+            </v-btn>
+
+            <v-btn color="green darken-3" flat @click.native="save">
+              Save
+            </v-btn>
+          </div>
+        </div>
+      </div>
+    </v-dialog>
+
+    <div class="table-wrapper">
+      <tm-tree
+        :items="items"
+        @itemclick="openFormElement"
+      />
     </div>
+  </div>
 </template>
 
 <script>
@@ -124,7 +123,6 @@
             }),
             parent: {
                 get() {
-
                     if (this.formData.parent_id) {
                         let parent = this.itemslist.find(item => {
                             return item.id === this.formData.parent_id;
